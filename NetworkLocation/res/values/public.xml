@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="raw" name="nlp_metricmodel" id="0x7f020000" />
+    <public type="raw" name="nlp_metricmodeljava" id="0x7f020001" />
+    <public type="string" name="app_label" id="0x7f030000" />
+    <public type="string" name="location_warning_title" id="0x7f030001" />
+    <public type="string" name="location_warning_message" id="0x7f030002" />
+    <public type="string" name="agree" id="0x7f030003" />
+    <public type="string" name="disagree" id="0x7f030004" />
+    <public type="style" name="AlertThemeSelector" id="0x7f040000" />
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_label">Network Location</string>
+    <string name="location_warning_title">Location consent</string>
+    <string name="location_warning_message">"Allow Google's location service to collect anonymous location data. Some data may be stored on your device. Collection may occur even when no apps are running."</string>
+    <string name="agree">Agree</string>
+    <string name="disagree">Disagree</string>
+</resources>

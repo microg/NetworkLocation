@@ -1,0 +1,30 @@
+package apple;
+
+option java_package = "com.apple.iphone.services";
+option java_outer_classname = "LocationsProtos";
+
+message Response {
+	repeated ResponseWLAN wlan = 2;
+}
+
+message WLANLocation {
+	required int64 latitude = 1;
+	required int64 longitude = 2;
+	required int64 unknown3 = 3;
+}
+message ResponseWLAN {
+	required string mac = 1;
+	required WLANLocation location = 2;
+	optional int32 channel = 21;
+}
+
+message RequestWLAN {
+	required string mac = 1;
+}
+
+message Request {
+	repeated RequestWLAN wlan = 2;
+	required int32 unknown3 = 3;
+	required int32 unknown4 = 4;
+	required string source = 5;
+}
