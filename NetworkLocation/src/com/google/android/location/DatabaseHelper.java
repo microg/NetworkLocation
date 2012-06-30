@@ -62,24 +62,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return map;
 	}
 
-	public Map<String, Location> getNext(double latitude, double longitude,
-			int num) {
-		final HashMap<String, Location> map = new HashMap<String, Location>();
-		final Cursor c = getLocationCursorNext((long) (latitude * 1E6),
-				(long) (longitude * 1E6), num);
-		if (c == null) {
-			return map;
-		}
-		while (!c.isLast()) {
-			c.moveToNext();
-			final Location location = getLocationFromCursor(c);
-			final String mac = c.getString(c.getColumnIndexOrThrow(COL_MAC));
-			map.put(mac, location);
-		}
-		c.close();
-		return map;
-	}
-
 	public Location getLocation(String mac) {
 		final Cursor c = getLocationCursor(mac);
 		if (c == null) {
@@ -99,25 +81,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return checkCursor(c);
 	}
 
-	private Cursor getLocationCursorNext(long latitudeE6, long longitudeE6,
-			int num) {
-		final SQLiteDatabase db = getReadableDatabase();
-		final Cursor c = db.rawQuery("SELECT " + COL_MAC + ", " + COL_TIME
-				+ ", " + COL_ACCURACY + ", " + COL_LATITUDE + ", "
-				+ COL_LONGITUDE + " FROM " + TABLE_LOCATION + " ORDER BY (("
-				+ COL_LATITUDE + " - " + latitudeE6 + ") * (" + COL_LATITUDE + " - "
-				+ latitudeE6 + ") + (" + COL_LONGITUDE + " - " + longitudeE6
-				+ ") * (" + COL_LONGITUDE + " - " + longitudeE6 + ")) ASC LIMIT "
-				+ num, null);
-		return checkCursor(c);
-	}
-
 	private Cursor getLocationCursor(String mac) {
 		final SQLiteDatabase db = getReadableDatabase();
 		final Cursor c = db.rawQuery("SELECT " + COL_TIME + ", " + COL_ACCURACY
 				+ ", " + COL_LATITUDE + ", " + COL_LONGITUDE + " FROM "
 				+ TABLE_LOCATION + " WHERE " + COL_MAC + " = '" + mac
 				+ "' LIMIT 1", null);
+		return checkCursor(c);
+	}
+
+	private Cursor getLocationCursorNext(long latitudeE6, long longitudeE6,
+			int num) {
+		final SQLiteDatabase db = getReadableDatabase();
+		final Cursor c = db.rawQuery("SELECT " + COL_MAC + ", " + COL_TIME
+				+ ", " + COL_ACCURACY + ", " + COL_LATITUDE + ", "
+				+ COL_LONGITUDE + " FROM " + TABLE_LOCATION + " ORDER BY (("
+				+ COL_LATITUDE + " - " + latitudeE6 + ") * (" + COL_LATITUDE
+				+ " - " + latitudeE6 + ") + (" + COL_LONGITUDE + " - "
+				+ longitudeE6 + ") * (" + COL_LONGITUDE + " - " + longitudeE6
+				+ ")) ASC LIMIT " + num, null);
 		return checkCursor(c);
 	}
 
@@ -128,6 +110,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		location.setLongitude(c.getLong(c.getColumnIndexOrThrow(COL_LONGITUDE)) / 1E6F);
 		location.setTime(c.getLong(c.getColumnIndexOrThrow(COL_TIME)));
 		return location;
+	}
+
+	public Map<String, Location> getNext(double latitude, double longitude,
+			int num) {
+		final HashMap<String, Location> map = new HashMap<String, Location>();
+		final Cursor c = getLocationCursorNext((long) (latitude * 1E6),
+				(long) (longitude * 1E6), num);
+		if (c == null) {
+			return map;
+		}
+		while (!c.isLast()) {
+			c.moveToNext();
+			final Location location = getLocationFromCursor(c);
+			final String mac = c.getString(c.getColumnIndexOrThrow(COL_MAC));
+			map.put(mac, location);
+		}
+		c.close();
+		return map;
 	}
 
 	public void insertLocation(String mac, Location location) {

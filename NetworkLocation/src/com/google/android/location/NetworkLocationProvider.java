@@ -15,22 +15,39 @@ public class NetworkLocationProvider extends LocationProvider implements
 		LocationListener, Runnable {
 
 	private static final String TAG = NetworkLocationProvider.class.getName();
-	private final LocationData data;
-	private Location lastLocation;
-	private long lastTime;
-	private boolean autoUpdate;
-	private long autoTime;
-	private final Thread background;
-	private boolean active;
-
-	private static NetworkLocationProvider instance;
 
 	public static NetworkLocationProvider getInstance() {
 		return instance;
 	}
 
+	public static void init() {
+		instance = new NetworkLocationProvider();
+	}
+
 	public static void init(LocationData data) {
 		instance = new NetworkLocationProvider(data);
+	}
+
+	private LocationData data;
+	private Location lastLocation;
+	private long lastTime;
+	private boolean autoUpdate;
+
+	private long autoTime;
+
+	private final Thread background;
+
+	private boolean active;
+
+	private static NetworkLocationProvider instance;
+
+	public NetworkLocationProvider() {
+		autoTime = Long.MAX_VALUE;
+		autoUpdate = false;
+		background = new Thread(this);
+		background.start();
+		lastTime = 0;
+		active = true;
 	}
 
 	public NetworkLocationProvider(LocationData data) {
@@ -110,9 +127,11 @@ public class NetworkLocationProvider extends LocationProvider implements
 	@Override
 	public void onLocationChanged(Location location) {
 		Log.d(TAG, "onLocationChanged: " + location);
-		lastTime = SystemClock.elapsedRealtime();
-		lastLocation = location;
-		reportLocation(location);
+		if (location != null) {
+			lastTime = SystemClock.elapsedRealtime();
+			lastLocation = location;
+			reportLocation(location);
+		}
 	}
 
 	@Override
@@ -269,14 +288,15 @@ public class NetworkLocationProvider extends LocationProvider implements
 			}
 			if (active) {
 				Log.d(TAG, "recieving new location...");
-				final Location l = data.getCurrentLocation();
-				if (l != null) {
-					onLocationChanged(l);
-				}
+				data.getCurrentLocation();
 			} else {
 				Log.d(TAG, "we're not active = do not track!");
 			}
 		}
+	}
+
+	public void setData(LocationData data) {
+		this.data = data;
 	}
 
 }

@@ -1,0 +1,69 @@
+package com.google.android.location.map;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.location.Location;
+import android.util.Log;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+
+public class LocationOverlay extends Overlay {
+
+	private Location location;
+	private Context context;
+
+	public LocationOverlay(Context context) {
+		super(context);
+		this.context = context;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	@Override
+	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		// TODO Auto-generated method stub
+		super.draw(canvas, mapView, shadow);
+		if (location != null) {
+			final Paint fill = new Paint();
+			fill.setColor(Color.parseColor(context
+					.getString(android.R.color.holo_blue_light)));
+			fill.setAlpha(100);
+			fill.setAntiAlias(true);
+			fill.setStyle(Paint.Style.FILL);
+			final Paint stroke = new Paint();
+			stroke.setColor(Color.parseColor(context
+					.getString(android.R.color.holo_blue_dark)));
+			stroke.setAlpha(200);
+			stroke.setAntiAlias(true);
+			stroke.setStyle(Paint.Style.STROKE);
+			final Paint stroke2 = new Paint();
+			stroke2.setColor(Color.BLACK);
+			stroke2.setAlpha(200);
+			stroke2.setAntiAlias(true);
+			stroke2.setStyle(Paint.Style.STROKE);
+			GeoPoint gp = new GeoPoint(location);
+			Point pt = new Point();
+			mapView.getProjection().toPixels(gp, pt);
+			float radius = mapView.getProjection().metersToEquatorPixels(
+					location.getAccuracy());
+			if (radius < 10)
+				radius = 10;
+
+			canvas.drawCircle(pt.x, pt.y, radius * 0.9F, fill);
+			canvas.drawCircle(pt.x, pt.y, radius * 0.95F, stroke2);
+			canvas.drawCircle(pt.x, pt.y, radius, stroke);
+		}
+	}
+
+}

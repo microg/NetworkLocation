@@ -45,8 +45,10 @@ public class NetworkLocationService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Database.init(this);
-		LocationData.init(this);
-		NetworkLocationProvider.init(LocationData.getInstance());
+		NetworkLocationProvider.init();
+		LocationData.init(this, NetworkLocationProvider.getInstance());
+		NetworkLocationProvider.getInstance().setData(
+				LocationData.getInstance());
 		GeocodeProvider.init(this);
 	}
 
