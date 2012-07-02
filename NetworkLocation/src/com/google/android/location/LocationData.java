@@ -188,7 +188,7 @@ public class LocationData {
 				return;
 			}
 			macs = new ArrayList<String>();
-			while (macs.size() < 10) {
+			while (macs.size() < 10 && missingMacs.size() > 0) {
 				String mac = missingMacs.pop();
 				if (!database.containsKey(mac)) {
 					macs.add(mac);
