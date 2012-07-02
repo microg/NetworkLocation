@@ -1,16 +1,11 @@
 package com.google.android.location.map;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -41,7 +36,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		mc.setCenter(pt);
 		final Collection<String> macs = getWLANs();
 		final Map<String, Location> cache = data.getNext(loc.getLatitude(),
-				loc.getLongitude(), 500);
+				loc.getLongitude(), 400);
 		for (final String mac : cache.keySet()) {
 			final Location l = cache.get(mac);
 			wlan_overlay.addItem(l, macs.contains(mac), mac, null);

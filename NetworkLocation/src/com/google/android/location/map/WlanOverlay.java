@@ -107,10 +107,10 @@ public class WlanOverlay extends Overlay {
 			final float radius = mapView.getProjection().metersToEquatorPixels(
 					entry.getLocation().getAccuracy());
 			if (entry.isActive()) {
-				canvas.drawCircle(pt.x, pt.y, radius*0.9F, fillActive);
+				canvas.drawCircle(pt.x, pt.y, radius * 0.9F, fillActive);
 				canvas.drawCircle(pt.x, pt.y, radius, strokeActive);
 			} else {
-				canvas.drawCircle(pt.x, pt.y, radius*0.9F, fillInactive);
+				canvas.drawCircle(pt.x, pt.y, radius * 0.9F, fillInactive);
 				canvas.drawCircle(pt.x, pt.y, radius, strokeInactive);
 			}
 		}

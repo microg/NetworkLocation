@@ -31,6 +31,23 @@ public class LocationData {
 		return instance;
 	}
 
+	public static Collection<String> getWLANs(Context context) {
+		if (context == null) {
+			return null;
+		}
+		final ArrayList<String> wlans = new ArrayList<String>();
+		final WifiManager wifiManager = (WifiManager) context
+				.getSystemService(Context.WIFI_SERVICE);
+		final List<ScanResult> result = wifiManager.getScanResults();
+		if (result != null) {
+			for (final ScanResult scanResult : result) {
+				final String mac = scanResult.BSSID;
+				wlans.add(niceMac(mac));
+			}
+		}
+		return wlans;
+	}
+
 	public static void init(Context context, LocationListener listener) {
 		if (context != null && instance == null
 				&& Database.getInstance() != null) {
@@ -39,10 +56,27 @@ public class LocationData {
 		}
 	}
 
-	private Collection<String> missingMacs;
+	public static String niceMac(String mac) {
+		mac = mac.toLowerCase();
+		final StringBuilder builder = new StringBuilder();
+		final String[] arr = mac.split(":");
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i].length() == 1) {
+				builder.append("0");
+			}
+			builder.append(arr[i]);
+			if (i < arr.length - 1) {
+				builder.append(":");
+			}
+		}
+		return builder.toString();
+	}
 
+	private final Collection<String> missingMacs;
 	private final Context context;
+
 	private final Database database;
+
 	private final LocationListener listener;
 
 	private Thread retriever;
@@ -53,6 +87,20 @@ public class LocationData {
 		this.database = database;
 		this.listener = listener;
 		missingMacs = new ArrayList<String>();
+	}
+
+	private void addToMissing(Collection<String> wlans) {
+		for (final String wlan : wlans) {
+			addToMissing(wlan);
+		}
+	}
+
+	private void addToMissing(String wlan) {
+		synchronized (missingMacs) {
+			if (!missingMacs.contains(wlan)) {
+				missingMacs.add(wlan);
+			}
+		}
 	}
 
 	private android.location.Location calculateLocation(
@@ -117,42 +165,9 @@ public class LocationData {
 		}
 		return locs;
 	}
-	
+
 	private Collection<String> getWLANs() {
 		return getWLANs(context);
-	}
-
-	public static Collection<String> getWLANs(Context context) {
-		if (context == null) {
-			return null;
-		}
-		final ArrayList<String> wlans = new ArrayList<String>();
-		final WifiManager wifiManager = (WifiManager) context
-				.getSystemService(Context.WIFI_SERVICE);
-		final List<ScanResult> result = wifiManager.getScanResults();
-		if (result != null) {
-			for (final ScanResult scanResult : result) {
-				final String mac = scanResult.BSSID;
-				wlans.add(niceMac(mac));
-			}
-		}
-		return wlans;
-	}
-
-	public static String niceMac(String mac) {
-		mac = mac.toLowerCase();
-		final StringBuilder builder = new StringBuilder();
-		final String[] arr = mac.split(":");
-		for (int i = 0; i < arr.length; i++) {
-			if (arr[i].length() == 1) {
-				builder.append("0");
-			}
-			builder.append(arr[i]);
-			if (i < arr.length - 1) {
-				builder.append(":");
-			}
-		}
-		return builder.toString();
 	}
 
 	private Collection<String> missingInCache(Collection<String> wlans) {
@@ -175,11 +190,13 @@ public class LocationData {
 				return;
 			}
 			macs = new ArrayList<String>();
-			for (String mac : missingMacs) {
-				if (!database.containsKey(mac))
+			for (final String mac : missingMacs) {
+				if (!database.containsKey(mac)) {
 					macs.add(mac);
-				if (macs.size() > 10)
+				}
+				if (macs.size() > 10) {
 					break;
+				}
 			}
 		}
 
@@ -246,20 +263,6 @@ public class LocationData {
 
 		} catch (final Exception e) {
 			Log.e("LocationData", "requestLocations: " + macs, e);
-		}
-	}
-
-	private void addToMissing(String wlan) {
-		synchronized (missingMacs) {
-			if (!missingMacs.contains(wlan)) {
-				missingMacs.add(wlan);
-			}
-		}
-	}
-
-	private void addToMissing(Collection<String> wlans) {
-		for (String wlan : wlans) {
-			addToMissing(wlan);
 		}
 	}
 
