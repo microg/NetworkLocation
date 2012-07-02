@@ -54,12 +54,12 @@ public class Database {
 
 	public boolean containsKey(String mac) {
 		newRequest = true;
-		return (helper.getLocation(niceMac(mac)) != null);
+		return (helper.getLocation(mac) != null);
 	}
 
 	public Location get(String mac) {
 		newRequest = true;
-		return helper.getLocation(niceMac(mac));
+		return helper.getLocation(mac);
 	}
 
 	public Map<String, Location> getMap() {
@@ -75,23 +75,6 @@ public class Database {
 
 	public void put(String mac, Location location) {
 		newRequest = true;
-		helper.insertLocation(niceMac(mac), location);
+		helper.insertLocation(mac, location);
 	}
-	
-	public static String niceMac(String mac) {
-		mac = mac.toLowerCase();
-		final StringBuilder builder = new StringBuilder();
-		final String[] arr = mac.split(":");
-		for (int i = 0; i < arr.length; i++) {
-			if (arr[i].length() == 1) {
-				builder.append("0");
-			}
-			builder.append(arr[i]);
-			if (i < arr.length - 1) {
-				builder.append(":");
-			}
-		}
-		return builder.toString();
-	}
-
 }

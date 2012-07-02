@@ -117,8 +117,15 @@ public class LocationData {
 		}
 		return locs;
 	}
-
+	
 	private Collection<String> getWLANs() {
+		return getWLANs(context);
+	}
+
+	public static Collection<String> getWLANs(Context context) {
+		if (context == null) {
+			return null;
+		}
 		final ArrayList<String> wlans = new ArrayList<String>();
 		final WifiManager wifiManager = (WifiManager) context
 				.getSystemService(Context.WIFI_SERVICE);
@@ -126,10 +133,26 @@ public class LocationData {
 		if (result != null) {
 			for (final ScanResult scanResult : result) {
 				final String mac = scanResult.BSSID;
-				wlans.add(mac);
+				wlans.add(niceMac(mac));
 			}
 		}
 		return wlans;
+	}
+
+	public static String niceMac(String mac) {
+		mac = mac.toLowerCase();
+		final StringBuilder builder = new StringBuilder();
+		final String[] arr = mac.split(":");
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i].length() == 1) {
+				builder.append("0");
+			}
+			builder.append(arr[i]);
+			if (i < arr.length - 1) {
+				builder.append(":");
+			}
+		}
+		return builder.toString();
 	}
 
 	private Collection<String> missingInCache(Collection<String> wlans) {
@@ -202,7 +225,7 @@ public class LocationData {
 			out.close();
 			in.close();
 			for (final ResponseWLAN rw : response.getWlanList()) {
-				final String mac2 = rw.getMac();
+				final String mac2 = niceMac(rw.getMac());
 				final Location loc = new Location(
 						NetworkLocationProvider.class.getName());
 				loc.setProvider("network");

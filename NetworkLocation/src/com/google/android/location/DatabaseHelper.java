@@ -85,7 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		final SQLiteDatabase db = getReadableDatabase();
 		final Cursor c = db.rawQuery("SELECT " + COL_TIME + ", " + COL_ACCURACY
 				+ ", " + COL_LATITUDE + ", " + COL_LONGITUDE + " FROM "
-				+ TABLE_LOCATION + " WHERE " + COL_MAC + " = '" + mac
+				+ TABLE_LOCATION + " WHERE " + COL_MAC + " LIKE '" + mac
 				+ "' LIMIT 1", null);
 		return checkCursor(c);
 	}

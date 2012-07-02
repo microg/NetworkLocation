@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.location.Database;
+import com.google.android.location.LocationData;
 import com.google.android.location.R;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
@@ -30,16 +31,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 	private WlanOverlay wlan_overlay;
 
 	private Collection<String> getWLANs() {
-		final ArrayList<String> wlans = new ArrayList<String>();
-		final WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		final List<ScanResult> result = wifiManager.getScanResults();
-		if (result != null) {
-			for (final ScanResult scanResult : result) {
-				final String mac = Database.niceMac(scanResult.BSSID);
-				wlans.add(mac);
-			}
-		}
-		return wlans;
+		return LocationData.getWLANs(this);
 	}
 
 	private void makeLocationVisible(Location loc) {
@@ -49,7 +41,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		mc.setCenter(pt);
 		final Collection<String> macs = getWLANs();
 		final Map<String, Location> cache = data.getNext(loc.getLatitude(),
-				loc.getLongitude(), 200);
+				loc.getLongitude(), 500);
 		for (final String mac : cache.keySet()) {
 			final Location l = cache.get(mac);
 			wlan_overlay.addItem(l, macs.contains(mac), mac, null);
