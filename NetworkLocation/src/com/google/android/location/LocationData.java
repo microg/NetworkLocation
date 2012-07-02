@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -72,13 +73,10 @@ public class LocationData {
 		return builder.toString();
 	}
 
-	private final Collection<String> missingMacs;
+	private final Stack<String> missingMacs;
 	private final Context context;
-
 	private final Database database;
-
 	private final LocationListener listener;
-
 	private Thread retriever;
 
 	private LocationData(Context context, Database database,
@@ -86,7 +84,7 @@ public class LocationData {
 		this.context = context;
 		this.database = database;
 		this.listener = listener;
-		missingMacs = new ArrayList<String>();
+		missingMacs = new Stack<String>();
 	}
 
 	private void addToMissing(Collection<String> wlans) {
@@ -190,14 +188,13 @@ public class LocationData {
 				return;
 			}
 			macs = new ArrayList<String>();
-			for (final String mac : missingMacs) {
+			while (macs.size() < 10) {
+				String mac = missingMacs.pop();
 				if (!database.containsKey(mac)) {
 					macs.add(mac);
 				}
-				if (macs.size() > 10) {
-					break;
-				}
 			}
+			missingMacs.addAll(macs);
 		}
 
 		try {
@@ -234,7 +231,7 @@ public class LocationData {
 			int n = -1;
 			final StringBuilder sb = new StringBuilder();
 			while (i++ < 10 && (n = in.read()) != -1) {
-				sb.append((char) n);
+				sb.append("0x").append(n).append(" ");
 			}
 			Log.d(LocationData.class.getName(),
 					"Response first bytes: " + sb.toString());
