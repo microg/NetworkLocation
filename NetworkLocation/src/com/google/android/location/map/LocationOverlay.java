@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
 
+import com.google.android.location.R;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -28,13 +29,13 @@ public class LocationOverlay extends Overlay {
 		if (location != null) {
 			final Paint fill = new Paint();
 			fill.setColor(Color.parseColor(context
-					.getString(android.R.color.holo_blue_light)));
+					.getString(R.color.holo_blue_light)));
 			fill.setAlpha(100);
 			fill.setAntiAlias(true);
 			fill.setStyle(Paint.Style.FILL);
 			final Paint stroke = new Paint();
 			stroke.setColor(Color.parseColor(context
-					.getString(android.R.color.holo_blue_dark)));
+					.getString(R.color.holo_blue_dark)));
 			stroke.setAlpha(200);
 			stroke.setAntiAlias(true);
 			stroke.setStyle(Paint.Style.STROKE);

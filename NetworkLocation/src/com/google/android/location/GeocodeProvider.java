@@ -26,27 +26,17 @@ public class GeocodeProvider extends
 	}
 
 	@Override
-	public String onGetFromLocation(double latitude, double longitude,
-			int maxResults, GeocoderParams params, List<Address> addrs) {
-		Log.i(TAG, "onGetFromLocation");
-		Log.i(TAG, "> latitude:" + latitude);
-		Log.i(TAG, "> longitude:" + longitude);
-		Log.i(TAG, "> maxResults:" + maxResults);
-		Log.i(TAG, "> params:" + params);
-		Log.i(TAG, "> addrs:" + addrs);
+	public String onGetFromLocation(double arg0, double arg1, int arg2,
+			GeocoderParams arg3, List<Address> arg4) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String onGetFromLocationName(String locationName,
-			double lowerLeftLatitude, double lowerLeftLongitude,
-			double upperRightLatitude, double upperRightLongitude,
-			int maxResults, GeocoderParams params, List<Address> addrs) {
-		Log.i(TAG, "onGetFromLocationName");
-		Log.i(TAG, "> locationName:" + locationName);
-		Log.i(TAG, "> maxResults:" + maxResults);
-		Log.i(TAG, "> params:" + params);
-		Log.i(TAG, "> addrs:" + addrs);
+	public String onGetFromLocationName(String arg0, double arg1, double arg2,
+			double arg3, double arg4, int arg5, GeocoderParams arg6,
+			List<Address> arg7) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

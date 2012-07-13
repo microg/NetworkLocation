@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
 
+import com.google.android.location.R;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -81,13 +82,13 @@ public class WlanOverlay extends Overlay {
 		final Point pt = new Point();
 		final Paint fillActive = new Paint();
 		fillActive.setColor(Color.parseColor(context
-				.getString(android.R.color.holo_green_light)));
+				.getString(R.color.holo_green_light)));
 		fillActive.setAlpha(75);
 		fillActive.setAntiAlias(true);
 		fillActive.setStyle(Paint.Style.FILL);
 		final Paint strokeActive = new Paint();
 		strokeActive.setColor(Color.parseColor(context
-				.getString(android.R.color.holo_green_dark)));
+				.getString(R.color.holo_green_dark)));
 		strokeActive.setAlpha(150);
 		strokeActive.setAntiAlias(true);
 		strokeActive.setStyle(Paint.Style.STROKE);
