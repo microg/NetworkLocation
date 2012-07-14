@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest android:versionCode="0809" android:versionName="0.8.9" package="com.google.android.location"
+<manifest android:versionCode="0810" android:versionName="0.8.10" package="com.google.android.location"
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-sdk android:targetSdkVersion="9" android:minSdkVersion="9"/>
+    <uses-sdk android:targetSdkVersion="14" android:minSdkVersion="9"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
