@@ -16,18 +16,6 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	private static final String TAG = NetworkLocationProvider.class.getName();
 
-	public static NetworkLocationProvider getInstance() {
-		return instance;
-	}
-
-	public static void init() {
-		instance = new NetworkLocationProvider();
-	}
-
-	public static void init(LocationData data) {
-		instance = new NetworkLocationProvider(data);
-	}
-
 	private LocationData data;
 	private Location lastLocation;
 	private long lastTime;
@@ -38,8 +26,6 @@ public class NetworkLocationProvider extends LocationProvider implements
 	private final Thread background;
 
 	private boolean active;
-
-	private static NetworkLocationProvider instance;
 
 	public NetworkLocationProvider() {
 		Log.i(TAG, "new Service-Object constructed");

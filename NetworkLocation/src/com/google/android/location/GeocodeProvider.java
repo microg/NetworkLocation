@@ -11,16 +11,6 @@ public class GeocodeProvider extends
 		com.android.location.provider.GeocodeProvider {
 	private static final String TAG = GeocodeProvider.class.getName();
 
-	private static GeocodeProvider instance;
-
-	public static GeocodeProvider getInstance() {
-		return instance;
-	}
-
-	public static void init(NetworkLocationService networkLocationService) {
-		instance = new GeocodeProvider(networkLocationService);
-	}
-
 	public GeocodeProvider(Context context) {
 		Log.i(TAG, "new Service-Object constructed");
 	}

@@ -9,6 +9,7 @@ public class NetworkLocationService extends Service {
 	private static final String TAG = NetworkLocationService.class.getName();
 	NetworkLocationProvider nlprovider;
 	GeocodeProvider geoprovider;
+	LocationData data;
 
 	public NetworkLocationService() {
 		Log.i(TAG, "new Service-Object constructed");
@@ -25,15 +26,9 @@ public class NetworkLocationService extends Service {
 		}
 		if (action
 				.equalsIgnoreCase("com.google.android.location.NetworkLocationProvider")) {
-			if (nlprovider == null) {
-				nlprovider = NetworkLocationProvider.getInstance();
-			}
 			return nlprovider.getBinder();
 		} else if (action
 				.equalsIgnoreCase("com.google.android.location.GeocodeProvider")) {
-			if (geoprovider == null) {
-				geoprovider = GeocodeProvider.getInstance();
-			}
 			return geoprovider.getBinder();
 		} else {
 			Log.w(TAG, "Unknown Action onBind: " + action);
@@ -44,12 +39,11 @@ public class NetworkLocationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		WlanDatabase.init(this);
-		NetworkLocationProvider.init();
-		LocationData.init(this, NetworkLocationProvider.getInstance());
-		NetworkLocationProvider.getInstance().setData(
-				LocationData.getInstance());
-		GeocodeProvider.init(this);
+		final WlanMap map = new WlanMap(DatabaseHelper.getInstance(this));
+		nlprovider = new NetworkLocationProvider();
+		data = new LocationData(this, map, nlprovider);
+		nlprovider.setData(data);
+		geoprovider = new GeocodeProvider(this);
 	}
 
 	@Override

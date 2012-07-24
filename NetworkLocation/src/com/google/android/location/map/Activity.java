@@ -9,15 +9,17 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.location.WlanDatabase;
+import com.google.android.location.DatabaseHelper;
 import com.google.android.location.LocationData;
 import com.google.android.location.R;
+import com.google.android.location.WlanMap;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
 public class Activity extends android.app.Activity implements LocationListener {
-	private WlanDatabase data;
+	private WlanMap wlans;
+	private DatabaseHelper helper;
 
 	private MapView mapView;
 	private MapController mc;
@@ -35,7 +37,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		pos_overlay.setLocation(loc);
 		mc.setCenter(pt);
 		final Collection<String> macs = getWLANs();
-		final Map<String, Location> cache = data.getNext(loc.getLatitude(),
+		final Map<String, Location> cache = wlans.getNext(loc.getLatitude(),
 				loc.getLongitude(), 400);
 		for (final String mac : cache.keySet()) {
 			final Location l = cache.get(mac);
@@ -55,8 +57,8 @@ public class Activity extends android.app.Activity implements LocationListener {
 		mapView.getOverlays().add(wlan_overlay);
 		mapView.getOverlays().add(pos_overlay);
 		mc.setZoom(17);
-		WlanDatabase.init(this);
-		data = WlanDatabase.getInstance();
+		helper = new DatabaseHelper(this);
+		wlans = new WlanMap(helper);
 		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(
 				LocationManager.NETWORK_PROVIDER, 2000, 10, this);

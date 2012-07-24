@@ -26,11 +26,6 @@ import com.apple.iphone.services.LocationsProtos.Response;
 import com.apple.iphone.services.LocationsProtos.ResponseWLAN;
 
 public class LocationData {
-	private static LocationData instance;
-
-	public static LocationData getInstance() {
-		return instance;
-	}
 
 	public static Collection<String> getWLANs(Context context) {
 		if (context == null) {
@@ -47,14 +42,6 @@ public class LocationData {
 			}
 		}
 		return wlans;
-	}
-
-	public static void init(Context context, LocationListener listener) {
-		if (context != null && instance == null
-				&& WlanDatabase.getInstance() != null) {
-			instance = new LocationData(context, WlanDatabase.getInstance(),
-					listener);
-		}
 	}
 
 	public static String niceMac(String mac) {
@@ -75,14 +62,14 @@ public class LocationData {
 
 	private final Stack<String> missingMacs;
 	private final Context context;
-	private final WlanDatabase wlanDatabase;
+	private final WlanMap wlanMap;
 	private final LocationListener listener;
 	private Thread retriever;
 
-	private LocationData(Context context, WlanDatabase wlanDatabase,
+	public LocationData(Context context, WlanMap wlanMap,
 			LocationListener listener) {
 		this.context = context;
-		this.wlanDatabase = wlanDatabase;
+		this.wlanMap = wlanMap;
 		this.listener = listener;
 		missingMacs = new Stack<String>();
 	}
@@ -137,7 +124,7 @@ public class LocationData {
 	}
 
 	public Map<String, Location> getCache() {
-		return wlanDatabase.getMap();
+		return wlanMap.getMap();
 	}
 
 	public android.location.Location getCurrentLocation() {
@@ -150,7 +137,7 @@ public class LocationData {
 	}
 
 	private Location getLocation(String mac) {
-		return wlanDatabase.get(mac);
+		return wlanMap.get(mac);
 	}
 
 	private Map<String, Location> getLocations(Collection<String> wlans) {
@@ -171,7 +158,7 @@ public class LocationData {
 	private Collection<String> missingInCache(Collection<String> wlans) {
 		final ArrayList<String> macs = new ArrayList<String>();
 		for (final String wlan : wlans) {
-			if (!wlanDatabase.containsKey(wlan)) {
+			if (!wlanMap.containsKey(wlan)) {
 				macs.add(wlan);
 			}
 		}
@@ -189,8 +176,8 @@ public class LocationData {
 			}
 			macs = new ArrayList<String>();
 			while (macs.size() < 10 && missingMacs.size() > 0) {
-				String mac = missingMacs.pop();
-				if (!wlanDatabase.containsKey(mac)) {
+				final String mac = missingMacs.pop();
+				if (!wlanMap.containsKey(mac)) {
 					macs.add(mac);
 				}
 			}
@@ -247,7 +234,7 @@ public class LocationData {
 				loc.setLongitude(rw.getLocation().getLongitude() / 1E8F);
 				loc.setAccuracy(rw.getLocation().getUnknown3());
 				loc.setTime(new Date().getTime());
-				wlanDatabase.put(mac2, loc);
+				wlanMap.put(mac2, loc);
 				if (macs.contains(mac2)) {
 					macs.remove(mac2);
 				}
