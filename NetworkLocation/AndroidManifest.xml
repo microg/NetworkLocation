@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest android:versionCode="0810" android:versionName="0.8.10" package="com.google.android.location"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-sdk android:targetSdkVersion="14" android:minSdkVersion="9"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.android.location"
+    android:versionCode="0811"
+    android:versionName="0.8.11" >
+
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="14" />
+
     <uses-permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -14,28 +20,55 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <uses-permission android:name="android.permission.UPDATE_DEVICE_STATS" />
-    <application android:label="NetworkLocation">
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application android:label="NetworkLocation" >
         <uses-library android:name="com.android.location.provider" />
-        <uses-library android:name="com.google.android.maps" android:required="false" />
-        <service android:name="NetworkLocationService">
+        <uses-library
+            android:name="com.google.android.maps"
+            android:required="false" />
+
+        <service
+            android:name="com.google.android.location.NetworkLocationService"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="com.google.android.location.NetworkLocationProvider" />
                 <action android:name="com.google.android.location.GeocodeProvider" />
             </intent-filter>
+
+            <meta-data
+                android:name="version"
+                android:value="1" />
         </service>
-        <service android:name="com.google.android.location.internal.server.NetworkLocationService" android:exported="true">
+        <service
+            android:name="com.google.android.location.internal.server.NetworkLocationService"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.location.internal.ANDROID_NLP" />
             </intent-filter>
-            <meta-data android:name="minProtocolVersion" android:value="1" />
-            <meta-data android:name="maxProtocolVersion" android:value="1" />
-            <meta-data android:name="nlpServiceIntent" android:value="com.google.android.location.internal.ANDROID_NLP" />
+
+            <meta-data
+                android:name="minProtocolVersion"
+                android:value="1" />
+            <meta-data
+                android:name="maxProtocolVersion"
+                android:value="1" />
+            <meta-data
+                android:name="releaseVersion"
+                android:value="10" />
+            <meta-data
+                android:name="nlpServiceIntent"
+                android:value="com.google.android.location.internal.ANDROID_NLP" />
         </service>
-        <activity android:theme="@style/AlertThemeSelector" android:name="ConfirmAlertActivity" android:excludeFromRecents="true" />
-        <activity android:name="com.google.android.location.map.Activity" android:label="NLApp">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
+
+        <activity
+            android:name="com.google.android.location.ConfirmAlertActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/AlertThemeSelector" />
+        <activity
+            android:name="com.google.android.location.map.Activity"
+            android:label="NetworkLocation TestApp" >
         </activity>
     </application>
+
 </manifest>
