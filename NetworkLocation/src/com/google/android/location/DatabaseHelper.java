@@ -86,6 +86,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " INTEGER, " + COL_ACCURACY + " INTEGER)");
 	}
 
+	private Cursor getLocationCursorGsmCell(int mcc, int mnc, int cid) {
+		final SQLiteDatabase db = getReadableDatabase();
+		final Cursor c = db.rawQuery("SELECT " + COL_TIME + ", " + COL_LATITUDE
+				+ ", " + COL_LONGITUDE + " FROM " + TABLE_CELLS + " WHERE "
+				+ COL_MCC + "=" + mcc + " AND mnc=" + mnc + " AND cid=" + cid
+				+ " LIMIT 1", null);
+		return checkCursor(c);
+	}
+
 	private Cursor getLocationCursorNextWlan(long latitudeE6, long longitudeE6,
 			int num) {
 		final SQLiteDatabase db = getReadableDatabase();
@@ -127,6 +136,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		location.setLatitude(c.getLong(c.getColumnIndexOrThrow(COL_LATITUDE)) / 1E6F);
 		location.setLongitude(c.getLong(c.getColumnIndexOrThrow(COL_LONGITUDE)) / 1E6F);
 		location.setTime(c.getLong(c.getColumnIndexOrThrow(COL_TIME)));
+		return location;
+	}
+
+	public Location getLocationGsmCell(int mcc, int mnc, int cid) {
+		newRequest = true;
+		final Cursor c = getLocationCursorGsmCell(mcc, mnc, cid);
+		if (c == null) {
+			return null;
+		}
+		c.moveToFirst();
+		final Location location = getLocationFromCursor(c);
+		c.close();
 		return location;
 	}
 
@@ -176,6 +197,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		c.close();
 		return map;
+	}
+
+	public void insertGsmCellLocation(int mcc, int mnc, int cid,
+			Location location) {
+		newRequest = true;
+		final SQLiteDatabase db = getWritableDatabase();
+		db.execSQL("INSERT OR REPLACE INTO " + TABLE_CELLS + "(" + COL_VERSION
+				+ ", " + COL_MCC + ", " + COL_MNC + ", " + COL_CID + ", "
+				+ COL_TIME + ", " + COL_LATITUDE + ", " + COL_LONGITUDE
+				+ ") VALUES (" + DATABASE_SCHEME_VERSION + ", '" + mcc + "', "
+				+ mnc + "', " + cid + "', " + location.getTime() + ", "
+				+ (long) (location.getLatitude() * 1E6) + ", "
+				+ (long) (location.getLongitude() * 1E6) + ")");
 	}
 
 	public void insertWlanLocation(String mac, Location location) {
