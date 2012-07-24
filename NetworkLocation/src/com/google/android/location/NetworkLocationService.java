@@ -7,9 +7,11 @@ import android.util.Log;
 
 public class NetworkLocationService extends Service {
 	private static final String TAG = NetworkLocationService.class.getName();
-	NetworkLocationProvider nlprovider;
-	GeocodeProvider geoprovider;
-	LocationData data;
+	private NetworkLocationProvider nlprovider;
+	private GeocodeProvider geoprovider;
+	private LocationData data;
+	private WlanMap wlanMap;
+	private GsmCellMap gsmMap;
 
 	public NetworkLocationService() {
 		Log.i(TAG, "new Service-Object constructed");
@@ -39,9 +41,10 @@ public class NetworkLocationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		final WlanMap map = new WlanMap(DatabaseHelper.getInstance(this));
+		wlanMap = new WlanMap(DatabaseHelper.getInstance(this));
+		gsmMap = new GsmCellMap(DatabaseHelper.getInstance(this));
 		nlprovider = new NetworkLocationProvider();
-		data = new LocationData(this, map, nlprovider);
+		data = new LocationData(this, gsmMap, wlanMap, nlprovider);
 		nlprovider.setData(data);
 		geoprovider = new GeocodeProvider(this);
 	}

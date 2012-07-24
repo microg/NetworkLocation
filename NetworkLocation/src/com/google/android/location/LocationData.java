@@ -63,12 +63,14 @@ public class LocationData {
 	private final Stack<String> missingMacs;
 	private final Context context;
 	private final WlanMap wlanMap;
+	private final GsmCellMap gsmMap;
 	private final LocationListener listener;
 	private Thread retriever;
 
-	public LocationData(Context context, WlanMap wlanMap,
+	public LocationData(Context context, GsmCellMap gsmMap, WlanMap wlanMap,
 			LocationListener listener) {
 		this.context = context;
+		this.gsmMap = gsmMap;
 		this.wlanMap = wlanMap;
 		this.listener = listener;
 		missingMacs = new Stack<String>();
