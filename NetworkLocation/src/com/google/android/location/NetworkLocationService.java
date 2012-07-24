@@ -44,7 +44,7 @@ public class NetworkLocationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Database.init(this);
+		WlanDatabase.init(this);
 		NetworkLocationProvider.init();
 		LocationData.init(this, NetworkLocationProvider.getInstance());
 		NetworkLocationProvider.getInstance().setData(

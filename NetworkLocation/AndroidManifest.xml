@@ -20,9 +20,8 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <uses-permission android:name="android.permission.UPDATE_DEVICE_STATS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <application android:label="NetworkLocation" >
+    <application android:label="@string/app_label" >
         <uses-library android:name="com.android.location.provider" />
         <uses-library
             android:name="com.google.android.maps"
@@ -30,10 +29,11 @@
 
         <service
             android:name="com.google.android.location.NetworkLocationService"
-            android:exported="true" >
+            android:exported="true"
+            android:permission="android.permission.WRITE_SECURE_SETTINGS" >
             <intent-filter>
-                <action android:name="com.google.android.location.NetworkLocationProvider" />
-                <action android:name="com.google.android.location.GeocodeProvider" />
+                <action android:name="com.android.location.service.NetworkLocationProvider" />
+                <action android:name="com.android.location.service.GeocodeProvider" />
             </intent-filter>
 
             <meta-data

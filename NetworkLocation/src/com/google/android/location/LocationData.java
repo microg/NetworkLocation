@@ -51,8 +51,8 @@ public class LocationData {
 
 	public static void init(Context context, LocationListener listener) {
 		if (context != null && instance == null
-				&& Database.getInstance() != null) {
-			instance = new LocationData(context, Database.getInstance(),
+				&& WlanDatabase.getInstance() != null) {
+			instance = new LocationData(context, WlanDatabase.getInstance(),
 					listener);
 		}
 	}
@@ -75,14 +75,14 @@ public class LocationData {
 
 	private final Stack<String> missingMacs;
 	private final Context context;
-	private final Database database;
+	private final WlanDatabase wlanDatabase;
 	private final LocationListener listener;
 	private Thread retriever;
 
-	private LocationData(Context context, Database database,
+	private LocationData(Context context, WlanDatabase wlanDatabase,
 			LocationListener listener) {
 		this.context = context;
-		this.database = database;
+		this.wlanDatabase = wlanDatabase;
 		this.listener = listener;
 		missingMacs = new Stack<String>();
 	}
@@ -137,7 +137,7 @@ public class LocationData {
 	}
 
 	public Map<String, Location> getCache() {
-		return database.getMap();
+		return wlanDatabase.getMap();
 	}
 
 	public android.location.Location getCurrentLocation() {
@@ -150,7 +150,7 @@ public class LocationData {
 	}
 
 	private Location getLocation(String mac) {
-		return database.get(mac);
+		return wlanDatabase.get(mac);
 	}
 
 	private Map<String, Location> getLocations(Collection<String> wlans) {
@@ -171,7 +171,7 @@ public class LocationData {
 	private Collection<String> missingInCache(Collection<String> wlans) {
 		final ArrayList<String> macs = new ArrayList<String>();
 		for (final String wlan : wlans) {
-			if (!database.containsKey(wlan)) {
+			if (!wlanDatabase.containsKey(wlan)) {
 				macs.add(wlan);
 			}
 		}
@@ -190,7 +190,7 @@ public class LocationData {
 			macs = new ArrayList<String>();
 			while (macs.size() < 10 && missingMacs.size() > 0) {
 				String mac = missingMacs.pop();
-				if (!database.containsKey(mac)) {
+				if (!wlanDatabase.containsKey(mac)) {
 					macs.add(mac);
 				}
 			}
@@ -247,7 +247,7 @@ public class LocationData {
 				loc.setLongitude(rw.getLocation().getLongitude() / 1E8F);
 				loc.setAccuracy(rw.getLocation().getUnknown3());
 				loc.setTime(new Date().getTime());
-				database.put(mac2, loc);
+				wlanDatabase.put(mac2, loc);
 				if (macs.contains(mac2)) {
 					macs.remove(mac2);
 				}

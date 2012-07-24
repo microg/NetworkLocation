@@ -5,17 +5,17 @@ import java.util.Map;
 import android.content.Context;
 import android.location.Location;
 
-public class Database {
+public class WlanDatabase {
 
-	private static Database instance;
+	private static WlanDatabase instance;
 
-	public static Database getInstance() {
+	public static WlanDatabase getInstance() {
 		return instance;
 	}
 
 	public static void init(Context context) {
 		if (instance == null && context != null) {
-			instance = new Database(context);
+			instance = new WlanDatabase(context);
 		}
 	}
 
@@ -23,10 +23,10 @@ public class Database {
 
 	private boolean newRequest;
 
-	private final DatabaseHelper helper;
+	private final WlanDatabaseHelper helper;
 
-	private Database(Context context) {
-		helper = new DatabaseHelper(context);
+	private WlanDatabase(Context context) {
+		helper = new WlanDatabaseHelper(context);
 		autoClose = new Thread(new Runnable() {
 
 			@Override

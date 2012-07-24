@@ -9,7 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.location.Database;
+import com.google.android.location.WlanDatabase;
 import com.google.android.location.LocationData;
 import com.google.android.location.R;
 import com.google.android.maps.GeoPoint;
@@ -17,7 +17,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
 public class Activity extends android.app.Activity implements LocationListener {
-	private Database data;
+	private WlanDatabase data;
 
 	private MapView mapView;
 	private MapController mc;
@@ -55,8 +55,8 @@ public class Activity extends android.app.Activity implements LocationListener {
 		mapView.getOverlays().add(wlan_overlay);
 		mapView.getOverlays().add(pos_overlay);
 		mc.setZoom(17);
-		Database.init(this);
-		data = Database.getInstance();
+		WlanDatabase.init(this);
+		data = WlanDatabase.getInstance();
 		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(
 				LocationManager.NETWORK_PROVIDER, 2000, 10, this);

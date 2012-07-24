@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class WlanDatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String TABLE_LOCATION = "locations";
 	public static final String COL_VERSION = "version";
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private boolean databaseOpen = false;
 
-	public DatabaseHelper(Context context) {
+	public WlanDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_SCHEME_VERSION);
 	}
 
