@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class ConfirmAlertActivity extends Activity {
-	private static final String TAG = "my.ConfirmAlertActivity";
+	private static final String TAG = ConfirmAlertActivity.class.getName();
 
 	public ConfirmAlertActivity() {
-		Log.i(TAG, "ctr");
-		// TODO Auto-generated constructor stub
+		Log.i(TAG, "new Service-Object constructed");
 	}
 
 	@Override

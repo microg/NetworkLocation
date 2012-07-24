@@ -6,12 +6,12 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class NetworkLocationService extends Service {
-	private static final String TAG = "my.NetworkLocationService";
+	private static final String TAG = NetworkLocationService.class.getName();
 	NetworkLocationProvider nlprovider;
 	GeocodeProvider geoprovider;
 
 	public NetworkLocationService() {
-		Log.i(TAG, "ctr");
+		Log.i(TAG, "new Service-Object constructed");
 	}
 
 	@Override

@@ -42,6 +42,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	private static NetworkLocationProvider instance;
 
 	public NetworkLocationProvider() {
+		Log.i(TAG, "new Service-Object constructed");
 		autoTime = Long.MAX_VALUE;
 		autoUpdate = false;
 		background = new Thread(this);
@@ -51,13 +52,8 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	public NetworkLocationProvider(LocationData data) {
+		this();
 		this.data = data;
-		autoTime = Long.MAX_VALUE;
-		autoUpdate = false;
-		background = new Thread(this);
-		background.start();
-		lastTime = 0;
-		active = true;
 	}
 
 	@Override

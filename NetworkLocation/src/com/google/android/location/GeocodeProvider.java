@@ -22,7 +22,7 @@ public class GeocodeProvider extends
 	}
 
 	public GeocodeProvider(Context context) {
-		// TODO Auto-generated constructor stub
+		Log.i(TAG, "new Service-Object constructed");
 	}
 
 	@Override
