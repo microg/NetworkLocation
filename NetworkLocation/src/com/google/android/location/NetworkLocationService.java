@@ -27,10 +27,12 @@ public class NetworkLocationService extends Service {
 			return null;
 		}
 		if (action
-				.equalsIgnoreCase("com.google.android.location.NetworkLocationProvider")) {
+				.equalsIgnoreCase("com.google.android.location.NetworkLocationProvider") || action
+				.equalsIgnoreCase("com.android.location.service.NetworkLocationProvider")) {
 			return nlprovider.getBinder();
 		} else if (action
-				.equalsIgnoreCase("com.google.android.location.GeocodeProvider")) {
+				.equalsIgnoreCase("com.google.android.location.GeocodeProvider") || action
+				.equalsIgnoreCase("com.android.location.service.GeocodeProvider")) {
 			return geoprovider.getBinder();
 		} else {
 			Log.w(TAG, "Unknown Action onBind: " + action);
