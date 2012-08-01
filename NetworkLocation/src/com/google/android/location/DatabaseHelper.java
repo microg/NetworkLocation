@@ -126,7 +126,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	private Location getLocationFromCursor(Cursor c) {
-		final Location location = new Location("network");
+		final Location location = new Location("direct");
 		final int accuracyIndex = c.getColumnIndex(COL_ACCURACY);
 		if (accuracyIndex != -1) {
 			location.setAccuracy(c.getLong(accuracyIndex));

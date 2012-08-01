@@ -83,7 +83,8 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public String onGetInternalState() {
-		return "CacheSize: " + data.getCache().size();
+		return "[INTERNAL STATE NOT IMPLEMENTED]";
+		// return "CacheSize: " + data.getCache().size();
 	}
 
 	@Override

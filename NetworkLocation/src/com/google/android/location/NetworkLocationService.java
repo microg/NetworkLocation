@@ -27,12 +27,14 @@ public class NetworkLocationService extends Service {
 			return null;
 		}
 		if (action
-				.equalsIgnoreCase("com.google.android.location.NetworkLocationProvider") || action
-				.equalsIgnoreCase("com.android.location.service.NetworkLocationProvider")) {
+				.equalsIgnoreCase("com.google.android.location.NetworkLocationProvider")
+				|| action
+						.equalsIgnoreCase("com.android.location.service.NetworkLocationProvider")) {
 			return nlprovider.getBinder();
 		} else if (action
-				.equalsIgnoreCase("com.google.android.location.GeocodeProvider") || action
-				.equalsIgnoreCase("com.android.location.service.GeocodeProvider")) {
+				.equalsIgnoreCase("com.google.android.location.GeocodeProvider")
+				|| action
+						.equalsIgnoreCase("com.android.location.service.GeocodeProvider")) {
 			return geoprovider.getBinder();
 		} else {
 			Log.w(TAG, "Unknown Action onBind: " + action);
@@ -46,7 +48,9 @@ public class NetworkLocationService extends Service {
 		wlanMap = new WlanMap(DatabaseHelper.getInstance(this));
 		gsmMap = new GsmCellMap(DatabaseHelper.getInstance(this));
 		nlprovider = new NetworkLocationProvider();
-		data = new LocationData(this, gsmMap, wlanMap, nlprovider);
+		data = new LocationData(nlprovider);
+		data.addProvider(new GsmLocationData(this, gsmMap, data));
+		data.addProvider(new WlanLocationData(this, wlanMap, data));
 		nlprovider.setData(data);
 		geoprovider = new GeocodeProvider(this);
 	}

@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.location.DatabaseHelper;
-import com.google.android.location.LocationData;
 import com.google.android.location.R;
+import com.google.android.location.WlanLocationData;
 import com.google.android.location.WlanMap;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
@@ -28,7 +28,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 	private WlanOverlay wlan_overlay;
 
 	private Collection<String> getWLANs() {
-		return LocationData.getWLANs(this);
+		return WlanLocationData.getWLANs(this);
 	}
 
 	private void makeLocationVisible(Location loc) {
