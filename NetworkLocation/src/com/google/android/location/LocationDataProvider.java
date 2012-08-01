@@ -23,6 +23,7 @@ public interface LocationDataProvider {
 		}
 
 		protected Location renameSource(Location location, String source) {
+			if (location == null) return null;
 			location = new Location(location);
 			location.setProvider(source);
 			return location;
