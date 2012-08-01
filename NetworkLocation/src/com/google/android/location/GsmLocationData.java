@@ -62,14 +62,16 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 	private Location getLocation(int mcc, int mnc, int cid) {
 		Location result = renameSource(gsmMap.get(mcc, mnc, cid));
 		if (result == null) {
-			Log.w(TAG, "gsm cell is not in database.");
+			Log.w(TAG, "gsm cell is not in database: " + mcc + "/" + mnc + "/"
+					+ cid);
 		}
 		return result;
 	}
 
 	private Location getLocation(String operator, GsmCellLocation cell) {
 		if (operator == null || operator.length() < 3) {
-			Log.w(TAG, "Not connected to any gsm cell - won't track location...");
+			Log.w(TAG,
+					"Not connected to any gsm cell - won't track location...");
 			return null;
 		}
 		return getLocation(operator.substring(0, 3), operator.substring(3),
