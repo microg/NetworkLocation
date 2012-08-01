@@ -56,6 +56,8 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 	}
 
 	private Location getLocation(String operator, GsmCellLocation cell) {
+		if (operator == null || operator.length() < 3)
+			return null;
 		return getLocation(operator.substring(0, 3), operator.substring(3),
 				cell.getCid());
 	}
