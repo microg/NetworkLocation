@@ -12,13 +12,14 @@ public class GeocodeProvider extends
 	private static final String TAG = GeocodeProvider.class.getName();
 
 	public GeocodeProvider(Context context) {
-		Log.i(TAG, "new Service-Object constructed");
+		Log.d(TAG, "new Provider-Object constructed");
 	}
 
 	@Override
 	public String onGetFromLocation(double arg0, double arg1, int arg2,
 			GeocoderParams arg3, List<Address> arg4) {
-		// TODO Auto-generated method stub
+		Log.w(TAG,
+				"GeocodeProvider not yet implemented. The application may not work.");
 		return null;
 	}
 
@@ -26,7 +27,8 @@ public class GeocodeProvider extends
 	public String onGetFromLocationName(String arg0, double arg1, double arg2,
 			double arg3, double arg4, int arg5, GeocoderParams arg6,
 			List<Address> arg7) {
-		// TODO Auto-generated method stub
+		Log.w(TAG,
+				"GeocodeProvider not yet implemented. The application may not work.");
 		return null;
 	}
 

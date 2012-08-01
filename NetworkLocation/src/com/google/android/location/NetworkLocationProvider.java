@@ -28,7 +28,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	private boolean active;
 
 	public NetworkLocationProvider() {
-		Log.i(TAG, "new Service-Object constructed");
+		Log.d(TAG, "new Provider-Object constructed");
 		autoTime = Long.MAX_VALUE;
 		autoUpdate = false;
 		background = new Thread(this);
@@ -44,10 +44,6 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onAddListener(int uid, WorkSource ws) {
-		Log.i(TAG, "onAddListener");
-		Log.i(TAG, "> uid: " + uid);
-		Log.i(TAG, "> ws: " + ws);
-
 	}
 
 	@Override
@@ -83,8 +79,9 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public String onGetInternalState() {
+		Log.w(TAG,
+				"Internal State not yet implemented. The application may not work.");
 		return "[INTERNAL STATE NOT IMPLEMENTED]";
-		// return "CacheSize: " + data.getCache().size();
 	}
 
 	@Override
@@ -109,7 +106,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onLocationChanged(Location location) {
-		Log.d(TAG, "onLocationChanged: " + location);
+		Log.i(TAG, "onLocationChanged: " + location);
 		if (location != null) {
 			lastTime = SystemClock.elapsedRealtime();
 			lastLocation = location;
@@ -128,27 +125,22 @@ public class NetworkLocationProvider extends LocationProvider implements
 		if (criteria.isSpeedRequired()) {
 			return false;
 		}
-		Log.i(TAG, "onMeetsCriteria");
 		return true;
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		Log.i(TAG, "onProviderDisabled");
-		Log.i(TAG, "> provider: " + provider);
+		Log.d(TAG, "onProviderDisabled: " + provider);
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		Log.i(TAG, "onProviderEnabled");
-		Log.i(TAG, "> provider: " + provider);
+		Log.d(TAG, "onProviderEnabled: " + provider);
 	}
 
 	@Override
 	public void onRemoveListener(int uid, WorkSource ws) {
-		Log.i(TAG, "onRemoveListener");
-		Log.i(TAG, "> uid: " + uid);
-		Log.i(TAG, "> ws: " + ws);
+		Log.d(TAG, "onRemoveListener: " + uid);
 	}
 
 	@Override
@@ -168,16 +160,13 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public boolean onSendExtraCommand(String command, Bundle extras) {
-		Log.i(TAG, "onSendExtraCommand");
-		Log.i(TAG, "> command: " + command);
+		Log.d(TAG, "onSendExtraCommand: " + command);
 		return false;
 	}
 
 	@Override
 	public void onSetMinTime(long minTime, WorkSource ws) {
-		Log.i(TAG, "onSetMinTime");
-		Log.i(TAG, "> mintime: " + minTime);
-		Log.i(TAG, "> ws: " + ws);
+		Log.d(TAG, "onSetMinTime: " + minTime);
 		autoTime = minTime;
 		synchronized (background) {
 			background.notify();
@@ -186,9 +175,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		Log.i(TAG, "onStatusChanged");
-		Log.i(TAG, "> provider: " + provider);
-		Log.i(TAG, "> status: " + status);
+		Log.d(TAG, "onStatusChanged: " + provider + " > " + status);
 	}
 
 	@Override
@@ -213,9 +200,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onUpdateNetworkState(int state, NetworkInfo info) {
-		Log.i(TAG, "onUpdateNetworkState");
-		Log.i(TAG, "> state: " + state);
-		Log.i(TAG, "> info: " + info);
+		Log.d(TAG, "onUpdateNetworkState: " + state + " (" + info + ")");
 	}
 
 	@Override

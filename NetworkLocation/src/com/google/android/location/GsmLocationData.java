@@ -6,8 +6,11 @@ import android.location.LocationListener;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+import android.util.Log;
 
 public class GsmLocationData extends LocationDataProvider.Stub {
+
+	private static final String TAG = GsmLocationData.class.getName();
 
 	public static final String IDENTIFIER = "gsm";
 	private final GsmCellMap gsmMap;
@@ -31,9 +34,14 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 		final GsmCellLocation cell = getGsmCellLocation();
 		final String operator = telephonyManager.getNetworkOperator();
 		if (cell == null || operator == null) {
+			Log.d(TAG, "could not get location via gsm");
 			return null;
 		}
 		final Location location = getLocation(operator, cell);
+		if (location == null) {
+			Log.d(TAG, "could not get location via gsm");
+			return null;
+		}
 		listener.onLocationChanged(location);
 		return location;
 	}
@@ -52,12 +60,18 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 	}
 
 	private Location getLocation(int mcc, int mnc, int cid) {
-		return renameSource(gsmMap.get(mcc, mnc, cid));
+		Location result = renameSource(gsmMap.get(mcc, mnc, cid));
+		if (result == null) {
+			Log.w(TAG, "gsm cell is not in database.");
+		}
+		return result;
 	}
 
 	private Location getLocation(String operator, GsmCellLocation cell) {
-		if (operator == null || operator.length() < 3)
+		if (operator == null || operator.length() < 3) {
+			Log.w(TAG, "Not connected to any gsm cell - won't track location...");
 			return null;
+		}
 		return getLocation(operator.substring(0, 3), operator.substring(3),
 				cell.getCid());
 	}
