@@ -44,9 +44,6 @@ public class GsmOverlay extends Overlay {
 			mapView.getProjection().toPixels(gp, pt);
 			float radius = mapView.getProjection().metersToEquatorPixels(
 					location.getAccuracy());
-			if (radius < 20) {
-				radius = 20;
-			}
 
 			canvas.drawCircle(pt.x, pt.y, radius * 0.9F, fill);
 			canvas.drawCircle(pt.x, pt.y, radius, stroke);

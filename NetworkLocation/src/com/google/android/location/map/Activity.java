@@ -143,6 +143,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		gsm_overlay = new GsmOverlay(this);
 		mapView.getOverlays().add(wlan_overlay);
 		mapView.getOverlays().add(pos_overlay);
+		mapView.getOverlays().add(gsm_overlay);
 		mc.setZoom(17);
 		helper = new DatabaseHelper(this);
 		wlans = new WlanMap(helper);
