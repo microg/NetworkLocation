@@ -29,6 +29,8 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 
 	public final static String IDENTIFIER = "wlan";
 
+	private final static String TAG = WlanLocationData.class.getName();
+
 	public static Collection<String> getWLANs(Context context) {
 		if (context == null) {
 			return null;
@@ -138,9 +140,14 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		final Collection<String> wlans = getWLANs();
 		requestMissing(wlans);
 		final Map<String, Location> locs = getLocations(wlans);
-		final Location loc = calculateLocation(locs.values());
-		listener.onLocationChanged(loc);
-		return loc;
+		final Location location = calculateLocation(locs.values());
+		if (location == null
+				|| (location.getLatitude() == 0 && location.getLongitude() == 0)) {
+			Log.d(TAG, "could not get location via wlan");
+			return null;
+		}
+		listener.onLocationChanged(location);
+		return location;
 	}
 
 	@Override
@@ -232,8 +239,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 			while (i++ < 10 && (n = in.read()) != -1) {
 				sb.append("0x").append(n).append(" ");
 			}
-			Log.d(LocationData.class.getName(),
-					"Response first bytes: " + sb.toString());
+			Log.d(TAG, "Response first bytes: " + sb.toString());
 			final Response response = Response.parseFrom(in);
 			out.close();
 			in.close();
@@ -258,13 +264,13 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 			}
 
 		} catch (final Exception e) {
-			Log.e("LocationData", "requestLocations: " + macs, e);
+			Log.e(TAG, "requestLocations: " + macs, e);
 		}
 	}
 
 	private void requestMissing(Collection<String> wlans) {
 		addToMissing(missingInCache(wlans));
-		Log.d(LocationData.class.getName(), "missingInCache: " + missingMacs);
+		Log.d(TAG, "missingInCache: " + missingMacs);
 		if ((retriever == null || !retriever.isAlive()) && missingMacs != null
 				&& missingMacs.size() > 0) {
 			retriever = new Thread(new Runnable() {

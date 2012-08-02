@@ -33,9 +33,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_SCHEME_VERSION = 10;
 	public static final int DEFAULT_ACCURACY = 500;
 
-	private boolean databaseOpen = false;
+	public static Cursor checkCursor(Cursor c) {
+		if (c == null) {
+			return null;
+		}
+		if (c.isAfterLast() || c.isClosed() || c.getCount() <= 0) {
+			c.close();
+			return null;
+		}
+		return c;
+	}
 
+	private boolean databaseOpen = false;
 	private boolean newRequest;
+
 	private Thread autoClose;
 
 	private static DatabaseHelper instance;
@@ -50,17 +61,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_SCHEME_VERSION);
 		newRequest = false;
-	}
-
-	private Cursor checkCursor(Cursor c) {
-		if (c == null) {
-			return null;
-		}
-		if (c.isAfterLast() || c.isClosed()) {
-			c.close();
-			return null;
-		}
-		return c;
 	}
 
 	@Override
