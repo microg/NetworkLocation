@@ -49,9 +49,19 @@ public class WlanAdapter extends BaseAdapter {
 		final TextView lon = (TextView) view.findViewById(R.id.wlan_lon);
 		final TextView mac = (TextView) view.findViewById(R.id.mac);
 		final Object[] array = wlans.entrySet().toArray();
+
 		final Entry<String, Location> entry = (Entry<String, Location>) array[position];
-		lat.setText("Lat: " + entry.getValue().getLatitude());
-		lon.setText("Lon: " + entry.getValue().getLongitude());
+		if (entry.getValue() != null) {
+			lat.setText("Lat: "
+					+ Math.round(entry.getValue().getLatitude() * 100000)
+					/ 100000);
+			lon.setText("Lon: "
+					+ Math.round(entry.getValue().getLongitude() * 100000)
+					/ 100000);
+		} else {
+			lat.setText("Lat: ---");
+			lon.setText("Lon: ---");
+		}
 		mac.setText("MAC: " + entry.getKey());
 		return view;
 	}

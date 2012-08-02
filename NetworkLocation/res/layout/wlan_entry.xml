@@ -8,7 +8,8 @@
         android:id="@+id/mac"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        android:layout_margin="1dp"
+        android:textSize="12sp"
         android:text="MAC:" />
 
     <LinearLayout
@@ -19,14 +20,18 @@
             android:id="@+id/wlan_lat"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_margin="1dp"
+            android:textSize="12sp"
+            android:ellipsize="end"
             android:text="Lat:" />
 
         <TextView
             android:id="@+id/wlan_lon"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_margin="1dp"
+            android:textSize="12sp"
+            android:ellipsize="end"
             android:text="Lon:" />
     </LinearLayout>
 
