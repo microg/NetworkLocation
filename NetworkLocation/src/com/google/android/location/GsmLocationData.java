@@ -82,7 +82,7 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 				final Cursor c = DatabaseHelper
 						.checkCursor(db
 								.rawQuery(
-										"SELECT * FROM cells.db WHERE mcc=? AND mnc=? AND cellid=?",
+										"SELECT * FROM cells WHERE mcc=? AND mnc=? AND cellid=?",
 										new String[] { mcc + "", mnc + "",
 												cid + "" }));
 				if (c != null) {
