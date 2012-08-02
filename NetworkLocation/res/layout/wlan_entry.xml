@@ -18,7 +18,7 @@
 
         <TextView
             android:id="@+id/wlan_lat"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
             android:ellipsize="end"
@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/wlan_lon"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
             android:ellipsize="end"

@@ -38,6 +38,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 	private LocationOverlay pos_overlay;
 
 	private WlanOverlay wlan_overlay;
+	private GsmOverlay gsm_overlay;
 	private TextView youLat;
 	private TextView youLon;
 	private TextView cellMcc;
@@ -89,12 +90,13 @@ public class Activity extends android.app.Activity implements LocationListener {
 				setCellLoc = true;
 				cellLat.setText("Lat: " + l.getLatitude());
 				cellLon.setText("Lon: " + l.getLongitude());
+				gsm_overlay.setLocation(l);
 			}
 		}
 		if (!setCellLoc) {
 			cellLat.setText("Lat: ---");
 			cellLon.setText("Lon: ---");
-			
+			gsm_overlay.setLocation(null);
 		}
 		final GeoPoint pt = new GeoPoint(loc);
 		wlan_overlay.removeAll();
@@ -138,6 +140,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		mc = mapView.getController();
 		wlan_overlay = new WlanOverlay(this);
 		pos_overlay = new LocationOverlay(this);
+		gsm_overlay = new GsmOverlay(this);
 		mapView.getOverlays().add(wlan_overlay);
 		mapView.getOverlays().add(pos_overlay);
 		mc.setZoom(17);
