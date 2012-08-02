@@ -99,6 +99,7 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 					c.close();
 				}
 				db.close();
+				return renameSource(gsmMap.get(mcc, mnc, cid));
 			} else {
 				Log.w(TAG,
 						"could not find input file at "
