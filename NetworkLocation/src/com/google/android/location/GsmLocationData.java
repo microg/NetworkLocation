@@ -68,7 +68,7 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 	private Location getLocation(int mcc, int mnc, int cid) {
 		final Location result = renameSource(gsmMap.get(mcc, mnc, cid));
 		if (result == null) {
-			Log.i(TAG, "gsm cell" + mcc + "/" + mnc + "/" + cid
+			Log.i(TAG, "gsm cell " + mcc + "/" + mnc + "/" + cid
 					+ " is not in database");
 			if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
 					|| Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED_READ_ONLY) {

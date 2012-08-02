@@ -82,10 +82,19 @@ public class Activity extends android.app.Activity implements LocationListener {
 			cellMcc.setText("MCC: " + mcc);
 			cellMnc.setText("MNC: " + mnc);
 		}
+		boolean setCellLoc = false;
 		if (cid != -1 && mcc != -1 && mnc != -1) {
 			final Location l = cells.get(mcc, mnc, cid);
-			cellLat.setText("Lat: " + l.getLatitude());
-			cellLon.setText("Lon: " + l.getLongitude());
+			if (l != null) {
+				setCellLoc = true;
+				cellLat.setText("Lat: " + l.getLatitude());
+				cellLon.setText("Lon: " + l.getLongitude());
+			}
+		}
+		if (!setCellLoc) {
+			cellLat.setText("Lat: ---");
+			cellLon.setText("Lon: ---");
+			
 		}
 		final GeoPoint pt = new GeoPoint(loc);
 		wlan_overlay.removeAll();
