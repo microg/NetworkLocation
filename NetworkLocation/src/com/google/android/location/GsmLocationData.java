@@ -70,45 +70,40 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 		if (result == null) {
 			Log.i(TAG, "gsm cell " + mcc + "/" + mnc + "/" + cid
 					+ " is not in database");
-			if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
-					|| Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED_READ_ONLY) {
-				final File file = new File(
-						Environment.getExternalStorageDirectory(),
-						".nogapps/cells.db");
-				if (file.exists()) {
-					Log.i(TAG, "checking " + file.getAbsolutePath() + " for "
-							+ mcc + "/" + mnc + "/" + cid);
-					final SQLiteDatabase db = SQLiteDatabase.openDatabase(
-							file.getAbsolutePath(), null,
-							SQLiteDatabase.OPEN_READONLY);
-					final Cursor c = DatabaseHelper
-							.checkCursor(db
-									.rawQuery(
-											"SELECT * FROM cells.db WHERE mcc=? AND mnc=? AND cellid=?",
-											new String[] { mcc + "", mnc + "",
-													cid + "" }));
-					if (c != null) {
-						while (!c.isLast()) {
-							c.moveToNext();
-							final Location location = new Location(
-									getIdentifier());
-							location.setLatitude(c.getDouble(c
-									.getColumnIndexOrThrow("lat")));
-							location.setLongitude(c.getDouble(c
-									.getColumnIndexOrThrow("lon")));
-							location.setTime(new Date().getTime());
-							gsmMap.put(mcc, mnc, cid, location);
-						}
-						c.close();
+			final File file = new File(
+					Environment.getExternalStorageDirectory(),
+					".nogapps/cells.db");
+			if (file.exists()) {
+				Log.i(TAG, "checking " + file.getAbsolutePath() + " for " + mcc
+						+ "/" + mnc + "/" + cid);
+				final SQLiteDatabase db = SQLiteDatabase.openDatabase(
+						file.getAbsolutePath(), null,
+						SQLiteDatabase.OPEN_READONLY);
+				final Cursor c = DatabaseHelper
+						.checkCursor(db
+								.rawQuery(
+										"SELECT * FROM cells.db WHERE mcc=? AND mnc=? AND cellid=?",
+										new String[] { mcc + "", mnc + "",
+												cid + "" }));
+				if (c != null) {
+					while (!c.isLast()) {
+						c.moveToNext();
+						final Location location = new Location(getIdentifier());
+						location.setLatitude(c.getDouble(c
+								.getColumnIndexOrThrow("lat")));
+						location.setLongitude(c.getDouble(c
+								.getColumnIndexOrThrow("lon")));
+						location.setTime(new Date().getTime());
+						gsmMap.put(mcc, mnc, cid, location);
 					}
-					db.close();
-				} else {
-					Log.w(TAG,
-							"could not find input file at "
-									+ file.getAbsolutePath());
+					c.close();
 				}
+				db.close();
+			} else {
+				Log.w(TAG,
+						"could not find input file at "
+								+ file.getAbsolutePath());
 			}
-
 		}
 		return result;
 	}
