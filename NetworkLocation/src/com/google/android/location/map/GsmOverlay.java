@@ -42,7 +42,7 @@ public class GsmOverlay extends Overlay {
 			final GeoPoint gp = new GeoPoint(location);
 			final Point pt = new Point();
 			mapView.getProjection().toPixels(gp, pt);
-			float radius = mapView.getProjection().metersToEquatorPixels(
+			final float radius = mapView.getProjection().metersToEquatorPixels(
 					location.getAccuracy());
 
 			canvas.drawCircle(pt.x, pt.y, radius * 0.9F, fill);

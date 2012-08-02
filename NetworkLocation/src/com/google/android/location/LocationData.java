@@ -38,6 +38,9 @@ public class LocationData extends LocationDataProvider.Stub implements
 			preDidImportant = true;
 		}
 		for (final Location loc : locations.values()) {
+			if (loc == null) {
+				continue;
+			}
 			if (loc.getProvider().equalsIgnoreCase(getIdentifier())) {
 				continue;
 			}
@@ -59,7 +62,8 @@ public class LocationData extends LocationDataProvider.Stub implements
 	public Location getCurrentLocation() {
 		inBlockOp = true;
 		for (final LocationDataProvider provider : providers.values()) {
-			updateLocation(provider.getCurrentLocation());
+			locations.put(provider.getIdentifier(),
+					provider.getCurrentLocation());
 		}
 		inBlockOp = false;
 		final Location loc = calculateLocation();
@@ -96,7 +100,7 @@ public class LocationData extends LocationDataProvider.Stub implements
 			return;
 		}
 		if (!location.getProvider().equalsIgnoreCase(getIdentifier())) {
-			updateLocation(location);
+			locations.put(location.getProvider(), location);
 		}
 		if (!inBlockOp) {
 			listener.onLocationChanged(calculateLocation());
@@ -119,12 +123,6 @@ public class LocationData extends LocationDataProvider.Stub implements
 	public void onStatusChanged(String provider, int status, Bundle bundle) {
 		// TODO Auto-generated method stub
 
-	}
-
-	private void updateLocation(Location location) {
-		if (location != null) {
-			locations.put(location.getProvider(), location);
-		}
 	}
 
 }
