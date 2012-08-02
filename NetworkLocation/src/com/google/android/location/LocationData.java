@@ -34,7 +34,7 @@ public class LocationData extends LocationDataProvider.Stub implements
 		boolean preDidImportant = false;
 		Location location = null;
 		if (locations.containsKey(IMPORTANT_PROVIDER)) {
-			location = locations.get(IMPORTANT_PROVIDER);
+			location = renameSource(locations.get(IMPORTANT_PROVIDER));
 			preDidImportant = true;
 		}
 		for (final Location loc : locations.values()) {
