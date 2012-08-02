@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
-import android.util.Log;
 
 import com.google.android.location.R;
 import com.google.android.maps.GeoPoint;
@@ -28,7 +27,6 @@ public class GsmOverlay extends Overlay {
 		// TODO Auto-generated method stub
 		super.draw(canvas, mapView, shadow);
 		if (location != null) {
-			Log.d("GsmOverlay", "location != null");
 			final Paint fill = new Paint();
 			fill.setColor(Color.parseColor(context
 					.getString(R.color.holo_purple_light)));
@@ -46,12 +44,10 @@ public class GsmOverlay extends Overlay {
 			mapView.getProjection().toPixels(gp, pt);
 			float radius = mapView.getProjection().metersToEquatorPixels(
 					location.getAccuracy());
-			Log.d("GsmOverlay", "radius = " + radius);
 
 			canvas.drawCircle(pt.x, pt.y, radius * 0.9F, fill);
 			canvas.drawCircle(pt.x, pt.y, radius, stroke);
 		} else {
-			Log.d("GsmOverlay", "location == null");
 		}
 	}
 

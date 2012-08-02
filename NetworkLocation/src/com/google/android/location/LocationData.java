@@ -1,6 +1,5 @@
 package com.google.android.location;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,8 +34,8 @@ public class LocationData extends LocationDataProvider.Stub implements
 		boolean preDidImportant = false;
 		Location location = null;
 		if (locations.containsKey(IMPORTANT_PROVIDER)) {
-				location = locations.get(IMPORTANT_PROVIDER);
-				preDidImportant = true;
+			location = locations.get(IMPORTANT_PROVIDER);
+			preDidImportant = true;
 		}
 		for (final Location loc : locations.values()) {
 			if (loc.getProvider().equalsIgnoreCase(getIdentifier())) {
@@ -46,25 +45,13 @@ public class LocationData extends LocationDataProvider.Stub implements
 					&& loc.getProvider().equalsIgnoreCase(IMPORTANT_PROVIDER)) {
 				continue;
 			}
-			if (loc.getTime() > new Date().getTime() - 1000 * 60) {
-				if (location == null) {
-					location = loc;
-				} else if (locationDistance(location, loc) < location
-						.getAccuracy() + loc.getAccuracy()) {
-					location = combineLocations(location, loc);
-				}
-
+			if (location == null) {
+				location = renameSource(loc);
+			} else if (locationDistance(location, loc) < location.getAccuracy()
+					+ loc.getAccuracy()) {
+				location = renameSource(loc);
 			}
 		}
-		return renameSource(location);
-	}
-
-	private Location combineLocations(Location loc1, Location loc2) {
-		final Location location = new Location(getIdentifier());
-		location.setLatitude((loc1.getLatitude() + loc2.getLatitude()) / 2);
-		location.setLongitude((loc1.getLongitude() + loc2.getLongitude()) / 2);
-		location.setAccuracy(Math.max(42,
-				Math.min(loc1.getAccuracy(), loc2.getAccuracy())));
 		return location;
 	}
 
@@ -98,7 +85,8 @@ public class LocationData extends LocationDataProvider.Stub implements
 				+ Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1)
 				* Math.cos(lat2);
 		final double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		Log.d("LocationData", "distance between " + loc1 + " and " + loc2 + " = " + R * c * 1000);
+		Log.d("LocationData", "distance between " + loc1 + " and " + loc2
+				+ " = " + R * c * 1000);
 		return R * c * 1000;
 	}
 
