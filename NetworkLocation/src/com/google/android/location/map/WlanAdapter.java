@@ -52,12 +52,8 @@ public class WlanAdapter extends BaseAdapter {
 
 		final Entry<String, Location> entry = (Entry<String, Location>) array[position];
 		if (entry.getValue() != null) {
-			lat.setText("Lat: "
-					+ Math.round(entry.getValue().getLatitude() * 100000)
-					/ 100000);
-			lon.setText("Lon: "
-					+ Math.round(entry.getValue().getLongitude() * 100000)
-					/ 100000);
+			lat.setText("Lat: " + entry.getValue().getLatitude());
+			lon.setText("Lon: " + entry.getValue().getLongitude());
 		} else {
 			lat.setText("Lat: ---");
 			lon.setText("Lon: ---");

@@ -9,8 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
-        android:textSize="12sp"
-        android:text="MAC:" />
+        android:text="MAC:"
+        android:textSize="12sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,18 +21,20 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
-            android:textSize="12sp"
             android:ellipsize="end"
-            android:text="Lat:" />
+            android:lines="1"
+            android:text="Lat:"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/wlan_lon"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
-            android:textSize="12sp"
             android:ellipsize="end"
-            android:text="Lon:" />
+            android:lines="1"
+            android:text="Lon:"
+            android:textSize="12sp" />
     </LinearLayout>
 
 </LinearLayout>

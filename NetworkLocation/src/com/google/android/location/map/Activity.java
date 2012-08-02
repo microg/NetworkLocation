@@ -62,8 +62,8 @@ public class Activity extends android.app.Activity implements LocationListener {
 	}
 
 	private void makeLocationVisible(Location loc) {
-		youLat.setText("Lat: " + Math.round(loc.getLatitude()*100000)/100000);
-		youLon.setText("Lon: " + Math.round(loc.getLongitude()*100000)/100000);
+		youLat.setText("Lat: " + loc.getLatitude());
+		youLon.setText("Lon: " + loc.getLongitude());
 		final GsmCellLocation cell = getGsmCellLocation();
 		int cid = -1, mcc = -1, mnc = -1;
 		if (cell == null) {
@@ -87,8 +87,8 @@ public class Activity extends android.app.Activity implements LocationListener {
 			final Location l = cells.get(mcc, mnc, cid);
 			if (l != null) {
 				setCellLoc = true;
-				cellLat.setText("Lat: " + Math.round(l.getLatitude()*100000)/100000);
-				cellLon.setText("Lon: " + Math.round(l.getLongitude()*100000)/100000);
+				cellLat.setText("Lat: " + l.getLatitude());
+				cellLon.setText("Lon: " + l.getLongitude());
 			}
 		}
 		if (!setCellLoc) {

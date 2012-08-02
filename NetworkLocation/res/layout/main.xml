@@ -19,8 +19,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="1dp"
-                android:textSize="12sp"
-                android:text="You:" />
+                android:text="You:"
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,6 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="1dp"
                     android:ellipsize="end"
+                    android:lines="1"
                     android:text="Lat:"
                     android:textSize="12sp" />
 
@@ -40,9 +41,10 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="1dp"
-                    android:textSize="12sp"
                     android:ellipsize="end"
-                    android:text="Lon:" />
+                    android:lines="1"
+                    android:text="Lon:"
+                    android:textSize="12sp" />
             </LinearLayout>
         </TableRow>
 
@@ -56,8 +58,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="1dp"
-                android:textSize="12sp"
-                android:text="GSM Cell:" />
+                android:text="GSM Cell:"
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -73,24 +75,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
-                        android:textSize="12sp"
-                        android:text="MCC:" />
+                        android:text="MCC:"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/mnc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
-                        android:textSize="12sp"
-                        android:text="MNC:" />
+                        android:text="MNC:"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/cid"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
-                        android:textSize="12sp"
-                        android:text="CID:" />
+                        android:text="CID:"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -102,18 +104,20 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
-                        android:textSize="12sp"
                         android:ellipsize="end"
-                        android:text="Lat:" />
+                        android:lines="1"
+                        android:text="Lat:"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/cell_lon"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
-                        android:textSize="12sp"
                         android:ellipsize="end"
-                        android:text="Lon:" />
+                        android:lines="1"
+                        android:text="Lon:"
+                        android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
         </TableRow>
@@ -128,8 +132,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="1dp"
-                android:textSize="12sp"
-                android:text="WLANs:" />
+                android:text="WLANs:"
+                android:textSize="12sp" />
 
             <ListView
                 android:id="@+id/wlan_list"
