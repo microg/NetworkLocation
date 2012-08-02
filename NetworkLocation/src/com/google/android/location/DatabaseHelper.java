@@ -206,10 +206,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("INSERT OR REPLACE INTO " + TABLE_CELLS + "(" + COL_VERSION
 				+ ", " + COL_MCC + ", " + COL_MNC + ", " + COL_CID + ", "
 				+ COL_TIME + ", " + COL_LATITUDE + ", " + COL_LONGITUDE
-				+ ") VALUES (" + DATABASE_SCHEME_VERSION + ", '" + mcc + "', "
-				+ mnc + "', " + cid + "', " + location.getTime() + ", "
-				+ (long) (location.getLatitude() * 1E6) + ", "
-				+ (long) (location.getLongitude() * 1E6) + ")");
+				+ ") VALUES ('" + DATABASE_SCHEME_VERSION + "', '" + mcc + "', '"
+				+ mnc + "', '" + cid + "', '" + location.getTime() + "', '"
+				+ (long) (location.getLatitude() * 1E6) + "', '"
+				+ (long) (location.getLongitude() * 1E6) + "')");
 	}
 
 	public void insertWlanLocation(String mac, Location location) {
