@@ -7,6 +7,7 @@ import java.util.Map;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.util.Log;
 
 public class LocationData extends LocationDataProvider.Stub implements
 		LocationListener {
@@ -34,11 +35,8 @@ public class LocationData extends LocationDataProvider.Stub implements
 		boolean preDidImportant = false;
 		Location location = null;
 		if (locations.containsKey(IMPORTANT_PROVIDER)) {
-			if (locations.get(IMPORTANT_PROVIDER).getTime() > new Date()
-					.getTime() - 1000 * 60) {
 				location = locations.get(IMPORTANT_PROVIDER);
 				preDidImportant = true;
-			}
 		}
 		for (final Location loc : locations.values()) {
 			if (loc.getProvider().equalsIgnoreCase(getIdentifier())) {
@@ -100,7 +98,8 @@ public class LocationData extends LocationDataProvider.Stub implements
 				+ Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1)
 				* Math.cos(lat2);
 		final double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		return R * c;
+		Log.d("LocationData", "distance between " + loc1 + " and " + loc2 + " = " + R * c * 1000);
+		return R * c * 1000;
 	}
 
 	@Override

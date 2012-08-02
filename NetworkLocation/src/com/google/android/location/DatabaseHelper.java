@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "location.sqlite";
 	private static final int WLAN_ONLY_DATABASE_SCHEME_VERSION = 9;
 	private static final int DATABASE_SCHEME_VERSION = 10;
-	public static final int DEFAULT_ACCURACY = 500;
+	public static final int DEFAULT_ACCURACY = 5000;
 
 	public static Cursor checkCursor(Cursor c) {
 		if (c == null) {
