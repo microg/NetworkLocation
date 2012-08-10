@@ -50,6 +50,7 @@ public class WlanAdapter extends BaseAdapter {
 		final TextView mac = (TextView) view.findViewById(R.id.mac);
 		final Object[] array = wlans.entrySet().toArray();
 
+		@SuppressWarnings("unchecked")
 		final Entry<String, Location> entry = (Entry<String, Location>) array[position];
 		if (entry.getValue() != null) {
 			lat.setText("Lat: " + entry.getValue().getLatitude());
