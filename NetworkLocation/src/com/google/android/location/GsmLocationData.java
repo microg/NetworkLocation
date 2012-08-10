@@ -78,7 +78,8 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 						+ "/" + mnc + "/" + cid);
 				final SQLiteDatabase db = SQLiteDatabase.openDatabase(
 						file.getAbsolutePath(), null,
-						SQLiteDatabase.OPEN_READONLY);
+						SQLiteDatabase.OPEN_READONLY
+								+ SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 				final Cursor c = DatabaseHelper
 						.checkCursor(db
 								.rawQuery(
