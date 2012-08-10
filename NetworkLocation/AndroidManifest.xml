@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.android.location"
-    android:versionCode="0905"
-    android:versionName="0.9.5" >
+    android:versionCode="0906"
+    android:versionName="0.9.6" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -72,6 +72,10 @@
         <activity
             android:name="com.google.android.location.map.Activity"
             android:label="NetworkLocation TestApp" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
         </activity>
     </application>
 
