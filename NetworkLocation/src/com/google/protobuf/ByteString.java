@@ -97,31 +97,11 @@ public final class ByteString {
 		}
 	}
 
-	private final byte[] bytes;
-
-	/**
-	 * Empty ByteString.
-	 */
-	public static final ByteString EMPTY = new ByteString(new byte[0]);
-
 	/**
 	 * Copies the given bytes into a {@code ByteString}.
 	 */
 	public static ByteString copyFrom(final byte[] bytes) {
 		return copyFrom(bytes, 0, bytes.length);
-	}
-
-	// =================================================================
-	// byte[] -> ByteString
-
-	/**
-	 * Copies the given bytes into a {@code ByteString}.
-	 */
-	public static ByteString copyFrom(final byte[] bytes, final int offset,
-			final int size) {
-		final byte[] copy = new byte[size];
-		System.arraycopy(bytes, offset, copy, 0, size);
-		return new ByteString(copy);
 	}
 
 	/**
@@ -141,6 +121,9 @@ public final class ByteString {
 		bytes.get(copy);
 		return new ByteString(copy);
 	}
+
+	// =================================================================
+	// byte[] -> ByteString
 
 	/**
 	 * Concatenates all byte strings in the list and returns the result.
@@ -218,14 +201,31 @@ public final class ByteString {
 		return newOutput(32);
 	}
 
-	// =================================================================
-	// ByteString -> byte[]
-
 	/**
 	 * Creates a new {@link Output} with the given initial capacity.
 	 */
 	public static Output newOutput(final int initialCapacity) {
 		return new Output(new ByteArrayOutputStream(initialCapacity));
+	}
+
+	private final byte[] bytes;
+
+	/**
+	 * Empty ByteString.
+	 */
+	public static final ByteString EMPTY = new ByteString(new byte[0]);
+
+	// =================================================================
+	// ByteString -> byte[]
+
+	/**
+	 * Copies the given bytes into a {@code ByteString}.
+	 */
+	public static ByteString copyFrom(final byte[] bytes, final int offset,
+			final int size) {
+		final byte[] copy = new byte[size];
+		System.arraycopy(bytes, offset, copy, 0, size);
+		return new ByteString(copy);
 	}
 
 	private volatile int hash = 0;

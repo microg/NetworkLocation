@@ -1757,27 +1757,6 @@ public abstract class GeneratedMessage extends AbstractMessage implements
 
 	private static final long serialVersionUID = 1L;
 
-	private final UnknownFieldSet unknownFields;
-
-	/**
-	 * For testing. Allows a test to disable the optimization that avoids using
-	 * field builders for nested messages until they are requested. By disabling
-	 * this optimization, existing tests can be reused to test the field
-	 * builders.
-	 */
-	protected static boolean alwaysUseFieldBuilders = false;
-
-	/**
-	 * For testing. Allows a test to disable the optimization that avoids using
-	 * field builders for nested messages until they are requested. By disabling
-	 * this optimization, existing tests can be reused to test the field
-	 * builders. See {@link RepeatedFieldBuilder} and {@link SingleFieldBuilder}
-	 * .
-	 */
-	static void enableAlwaysUseFieldBuildersForTesting() {
-		alwaysUseFieldBuilders = true;
-	}
-
 	/** Calls Class.getMethod and throws a RuntimeException if it fails. */
 	@SuppressWarnings("unchecked")
 	private static Method getMethodOrDie(final Class clazz, final String name,
@@ -1845,6 +1824,27 @@ public abstract class GeneratedMessage extends AbstractMessage implements
 								.get(descriptorIndex);
 					}
 				}, singularType, defaultInstance);
+	}
+
+	private final UnknownFieldSet unknownFields;
+
+	/**
+	 * For testing. Allows a test to disable the optimization that avoids using
+	 * field builders for nested messages until they are requested. By disabling
+	 * this optimization, existing tests can be reused to test the field
+	 * builders.
+	 */
+	protected static boolean alwaysUseFieldBuilders = false;
+
+	/**
+	 * For testing. Allows a test to disable the optimization that avoids using
+	 * field builders for nested messages until they are requested. By disabling
+	 * this optimization, existing tests can be reused to test the field
+	 * builders. See {@link RepeatedFieldBuilder} and {@link SingleFieldBuilder}
+	 * .
+	 */
+	static void enableAlwaysUseFieldBuildersForTesting() {
+		alwaysUseFieldBuilders = true;
 	}
 
 	protected GeneratedMessage() {

@@ -93,24 +93,6 @@ final class FieldSet<FieldDescriptorType extends FieldSet.FieldDescriptorLite<Fi
 		return tagSize + computeElementSizeNoTag(type, value);
 	}
 
-	/** Get an immutable empty FieldSet. */
-	@SuppressWarnings("unchecked")
-	public static <T extends FieldSet.FieldDescriptorLite<T>> FieldSet<T> emptySet() {
-		return DEFAULT_INSTANCE;
-	}
-
-	/** Construct a new FieldSet. */
-	public static <T extends FieldSet.FieldDescriptorLite<T>> FieldSet<T> newFieldSet() {
-		return new FieldSet<T>();
-	}
-
-	private final SmallSortedMap<FieldDescriptorType, Object> fields;
-
-	private boolean isImmutable;
-
-	@SuppressWarnings("unchecked")
-	private static final FieldSet DEFAULT_INSTANCE = new FieldSet(true);
-
 	/**
 	 * Compute the number of bytes that would be needed to encode a particular
 	 * value of arbitrary type, excluding tag.
@@ -279,8 +261,6 @@ final class FieldSet<FieldDescriptorType extends FieldSet.FieldDescriptorLite<Fi
 		throw new RuntimeException(
 				"There is no way to get here, but the compiler thinks otherwise.");
 	}
-
-	// =================================================================
 
 	/**
 	 * Verifies that the given object is of the correct type to be a valid value
@@ -477,6 +457,26 @@ final class FieldSet<FieldDescriptorType extends FieldSet.FieldDescriptorLite<Fi
 		} else {
 			writeElement(output, type, number, value);
 		}
+	}
+
+	private final SmallSortedMap<FieldDescriptorType, Object> fields;
+
+	// =================================================================
+
+	private boolean isImmutable;
+
+	@SuppressWarnings("unchecked")
+	private static final FieldSet DEFAULT_INSTANCE = new FieldSet(true);
+
+	/** Get an immutable empty FieldSet. */
+	@SuppressWarnings("unchecked")
+	public static <T extends FieldSet.FieldDescriptorLite<T>> FieldSet<T> emptySet() {
+		return DEFAULT_INSTANCE;
+	}
+
+	/** Construct a new FieldSet. */
+	public static <T extends FieldSet.FieldDescriptorLite<T>> FieldSet<T> newFieldSet() {
+		return new FieldSet<T>();
 	}
 
 	/** Construct a new FieldSet. */

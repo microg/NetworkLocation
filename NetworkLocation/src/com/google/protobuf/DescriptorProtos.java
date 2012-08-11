@@ -1926,13 +1926,8 @@ public final class DescriptorProtos {
 
 			private static final ExtensionRange defaultInstance;
 
-			// optional int32 start = 1;
-			public static final int START_FIELD_NUMBER = 1;
 			// optional int32 end = 2;
 			public static final int END_FIELD_NUMBER = 2;
-
-			private static final long serialVersionUID = 0L;
-
 			static {
 				defaultInstance = new ExtensionRange(true);
 				defaultInstance.initFields();
@@ -1992,12 +1987,6 @@ public final class DescriptorProtos {
 			}
 
 			public static com.google.protobuf.DescriptorProtos.DescriptorProto.ExtensionRange parseFrom(
-					com.google.protobuf.ByteString data)
-					throws com.google.protobuf.InvalidProtocolBufferException {
-				return newBuilder().mergeFrom(data).buildParsed();
-			}
-
-			public static com.google.protobuf.DescriptorProtos.DescriptorProto.ExtensionRange parseFrom(
 					com.google.protobuf.ByteString data,
 					com.google.protobuf.ExtensionRegistryLite extensionRegistry)
 					throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2033,12 +2022,22 @@ public final class DescriptorProtos {
 			}
 
 			private int bitField0_;
+			// optional int32 start = 1;
+			public static final int START_FIELD_NUMBER = 1;
+
 			private int start_;
 
 			private int end_;
 			private byte memoizedIsInitialized = -1;
 
 			private int memoizedSerializedSize = -1;
+			private static final long serialVersionUID = 0L;
+
+			public static com.google.protobuf.DescriptorProtos.DescriptorProto.ExtensionRange parseFrom(
+					com.google.protobuf.ByteString data)
+					throws com.google.protobuf.InvalidProtocolBufferException {
+				return newBuilder().mergeFrom(data).buildParsed();
+			}
 
 			private ExtensionRange(boolean noInit) {
 			}
@@ -2170,8 +2169,15 @@ public final class DescriptorProtos {
 
 		private static final DescriptorProto defaultInstance;
 
+		// optional string name = 1;
+		public static final int NAME_FIELD_NUMBER = 1;
+
 		// repeated .google.protobuf.FieldDescriptorProto extension = 6;
 		public static final int EXTENSION_FIELD_NUMBER = 6;
+
+		// repeated .google.protobuf.DescriptorProto.ExtensionRange
+		// extension_range = 5;
+		public static final int EXTENSION_RANGE_FIELD_NUMBER = 5;
 
 		public static DescriptorProto getDefaultInstance() {
 			return defaultInstance;
@@ -2182,9 +2188,6 @@ public final class DescriptorProtos {
 		}
 
 		private int bitField0_;
-		// optional string name = 1;
-		public static final int NAME_FIELD_NUMBER = 1;
-
 		private java.lang.Object name_;
 		// repeated .google.protobuf.FieldDescriptorProto field = 2;
 		public static final int FIELD_FIELD_NUMBER = 2;
@@ -2192,20 +2195,18 @@ public final class DescriptorProtos {
 		private java.util.List<com.google.protobuf.DescriptorProtos.FieldDescriptorProto> extension_;
 		// repeated .google.protobuf.DescriptorProto nested_type = 3;
 		public static final int NESTED_TYPE_FIELD_NUMBER = 3;
-		private java.util.List<com.google.protobuf.DescriptorProtos.DescriptorProto> nestedType_;
 
+		private java.util.List<com.google.protobuf.DescriptorProtos.DescriptorProto> nestedType_;
 		// repeated .google.protobuf.EnumDescriptorProto enum_type = 4;
 		public static final int ENUM_TYPE_FIELD_NUMBER = 4;
-		// repeated .google.protobuf.DescriptorProto.ExtensionRange
-		// extension_range = 5;
-		public static final int EXTENSION_RANGE_FIELD_NUMBER = 5;
+		private java.util.List<com.google.protobuf.DescriptorProtos.EnumDescriptorProto> enumType_;
 		private java.util.List<com.google.protobuf.DescriptorProtos.DescriptorProto.ExtensionRange> extensionRange_;
 		// optional .google.protobuf.MessageOptions options = 7;
 		public static final int OPTIONS_FIELD_NUMBER = 7;
 		private com.google.protobuf.DescriptorProtos.MessageOptions options_;
 		private byte memoizedIsInitialized = -1;
-		private int memoizedSerializedSize = -1;
 
+		private int memoizedSerializedSize = -1;
 		private static final long serialVersionUID = 0L;
 		static {
 			defaultInstance = new DescriptorProto(true);
@@ -2297,8 +2298,6 @@ public final class DescriptorProtos {
 			return newBuilder().mergeFrom(input, extensionRegistry)
 					.buildParsed();
 		}
-
-		private java.util.List<com.google.protobuf.DescriptorProtos.EnumDescriptorProto> enumType_;
 
 		private DescriptorProto(boolean noInit) {
 		}
@@ -3340,8 +3339,6 @@ public final class DescriptorProtos {
 
 		private static final EnumDescriptorProto defaultInstance;
 
-		// optional string name = 1;
-		public static final int NAME_FIELD_NUMBER = 1;
 		// repeated .google.protobuf.EnumValueDescriptorProto value = 2;
 		public static final int VALUE_FIELD_NUMBER = 2;
 
@@ -3355,10 +3352,22 @@ public final class DescriptorProtos {
 
 		private int bitField0_;
 
+		// optional string name = 1;
+		public static final int NAME_FIELD_NUMBER = 1;
+
 		private java.lang.Object name_;
 		private java.util.List<com.google.protobuf.DescriptorProtos.EnumValueDescriptorProto> value_;
 		// optional .google.protobuf.EnumOptions options = 3;
 		public static final int OPTIONS_FIELD_NUMBER = 3;
+		private com.google.protobuf.DescriptorProtos.EnumOptions options_;
+		private byte memoizedIsInitialized = -1;
+		private int memoizedSerializedSize = -1;
+
+		private static final long serialVersionUID = 0L;
+		static {
+			defaultInstance = new EnumDescriptorProto(true);
+			defaultInstance.initFields();
+		}
 
 		public static Builder newBuilder() {
 			return Builder.create();
@@ -3377,14 +3386,6 @@ public final class DescriptorProtos {
 			} else {
 				return null;
 			}
-		}
-
-		private byte memoizedIsInitialized = -1;
-		private int memoizedSerializedSize = -1;
-		private static final long serialVersionUID = 0L;
-		static {
-			defaultInstance = new EnumDescriptorProto(true);
-			defaultInstance.initFields();
 		}
 
 		public static com.google.protobuf.DescriptorProtos.EnumDescriptorProto parseDelimitedFrom(
@@ -3453,8 +3454,6 @@ public final class DescriptorProtos {
 			return newBuilder().mergeFrom(input, extensionRegistry)
 					.buildParsed();
 		}
-
-		private com.google.protobuf.DescriptorProtos.EnumOptions options_;
 
 		private EnumDescriptorProto(boolean noInit) {
 		}
@@ -4744,18 +4743,8 @@ public final class DescriptorProtos {
 
 		private static final EnumValueDescriptorProto defaultInstance;
 
-		// optional string name = 1;
-		public static final int NAME_FIELD_NUMBER = 1;
 		// optional int32 number = 2;
 		public static final int NUMBER_FIELD_NUMBER = 2;
-
-		// optional .google.protobuf.EnumValueOptions options = 3;
-		public static final int OPTIONS_FIELD_NUMBER = 3;
-
-		private int memoizedSerializedSize = -1;
-
-		private static final long serialVersionUID = 0L;
-
 		static {
 			defaultInstance = new EnumValueDescriptorProto(true);
 			defaultInstance.initFields();
@@ -4856,12 +4845,19 @@ public final class DescriptorProtos {
 		}
 
 		private int bitField0_;
+		// optional string name = 1;
+		public static final int NAME_FIELD_NUMBER = 1;
 		private java.lang.Object name_;
 		private int number_;
 
+		// optional .google.protobuf.EnumValueOptions options = 3;
+		public static final int OPTIONS_FIELD_NUMBER = 3;
 		private com.google.protobuf.DescriptorProtos.EnumValueOptions options_;
-
 		private byte memoizedIsInitialized = -1;
+
+		private int memoizedSerializedSize = -1;
+
+		private static final long serialVersionUID = 0L;
 
 		private EnumValueDescriptorProto(boolean noInit) {
 		}
@@ -6605,6 +6601,9 @@ public final class DescriptorProtos {
 		// optional .google.protobuf.FieldDescriptorProto.Label label = 4;
 		public static final int LABEL_FIELD_NUMBER = 4;
 
+		// optional string default_value = 7;
+		public static final int DEFAULT_VALUE_FIELD_NUMBER = 7;
+
 		public static FieldDescriptorProto getDefaultInstance() {
 			return defaultInstance;
 		}
@@ -6617,7 +6616,6 @@ public final class DescriptorProtos {
 
 		// optional string name = 1;
 		public static final int NAME_FIELD_NUMBER = 1;
-
 		private java.lang.Object name_;
 		// optional int32 number = 3;
 		public static final int NUMBER_FIELD_NUMBER = 3;
@@ -6625,22 +6623,21 @@ public final class DescriptorProtos {
 		private com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label label_;
 		// optional .google.protobuf.FieldDescriptorProto.Type type = 5;
 		public static final int TYPE_FIELD_NUMBER = 5;
-		private com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type type_;
 
+		private com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type type_;
 		// optional string type_name = 6;
 		public static final int TYPE_NAME_FIELD_NUMBER = 6;
 		private java.lang.Object typeName_;
 		// optional string extendee = 2;
 		public static final int EXTENDEE_FIELD_NUMBER = 2;
-		// optional string default_value = 7;
-		public static final int DEFAULT_VALUE_FIELD_NUMBER = 7;
 
+		private java.lang.Object extendee_;
 		private java.lang.Object defaultValue_;
 		// optional .google.protobuf.FieldOptions options = 8;
 		public static final int OPTIONS_FIELD_NUMBER = 8;
 		private com.google.protobuf.DescriptorProtos.FieldOptions options_;
-		private byte memoizedIsInitialized = -1;
 
+		private byte memoizedIsInitialized = -1;
 		private int memoizedSerializedSize = -1;
 		private static final long serialVersionUID = 0L;
 		static {
@@ -6733,8 +6730,6 @@ public final class DescriptorProtos {
 			return newBuilder().mergeFrom(input, extensionRegistry)
 					.buildParsed();
 		}
-
-		private java.lang.Object extendee_;
 
 		private FieldDescriptorProto(boolean noInit) {
 		}
@@ -7807,6 +7802,45 @@ public final class DescriptorProtos {
 
 		private static final FieldOptions defaultInstance;
 
+		public static FieldOptions getDefaultInstance() {
+			return defaultInstance;
+		}
+
+		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+			return com.google.protobuf.DescriptorProtos.internal_static_google_protobuf_FieldOptions_descriptor;
+		}
+
+		private int bitField0_;
+
+		// optional .google.protobuf.FieldOptions.CType ctype = 1 [default =
+		// STRING];
+		public static final int CTYPE_FIELD_NUMBER = 1;
+
+		private com.google.protobuf.DescriptorProtos.FieldOptions.CType ctype_;
+
+		// optional bool packed = 2;
+		public static final int PACKED_FIELD_NUMBER = 2;
+		private boolean packed_;
+		// optional bool deprecated = 3 [default = false];
+		public static final int DEPRECATED_FIELD_NUMBER = 3;
+		private boolean deprecated_;
+		// optional string experimental_map_key = 9;
+		public static final int EXPERIMENTAL_MAP_KEY_FIELD_NUMBER = 9;
+
+		private java.lang.Object experimentalMapKey_;
+		// repeated .google.protobuf.UninterpretedOption uninterpreted_option =
+		// 999;
+		public static final int UNINTERPRETED_OPTION_FIELD_NUMBER = 999;
+		private java.util.List<com.google.protobuf.DescriptorProtos.UninterpretedOption> uninterpretedOption_;
+		private byte memoizedIsInitialized = -1;
+
+		private int memoizedSerializedSize = -1;
+		private static final long serialVersionUID = 0L;
+		static {
+			defaultInstance = new FieldOptions(true);
+			defaultInstance.initFields();
+		}
+
 		public static Builder newBuilder() {
 			return Builder.create();
 		}
@@ -7824,29 +7858,6 @@ public final class DescriptorProtos {
 			} else {
 				return null;
 			}
-		}
-
-		public static com.google.protobuf.DescriptorProtos.FieldOptions parseFrom(
-				com.google.protobuf.ByteString data)
-				throws com.google.protobuf.InvalidProtocolBufferException {
-			return newBuilder().mergeFrom(data).buildParsed();
-		}
-
-		private byte memoizedIsInitialized = -1;
-
-		private int memoizedSerializedSize = -1;
-		private static final long serialVersionUID = 0L;
-		static {
-			defaultInstance = new FieldOptions(true);
-			defaultInstance.initFields();
-		}
-
-		public static FieldOptions getDefaultInstance() {
-			return defaultInstance;
-		}
-
-		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-			return com.google.protobuf.DescriptorProtos.internal_static_google_protobuf_FieldOptions_descriptor;
 		}
 
 		public static com.google.protobuf.DescriptorProtos.FieldOptions parseDelimitedFrom(
@@ -7873,6 +7884,12 @@ public final class DescriptorProtos {
 				throws com.google.protobuf.InvalidProtocolBufferException {
 			return newBuilder().mergeFrom(data, extensionRegistry)
 					.buildParsed();
+		}
+
+		public static com.google.protobuf.DescriptorProtos.FieldOptions parseFrom(
+				com.google.protobuf.ByteString data)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
 		}
 
 		public static com.google.protobuf.DescriptorProtos.FieldOptions parseFrom(
@@ -7909,26 +7926,6 @@ public final class DescriptorProtos {
 			return newBuilder().mergeFrom(input, extensionRegistry)
 					.buildParsed();
 		}
-
-		private int bitField0_;
-		// optional .google.protobuf.FieldOptions.CType ctype = 1 [default =
-		// STRING];
-		public static final int CTYPE_FIELD_NUMBER = 1;
-		private com.google.protobuf.DescriptorProtos.FieldOptions.CType ctype_;
-		// optional bool packed = 2;
-		public static final int PACKED_FIELD_NUMBER = 2;
-		private boolean packed_;
-
-		// optional bool deprecated = 3 [default = false];
-		public static final int DEPRECATED_FIELD_NUMBER = 3;
-		private boolean deprecated_;
-		// optional string experimental_map_key = 9;
-		public static final int EXPERIMENTAL_MAP_KEY_FIELD_NUMBER = 9;
-		private java.lang.Object experimentalMapKey_;
-		// repeated .google.protobuf.UninterpretedOption uninterpreted_option =
-		// 999;
-		public static final int UNINTERPRETED_OPTION_FIELD_NUMBER = 999;
-		private java.util.List<com.google.protobuf.DescriptorProtos.UninterpretedOption> uninterpretedOption_;
 
 		private FieldOptions(boolean noInit) {
 		}
@@ -9896,13 +9893,13 @@ public final class DescriptorProtos {
 
 		private static final FileDescriptorProto defaultInstance;
 
-		// optional string name = 1;
-		public static final int NAME_FIELD_NUMBER = 1;
 		// optional string package = 2;
 		public static final int PACKAGE_FIELD_NUMBER = 2;
+		// repeated .google.protobuf.DescriptorProto message_type = 4;
+		public static final int MESSAGE_TYPE_FIELD_NUMBER = 4;
 
-		// repeated string dependency = 3;
-		public static final int DEPENDENCY_FIELD_NUMBER = 3;
+		// repeated .google.protobuf.FieldDescriptorProto extension = 7;
+		public static final int EXTENSION_FIELD_NUMBER = 7;
 
 		public static FileDescriptorProto getDefaultInstance() {
 			return defaultInstance;
@@ -9913,22 +9910,31 @@ public final class DescriptorProtos {
 		}
 
 		private int bitField0_;
+		// optional string name = 1;
+		public static final int NAME_FIELD_NUMBER = 1;
 		private java.lang.Object name_;
 		private java.lang.Object package_;
+		// repeated string dependency = 3;
+		public static final int DEPENDENCY_FIELD_NUMBER = 3;
 		private com.google.protobuf.LazyStringList dependency_;
-		// repeated .google.protobuf.DescriptorProto message_type = 4;
-		public static final int MESSAGE_TYPE_FIELD_NUMBER = 4;
-		private java.util.List<com.google.protobuf.DescriptorProtos.DescriptorProto> messageType_;
 
+		private java.util.List<com.google.protobuf.DescriptorProtos.DescriptorProto> messageType_;
 		// repeated .google.protobuf.EnumDescriptorProto enum_type = 5;
 		public static final int ENUM_TYPE_FIELD_NUMBER = 5;
 		private java.util.List<com.google.protobuf.DescriptorProtos.EnumDescriptorProto> enumType_;
 		// repeated .google.protobuf.ServiceDescriptorProto service = 6;
 		public static final int SERVICE_FIELD_NUMBER = 6;
-		// repeated .google.protobuf.FieldDescriptorProto extension = 7;
-		public static final int EXTENSION_FIELD_NUMBER = 7;
-		private static final long serialVersionUID = 0L;
+		private java.util.List<com.google.protobuf.DescriptorProtos.ServiceDescriptorProto> service_;
 
+		private java.util.List<com.google.protobuf.DescriptorProtos.FieldDescriptorProto> extension_;
+		// optional .google.protobuf.FileOptions options = 8;
+		public static final int OPTIONS_FIELD_NUMBER = 8;
+		private com.google.protobuf.DescriptorProtos.FileOptions options_;
+		// optional .google.protobuf.SourceCodeInfo source_code_info = 9;
+		public static final int SOURCE_CODE_INFO_FIELD_NUMBER = 9;
+		private com.google.protobuf.DescriptorProtos.SourceCodeInfo sourceCodeInfo_;
+
+		private byte memoizedIsInitialized = -1;
 		static {
 			defaultInstance = new FileDescriptorProto(true);
 			defaultInstance.initFields();
@@ -10020,17 +10026,8 @@ public final class DescriptorProtos {
 					.buildParsed();
 		}
 
-		private java.util.List<com.google.protobuf.DescriptorProtos.ServiceDescriptorProto> service_;
-		private java.util.List<com.google.protobuf.DescriptorProtos.FieldDescriptorProto> extension_;
-		// optional .google.protobuf.FileOptions options = 8;
-		public static final int OPTIONS_FIELD_NUMBER = 8;
-		private com.google.protobuf.DescriptorProtos.FileOptions options_;
-		// optional .google.protobuf.SourceCodeInfo source_code_info = 9;
-		public static final int SOURCE_CODE_INFO_FIELD_NUMBER = 9;
-		private com.google.protobuf.DescriptorProtos.SourceCodeInfo sourceCodeInfo_;
-
-		private byte memoizedIsInitialized = -1;
 		private int memoizedSerializedSize = -1;
+		private static final long serialVersionUID = 0L;
 
 		private FileDescriptorProto(boolean noInit) {
 		}
@@ -12066,11 +12063,14 @@ public final class DescriptorProtos {
 		}
 
 		private static final FileOptions defaultInstance;
-		// optional string java_outer_classname = 8;
-		public static final int JAVA_OUTER_CLASSNAME_FIELD_NUMBER = 8;
+		// optional string java_package = 1;
+		public static final int JAVA_PACKAGE_FIELD_NUMBER = 1;
 
 		// optional bool java_multiple_files = 10 [default = false];
 		public static final int JAVA_MULTIPLE_FILES_FIELD_NUMBER = 10;
+
+		// optional bool py_generic_services = 18 [default = false];
+		public static final int PY_GENERIC_SERVICES_FIELD_NUMBER = 18;
 
 		public static FileOptions getDefaultInstance() {
 			return defaultInstance;
@@ -12081,16 +12081,15 @@ public final class DescriptorProtos {
 		}
 
 		private int bitField0_;
-
-		// optional string java_package = 1;
-		public static final int JAVA_PACKAGE_FIELD_NUMBER = 1;
 		private java.lang.Object javaPackage_;
+		// optional string java_outer_classname = 8;
+		public static final int JAVA_OUTER_CLASSNAME_FIELD_NUMBER = 8;
 		private java.lang.Object javaOuterClassname_;
 		private boolean javaMultipleFiles_;
 		// optional bool java_generate_equals_and_hash = 20 [default = false];
 		public static final int JAVA_GENERATE_EQUALS_AND_HASH_FIELD_NUMBER = 20;
-		private boolean javaGenerateEqualsAndHash_;
 
+		private boolean javaGenerateEqualsAndHash_;
 		// optional .google.protobuf.FileOptions.OptimizeMode optimize_for = 9
 		// [default = SPEED];
 		public static final int OPTIMIZE_FOR_FIELD_NUMBER = 9;
@@ -12098,20 +12097,20 @@ public final class DescriptorProtos {
 		// optional bool cc_generic_services = 16 [default = false];
 		public static final int CC_GENERIC_SERVICES_FIELD_NUMBER = 16;
 		private boolean ccGenericServices_;
+
 		// optional bool java_generic_services = 17 [default = false];
 		public static final int JAVA_GENERIC_SERVICES_FIELD_NUMBER = 17;
-
-		// optional bool py_generic_services = 18 [default = false];
-		public static final int PY_GENERIC_SERVICES_FIELD_NUMBER = 18;
+		private boolean javaGenericServices_;
 		private boolean pyGenericServices_;
 		// repeated .google.protobuf.UninterpretedOption uninterpreted_option =
 		// 999;
 		public static final int UNINTERPRETED_OPTION_FIELD_NUMBER = 999;
-		private java.util.List<com.google.protobuf.DescriptorProtos.UninterpretedOption> uninterpretedOption_;
 
+		private java.util.List<com.google.protobuf.DescriptorProtos.UninterpretedOption> uninterpretedOption_;
 		private byte memoizedIsInitialized = -1;
 		private int memoizedSerializedSize = -1;
 		private static final long serialVersionUID = 0L;
+
 		static {
 			defaultInstance = new FileOptions(true);
 			defaultInstance.initFields();
@@ -12202,8 +12201,6 @@ public final class DescriptorProtos {
 			return newBuilder().mergeFrom(input, extensionRegistry)
 					.buildParsed();
 		}
-
-		private boolean javaGenericServices_;
 
 		private FileOptions(boolean noInit) {
 		}
@@ -13098,15 +13095,8 @@ public final class DescriptorProtos {
 
 		private static final MessageOptions defaultInstance;
 
-		// optional bool message_set_wire_format = 1 [default = false];
-		public static final int MESSAGE_SET_WIRE_FORMAT_FIELD_NUMBER = 1;
 		// optional bool no_standard_descriptor_accessor = 2 [default = false];
 		public static final int NO_STANDARD_DESCRIPTOR_ACCESSOR_FIELD_NUMBER = 2;
-
-		// repeated .google.protobuf.UninterpretedOption uninterpreted_option =
-		// 999;
-		public static final int UNINTERPRETED_OPTION_FIELD_NUMBER = 999;
-
 		static {
 			defaultInstance = new MessageOptions(true);
 			defaultInstance.initFields();
@@ -13152,25 +13142,6 @@ public final class DescriptorProtos {
 		}
 
 		public static com.google.protobuf.DescriptorProtos.MessageOptions parseFrom(
-				com.google.protobuf.ByteString data)
-				throws com.google.protobuf.InvalidProtocolBufferException {
-			return newBuilder().mergeFrom(data).buildParsed();
-		}
-
-		public static com.google.protobuf.DescriptorProtos.MessageOptions parseFrom(
-				com.google.protobuf.ByteString data,
-				com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-				throws com.google.protobuf.InvalidProtocolBufferException {
-			return newBuilder().mergeFrom(data, extensionRegistry)
-					.buildParsed();
-		}
-
-		private byte memoizedIsInitialized = -1;
-		private int memoizedSerializedSize = -1;
-
-		private static final long serialVersionUID = 0L;
-
-		public static com.google.protobuf.DescriptorProtos.MessageOptions parseFrom(
 				byte[] data)
 				throws com.google.protobuf.InvalidProtocolBufferException {
 			return newBuilder().mergeFrom(data).buildParsed();
@@ -13178,6 +13149,20 @@ public final class DescriptorProtos {
 
 		public static com.google.protobuf.DescriptorProtos.MessageOptions parseFrom(
 				byte[] data,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data, extensionRegistry)
+					.buildParsed();
+		}
+
+		public static com.google.protobuf.DescriptorProtos.MessageOptions parseFrom(
+				com.google.protobuf.ByteString data)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
+		}
+
+		public static com.google.protobuf.DescriptorProtos.MessageOptions parseFrom(
+				com.google.protobuf.ByteString data,
 				com.google.protobuf.ExtensionRegistryLite extensionRegistry)
 				throws com.google.protobuf.InvalidProtocolBufferException {
 			return newBuilder().mergeFrom(data, extensionRegistry)
@@ -13212,10 +13197,19 @@ public final class DescriptorProtos {
 		}
 
 		private int bitField0_;
+		// optional bool message_set_wire_format = 1 [default = false];
+		public static final int MESSAGE_SET_WIRE_FORMAT_FIELD_NUMBER = 1;
 		private boolean messageSetWireFormat_;
 		private boolean noStandardDescriptorAccessor_;
+		// repeated .google.protobuf.UninterpretedOption uninterpreted_option =
+		// 999;
+		public static final int UNINTERPRETED_OPTION_FIELD_NUMBER = 999;
 
 		private java.util.List<com.google.protobuf.DescriptorProtos.UninterpretedOption> uninterpretedOption_;
+		private byte memoizedIsInitialized = -1;
+		private int memoizedSerializedSize = -1;
+
+		private static final long serialVersionUID = 0L;
 
 		private MessageOptions(boolean noInit) {
 		}
@@ -13866,16 +13860,12 @@ public final class DescriptorProtos {
 
 		private static final MethodDescriptorProto defaultInstance;
 
-		// optional string name = 1;
-		public static final int NAME_FIELD_NUMBER = 1;
 		// optional string input_type = 2;
 		public static final int INPUT_TYPE_FIELD_NUMBER = 2;
-
-		// optional string output_type = 3;
-		public static final int OUTPUT_TYPE_FIELD_NUMBER = 3;
-
-		// optional .google.protobuf.MethodOptions options = 4;
-		public static final int OPTIONS_FIELD_NUMBER = 4;
+		static {
+			defaultInstance = new MethodDescriptorProto(true);
+			defaultInstance.initFields();
+		}
 
 		public static MethodDescriptorProto getDefaultInstance() {
 			return defaultInstance;
@@ -13883,6 +13873,15 @@ public final class DescriptorProtos {
 
 		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
 			return com.google.protobuf.DescriptorProtos.internal_static_google_protobuf_MethodDescriptorProto_descriptor;
+		}
+
+		public static Builder newBuilder() {
+			return Builder.create();
+		}
+
+		public static Builder newBuilder(
+				com.google.protobuf.DescriptorProtos.MethodDescriptorProto prototype) {
+			return newBuilder().mergeFrom(prototype);
 		}
 
 		public static com.google.protobuf.DescriptorProtos.MethodDescriptorProto parseDelimitedFrom(
@@ -13905,24 +13904,6 @@ public final class DescriptorProtos {
 			} else {
 				return null;
 			}
-		}
-
-		private byte memoizedIsInitialized = -1;
-		private int memoizedSerializedSize = -1;
-		private static final long serialVersionUID = 0L;
-
-		static {
-			defaultInstance = new MethodDescriptorProto(true);
-			defaultInstance.initFields();
-		}
-
-		public static Builder newBuilder() {
-			return Builder.create();
-		}
-
-		public static Builder newBuilder(
-				com.google.protobuf.DescriptorProtos.MethodDescriptorProto prototype) {
-			return newBuilder().mergeFrom(prototype);
 		}
 
 		public static com.google.protobuf.DescriptorProtos.MethodDescriptorProto parseFrom(
@@ -13981,11 +13962,21 @@ public final class DescriptorProtos {
 		}
 
 		private int bitField0_;
+		// optional string name = 1;
+		public static final int NAME_FIELD_NUMBER = 1;
 		private java.lang.Object name_;
 		private java.lang.Object inputType_;
-		private java.lang.Object outputType_;
+		// optional string output_type = 3;
+		public static final int OUTPUT_TYPE_FIELD_NUMBER = 3;
 
+		private java.lang.Object outputType_;
+		// optional .google.protobuf.MethodOptions options = 4;
+		public static final int OPTIONS_FIELD_NUMBER = 4;
 		private com.google.protobuf.DescriptorProtos.MethodOptions options_;
+		private byte memoizedIsInitialized = -1;
+		private int memoizedSerializedSize = -1;
+
+		private static final long serialVersionUID = 0L;
 
 		private MethodDescriptorProto(boolean noInit) {
 		}
@@ -15541,8 +15532,6 @@ public final class DescriptorProtos {
 
 		private static final ServiceDescriptorProto defaultInstance;
 
-		// optional string name = 1;
-		public static final int NAME_FIELD_NUMBER = 1;
 		// repeated .google.protobuf.MethodDescriptorProto method = 2;
 		public static final int METHOD_FIELD_NUMBER = 2;
 
@@ -15552,6 +15541,25 @@ public final class DescriptorProtos {
 
 		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
 			return com.google.protobuf.DescriptorProtos.internal_static_google_protobuf_ServiceDescriptorProto_descriptor;
+		}
+
+		private int bitField0_;
+
+		// optional string name = 1;
+		public static final int NAME_FIELD_NUMBER = 1;
+
+		private java.lang.Object name_;
+		private java.util.List<com.google.protobuf.DescriptorProtos.MethodDescriptorProto> method_;
+		// optional .google.protobuf.ServiceOptions options = 3;
+		public static final int OPTIONS_FIELD_NUMBER = 3;
+		private com.google.protobuf.DescriptorProtos.ServiceOptions options_;
+		private byte memoizedIsInitialized = -1;
+		private int memoizedSerializedSize = -1;
+
+		private static final long serialVersionUID = 0L;
+		static {
+			defaultInstance = new ServiceDescriptorProto(true);
+			defaultInstance.initFields();
 		}
 
 		public static Builder newBuilder() {
@@ -15571,14 +15579,6 @@ public final class DescriptorProtos {
 			} else {
 				return null;
 			}
-		}
-
-		private byte memoizedIsInitialized = -1;
-		private int memoizedSerializedSize = -1;
-		private static final long serialVersionUID = 0L;
-		static {
-			defaultInstance = new ServiceDescriptorProto(true);
-			defaultInstance.initFields();
 		}
 
 		public static com.google.protobuf.DescriptorProtos.ServiceDescriptorProto parseDelimitedFrom(
@@ -15647,14 +15647,6 @@ public final class DescriptorProtos {
 			return newBuilder().mergeFrom(input, extensionRegistry)
 					.buildParsed();
 		}
-
-		private int bitField0_;
-		private java.lang.Object name_;
-		private java.util.List<com.google.protobuf.DescriptorProtos.MethodDescriptorProto> method_;
-
-		// optional .google.protobuf.ServiceOptions options = 3;
-		public static final int OPTIONS_FIELD_NUMBER = 3;
-		private com.google.protobuf.DescriptorProtos.ServiceOptions options_;
 
 		private ServiceDescriptorProto(boolean noInit) {
 		}
@@ -17294,13 +17286,6 @@ public final class DescriptorProtos {
 
 			// repeated int32 path = 1 [packed = true];
 			public static final int PATH_FIELD_NUMBER = 1;
-			// repeated int32 span = 2 [packed = true];
-			public static final int SPAN_FIELD_NUMBER = 2;
-
-			private int memoizedSerializedSize = -1;
-
-			private static final long serialVersionUID = 0L;
-
 			static {
 				defaultInstance = new Location(true);
 				defaultInstance.initFields();
@@ -17403,11 +17388,16 @@ public final class DescriptorProtos {
 			private java.util.List<java.lang.Integer> path_;
 
 			private int pathMemoizedSerializedSize = -1;
-
+			// repeated int32 span = 2 [packed = true];
+			public static final int SPAN_FIELD_NUMBER = 2;
 			private java.util.List<java.lang.Integer> span_;
+
 			private int spanMemoizedSerializedSize = -1;
 
 			private byte memoizedIsInitialized = -1;
+			private int memoizedSerializedSize = -1;
+
+			private static final long serialVersionUID = 0L;
 
 			private Location(boolean noInit) {
 			}
@@ -17586,8 +17576,6 @@ public final class DescriptorProtos {
 		// repeated .google.protobuf.SourceCodeInfo.Location location = 1;
 		public static final int LOCATION_FIELD_NUMBER = 1;
 
-		private static final long serialVersionUID = 0L;
-
 		static {
 			defaultInstance = new SourceCodeInfo(true);
 			defaultInstance.initFields();
@@ -17647,12 +17635,6 @@ public final class DescriptorProtos {
 		}
 
 		public static com.google.protobuf.DescriptorProtos.SourceCodeInfo parseFrom(
-				com.google.protobuf.ByteString data)
-				throws com.google.protobuf.InvalidProtocolBufferException {
-			return newBuilder().mergeFrom(data).buildParsed();
-		}
-
-		public static com.google.protobuf.DescriptorProtos.SourceCodeInfo parseFrom(
 				com.google.protobuf.ByteString data,
 				com.google.protobuf.ExtensionRegistryLite extensionRegistry)
 				throws com.google.protobuf.InvalidProtocolBufferException {
@@ -17691,6 +17673,14 @@ public final class DescriptorProtos {
 
 		private byte memoizedIsInitialized = -1;
 		private int memoizedSerializedSize = -1;
+
+		private static final long serialVersionUID = 0L;
+
+		public static com.google.protobuf.DescriptorProtos.SourceCodeInfo parseFrom(
+				com.google.protobuf.ByteString data)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+			return newBuilder().mergeFrom(data).buildParsed();
+		}
 
 		private SourceCodeInfo(boolean noInit) {
 		}
@@ -18772,10 +18762,12 @@ public final class DescriptorProtos {
 
 			private static final NamePart defaultInstance;
 
-			// required string name_part = 1;
-			public static final int NAME_PART_FIELD_NUMBER = 1;
 			// required bool is_extension = 2;
 			public static final int IS_EXTENSION_FIELD_NUMBER = 2;
+			static {
+				defaultInstance = new NamePart(true);
+				defaultInstance.initFields();
+			}
 
 			public static NamePart getDefaultInstance() {
 				return defaultInstance;
@@ -18783,18 +18775,6 @@ public final class DescriptorProtos {
 
 			public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
 				return com.google.protobuf.DescriptorProtos.internal_static_google_protobuf_UninterpretedOption_NamePart_descriptor;
-			}
-
-			private int bitField0_;
-
-			private java.lang.Object namePart_;
-			private boolean isExtension_;
-			private byte memoizedIsInitialized = -1;
-			private int memoizedSerializedSize = -1;
-			private static final long serialVersionUID = 0L;
-			static {
-				defaultInstance = new NamePart(true);
-				defaultInstance.initFields();
 			}
 
 			public static Builder newBuilder() {
@@ -18843,12 +18823,6 @@ public final class DescriptorProtos {
 			}
 
 			public static com.google.protobuf.DescriptorProtos.UninterpretedOption.NamePart parseFrom(
-					com.google.protobuf.ByteString data)
-					throws com.google.protobuf.InvalidProtocolBufferException {
-				return newBuilder().mergeFrom(data).buildParsed();
-			}
-
-			public static com.google.protobuf.DescriptorProtos.UninterpretedOption.NamePart parseFrom(
 					com.google.protobuf.ByteString data,
 					com.google.protobuf.ExtensionRegistryLite extensionRegistry)
 					throws com.google.protobuf.InvalidProtocolBufferException {
@@ -18881,6 +18855,24 @@ public final class DescriptorProtos {
 					throws java.io.IOException {
 				return newBuilder().mergeFrom(input, extensionRegistry)
 						.buildParsed();
+			}
+
+			private int bitField0_;
+			// required string name_part = 1;
+			public static final int NAME_PART_FIELD_NUMBER = 1;
+			private java.lang.Object namePart_;
+
+			private boolean isExtension_;
+
+			private byte memoizedIsInitialized = -1;
+			private int memoizedSerializedSize = -1;
+
+			private static final long serialVersionUID = 0L;
+
+			public static com.google.protobuf.DescriptorProtos.UninterpretedOption.NamePart parseFrom(
+					com.google.protobuf.ByteString data)
+					throws com.google.protobuf.InvalidProtocolBufferException {
+				return newBuilder().mergeFrom(data).buildParsed();
 			}
 
 			private NamePart(boolean noInit) {
@@ -19046,6 +19038,9 @@ public final class DescriptorProtos {
 		// optional string identifier_value = 3;
 		public static final int IDENTIFIER_VALUE_FIELD_NUMBER = 3;
 
+		// optional bytes string_value = 7;
+		public static final int STRING_VALUE_FIELD_NUMBER = 7;
+
 		public static UninterpretedOption getDefaultInstance() {
 			return defaultInstance;
 		}
@@ -19055,9 +19050,9 @@ public final class DescriptorProtos {
 		}
 
 		private int bitField0_;
+
 		// repeated .google.protobuf.UninterpretedOption.NamePart name = 2;
 		public static final int NAME_FIELD_NUMBER = 2;
-
 		private java.util.List<com.google.protobuf.DescriptorProtos.UninterpretedOption.NamePart> name_;
 		private java.lang.Object identifierValue_;
 		// optional uint64 positive_int_value = 4;
@@ -19068,16 +19063,15 @@ public final class DescriptorProtos {
 		private long negativeIntValue_;
 		// optional double double_value = 6;
 		public static final int DOUBLE_VALUE_FIELD_NUMBER = 6;
-		// optional bytes string_value = 7;
-		public static final int STRING_VALUE_FIELD_NUMBER = 7;
 
+		private double doubleValue_;
 		private com.google.protobuf.ByteString stringValue_;
 		// optional string aggregate_value = 8;
 		public static final int AGGREGATE_VALUE_FIELD_NUMBER = 8;
 		private java.lang.Object aggregateValue_;
 		private byte memoizedIsInitialized = -1;
-		private int memoizedSerializedSize = -1;
 
+		private int memoizedSerializedSize = -1;
 		private static final long serialVersionUID = 0L;
 		static {
 			defaultInstance = new UninterpretedOption(true);
@@ -19169,8 +19163,6 @@ public final class DescriptorProtos {
 			return newBuilder().mergeFrom(input, extensionRegistry)
 					.buildParsed();
 		}
-
-		private double doubleValue_;
 
 		private UninterpretedOption(boolean noInit) {
 		}

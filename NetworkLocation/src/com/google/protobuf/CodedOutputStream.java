@@ -66,30 +66,7 @@ public final class CodedOutputStream {
 		}
 	}
 
-	/**
-	 * Compute the number of bytes that would be needed to encode a
-	 * {@code double} field, including tag.
-	 */
-	public static int computeDoubleSize(final int fieldNumber,
-			final double value) {
-		return computeTagSize(fieldNumber) + computeDoubleSizeNoTag(value);
-	}
-
-	private final byte[] buffer;
-
-	private final int limit;
-
-	private int position;
-
-	private final OutputStream output;
-
-	/**
-	 * The buffer size used in {@link #newInstance(OutputStream)}.
-	 */
-	public static final int DEFAULT_BUFFER_SIZE = 4096;
-
 	public static final int LITTLE_ENDIAN_32_SIZE = 4;
-
 	public static final int LITTLE_ENDIAN_64_SIZE = 8;
 
 	/**
@@ -117,14 +94,21 @@ public final class CodedOutputStream {
 		return computeTagSize(fieldNumber) + computeBytesSizeNoTag(value);
 	}
 
-	// -----------------------------------------------------------------
-
 	/**
 	 * Compute the number of bytes that would be needed to encode a
 	 * {@code bytes} field.
 	 */
 	public static int computeBytesSizeNoTag(final ByteString value) {
 		return computeRawVarint32Size(value.size()) + value.size();
+	}
+
+	/**
+	 * Compute the number of bytes that would be needed to encode a
+	 * {@code double} field, including tag.
+	 */
+	public static int computeDoubleSize(final int fieldNumber,
+			final double value) {
+		return computeTagSize(fieldNumber) + computeDoubleSizeNoTag(value);
 	}
 
 	/**
@@ -159,6 +143,8 @@ public final class CodedOutputStream {
 	public static int computeFixed32Size(final int fieldNumber, final int value) {
 		return computeTagSize(fieldNumber) + computeFixed32SizeNoTag(value);
 	}
+
+	// -----------------------------------------------------------------
 
 	/**
 	 * Compute the number of bytes that would be needed to encode a
@@ -286,20 +272,6 @@ public final class CodedOutputStream {
 	}
 
 	/**
-	 * Returns the buffer size to efficiently write dataLength bytes to this
-	 * CodedOutputStream. Used by AbstractMessageLite.
-	 * 
-	 * @return the buffer size to efficiently write dataLength bytes to this
-	 *         CodedOutputStream.
-	 */
-	static int computePreferredBufferSize(int dataLength) {
-		if (dataLength > DEFAULT_BUFFER_SIZE) {
-			return DEFAULT_BUFFER_SIZE;
-		}
-		return dataLength;
-	}
-
-	/**
 	 * Compute the number of bytes that would be needed to encode an unparsed
 	 * MessageSet extension field to the stream. For historical reasons, the
 	 * wire format differs from normal fields.
@@ -311,8 +283,6 @@ public final class CodedOutputStream {
 				+ computeUInt32Size(WireFormat.MESSAGE_SET_TYPE_ID, fieldNumber)
 				+ computeBytesSize(WireFormat.MESSAGE_SET_MESSAGE, value);
 	}
-
-	// -----------------------------------------------------------------
 
 	/**
 	 * Compute the number of bytes that would be needed to encode a varint.
@@ -399,6 +369,8 @@ public final class CodedOutputStream {
 	public static int computeSFixed64SizeNoTag(final long value) {
 		return LITTLE_ENDIAN_64_SIZE;
 	}
+
+	// -----------------------------------------------------------------
 
 	/**
 	 * Compute the number of bytes that would be needed to encode an
@@ -518,8 +490,6 @@ public final class CodedOutputStream {
 		return computeGroupSizeNoTag(value);
 	}
 
-	// =================================================================
-
 	/**
 	 * Encode a ZigZag-encoded 32-bit value. ZigZag encodes signed integers into
 	 * values that can be efficiently encoded with varint. (Otherwise, negative
@@ -590,6 +560,35 @@ public final class CodedOutputStream {
 	public static CodedOutputStream newInstance(final OutputStream output,
 			final int bufferSize) {
 		return new CodedOutputStream(output, new byte[bufferSize]);
+	}
+
+	// =================================================================
+
+	private final byte[] buffer;
+
+	private final int limit;
+
+	private int position;
+
+	private final OutputStream output;
+
+	/**
+	 * The buffer size used in {@link #newInstance(OutputStream)}.
+	 */
+	public static final int DEFAULT_BUFFER_SIZE = 4096;
+
+	/**
+	 * Returns the buffer size to efficiently write dataLength bytes to this
+	 * CodedOutputStream. Used by AbstractMessageLite.
+	 * 
+	 * @return the buffer size to efficiently write dataLength bytes to this
+	 *         CodedOutputStream.
+	 */
+	static int computePreferredBufferSize(int dataLength) {
+		if (dataLength > DEFAULT_BUFFER_SIZE) {
+			return DEFAULT_BUFFER_SIZE;
+		}
+		return dataLength;
 	}
 
 	private CodedOutputStream(final byte[] buffer, final int offset,

@@ -1525,7 +1525,7 @@ public final class TextFormat {
 		if (value >= 0) {
 			return Integer.toString(value);
 		} else {
-			return Long.toString(value & 0x00000000FFFFFFFFL);
+			return Long.toString((value) & 0x00000000FFFFFFFFL);
 		}
 	}
 

@@ -48,6 +48,8 @@ import java.util.List;
  * @author kenton@google.com Kenton Varda
  */
 public final class CodedInputStream {
+	private static final int BUFFER_SIZE = 4096;
+
 	/**
 	 * Decode a ZigZag-encoded 32-bit value. ZigZag encodes signed integers into
 	 * values that can be efficiently encoded with varint. (Otherwise, negative
@@ -78,47 +80,7 @@ public final class CodedInputStream {
 		return (n >>> 1) ^ -(n & 1);
 	}
 
-	private final byte[] buffer;
-
 	// -----------------------------------------------------------------
-
-	private int bufferSize;
-
-	private int bufferSizeAfterLimit;
-
-	private int bufferPos;
-
-	private final InputStream input;
-
-	// -----------------------------------------------------------------
-
-	private int lastTag;
-
-	/**
-	 * The total number of bytes read before the current buffer. The total bytes
-	 * read up to the current position can be computed as
-	 * {@code totalBytesRetired + bufferPos}. This value may be negative if
-	 * reading started in the middle of the current buffer (e.g. if the
-	 * constructor that takes a byte array and an offset was used).
-	 */
-	private int totalBytesRetired;
-
-	/** The absolute position of the end of the current message. */
-	private int currentLimit = Integer.MAX_VALUE;
-
-	/** See setRecursionLimit() */
-	private int recursionDepth;
-
-	private int recursionLimit = DEFAULT_RECURSION_LIMIT;
-
-	/** See setSizeLimit() */
-	private int sizeLimit = DEFAULT_SIZE_LIMIT;
-
-	private static final int DEFAULT_RECURSION_LIMIT = 64;
-
-	private static final int DEFAULT_SIZE_LIMIT = 64 << 20; // 64MB
-
-	private static final int BUFFER_SIZE = 4096;
 
 	/**
 	 * Create a new CodedInputStream wrapping the given byte array.
@@ -184,6 +146,8 @@ public final class CodedInputStream {
 		return readRawVarint32(firstByte, input);
 	}
 
+	// -----------------------------------------------------------------
+
 	/**
 	 * Like {@link #readRawVarint32(InputStream)}, but expects that the caller
 	 * has already read one byte. This allows the caller to determine if EOF has
@@ -219,6 +183,42 @@ public final class CodedInputStream {
 		}
 		throw InvalidProtocolBufferException.malformedVarint();
 	}
+
+	private final byte[] buffer;
+
+	private int bufferSize;
+
+	private int bufferSizeAfterLimit;
+
+	private int bufferPos;
+
+	private final InputStream input;
+
+	private int lastTag;
+
+	/**
+	 * The total number of bytes read before the current buffer. The total bytes
+	 * read up to the current position can be computed as
+	 * {@code totalBytesRetired + bufferPos}. This value may be negative if
+	 * reading started in the middle of the current buffer (e.g. if the
+	 * constructor that takes a byte array and an offset was used).
+	 */
+	private int totalBytesRetired;
+
+	/** The absolute position of the end of the current message. */
+	private int currentLimit = Integer.MAX_VALUE;
+
+	/** See setRecursionLimit() */
+	private int recursionDepth;
+
+	private int recursionLimit = DEFAULT_RECURSION_LIMIT;
+
+	/** See setSizeLimit() */
+	private int sizeLimit = DEFAULT_SIZE_LIMIT;
+
+	private static final int DEFAULT_RECURSION_LIMIT = 64;
+
+	private static final int DEFAULT_SIZE_LIMIT = 64 << 20; // 64MB
 
 	private CodedInputStream(final byte[] buffer, final int off, final int len) {
 		this.buffer = buffer;
