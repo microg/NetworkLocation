@@ -22,6 +22,8 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 	private final GsmCellMap gsmMap;
 	private final LocationListener listener;
 	private final Context context;
+	private final File cellDBFile = new File(
+			Environment.getExternalStorageDirectory(), ".nogapps/cells.db");
 	private TelephonyManager telephonyManager;
 
 	public GsmLocationData(Context context, GsmCellMap gsmMap,
@@ -66,48 +68,52 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 	}
 
 	private Location getLocation(int mcc, int mnc, int cid) {
+		if (mcc == 0 || mcc == -1 || mnc == 0 || mnc == -1 || cid == 0
+				|| cid == -1) {
+			return null;
+		}
 		final Location result = renameSource(gsmMap.get(mcc, mnc, cid));
 		if (result == null) {
 			Log.i(TAG, "gsm cell " + mcc + "/" + mnc + "/" + cid
 					+ " is not in database");
-			final File file = new File(
-					Environment.getExternalStorageDirectory(),
-					".nogapps/cells.db");
-			if (file.exists()) {
-				Log.i(TAG, "checking " + file.getAbsolutePath() + " for " + mcc
-						+ "/" + mnc + "/" + cid);
-				final SQLiteDatabase db = SQLiteDatabase.openDatabase(
-						file.getAbsolutePath(), null,
-						SQLiteDatabase.OPEN_READONLY
-								+ SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-				final Cursor c = DatabaseHelper
-						.checkCursor(db
-								.rawQuery(
-										"SELECT * FROM cells WHERE mcc=? AND mnc=? AND cellid=?",
-										new String[] { mcc + "", mnc + "",
-												cid + "" }));
-				if (c != null) {
-					while (!c.isLast()) {
-						c.moveToNext();
-						final Location location = new Location(getIdentifier());
-						location.setLatitude(c.getDouble(c
-								.getColumnIndexOrThrow("lat")));
-						location.setLongitude(c.getDouble(c
-								.getColumnIndexOrThrow("lon")));
-						location.setTime(new Date().getTime());
-						gsmMap.put(mcc, mnc, cid, location);
-					}
-					c.close();
-				}
-				db.close();
-				return renameSource(gsmMap.get(mcc, mnc, cid));
-			} else {
-				Log.w(TAG,
-						"could not find input file at "
-								+ file.getAbsolutePath());
-			}
+			return readCellLocationFromDatabaseFile(mcc, mnc, cid);
 		}
 		return result;
+	}
+
+	private Location readCellLocationFromDatabaseFile(int mcc, int mnc, int cid) {
+		readCellFromDatabaseFile(cellDBFile, mcc, mnc, cid);
+		return renameSource(gsmMap.get(mcc, mnc, cid));
+	}
+
+	private void readCellFromDatabaseFile(final File file, int mcc, int mnc,
+			int cid) {
+		if (file.exists()) {
+			Log.i(TAG, "checking " + file.getAbsolutePath() + " for " + mcc
+					+ "/" + mnc + "/" + cid);
+			final SQLiteDatabase db = SQLiteDatabase.openDatabase(
+					file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY
+							+ SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+			final Cursor c = DatabaseHelper.checkCursor(db.rawQuery(
+					"SELECT * FROM cells WHERE mcc=? AND mnc=? AND cellid=?",
+					new String[] { mcc + "", mnc + "", cid + "" }));
+			if (c != null) {
+				while (!c.isLast()) {
+					c.moveToNext();
+					final Location location = new Location(getIdentifier());
+					location.setLatitude(c.getDouble(c
+							.getColumnIndexOrThrow("lat")));
+					location.setLongitude(c.getDouble(c
+							.getColumnIndexOrThrow("lon")));
+					location.setTime(new Date().getTime());
+					gsmMap.put(mcc, mnc, cid, location);
+				}
+				c.close();
+			}
+			db.close();
+		} else {
+			Log.w(TAG, "could not find input file at " + file.getAbsolutePath());
+		}
 	}
 
 	private Location getLocation(String operator, GsmCellLocation cell) {

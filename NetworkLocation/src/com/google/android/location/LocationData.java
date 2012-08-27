@@ -1,5 +1,6 @@
 package com.google.android.location;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,12 +14,13 @@ public class LocationData extends LocationDataProvider.Stub implements
 
 	public static final String IDENTIFIER = "network";
 	private static final String IMPORTANT_PROVIDER = GsmLocationData.IDENTIFIER;
+	private static final int NEW_TIME = 30000;
 
 	private final Map<String, LocationDataProvider> providers;
 	private final Map<String, Location> locations;
 	private final LocationListener listener;
 
-	private boolean inBlockOp = false;
+	private Boolean inBlockOp = false;
 
 	public LocationData(LocationListener listener) {
 		providers = new HashMap<String, LocationDataProvider>();
@@ -33,8 +35,14 @@ public class LocationData extends LocationDataProvider.Stub implements
 	private Location calculateLocation() {
 		boolean preDidImportant = false;
 		Location location = null;
+		long newt = new Date().getTime() - NEW_TIME;
+		long oldt = locations.get(IMPORTANT_PROVIDER).getTime();
 		if (locations.containsKey(IMPORTANT_PROVIDER)) {
 			location = renameSource(locations.get(IMPORTANT_PROVIDER));
+			if (oldt < newt) {
+				location.setAccuracy(location.getAccuracy()
+						+ ((newt - oldt) / 50));
+			}
 			preDidImportant = true;
 		}
 		for (final Location loc : locations.values()) {
@@ -48,11 +56,17 @@ public class LocationData extends LocationDataProvider.Stub implements
 					&& loc.getProvider().equalsIgnoreCase(IMPORTANT_PROVIDER)) {
 				continue;
 			}
+			oldt = loc.getTime();
 			if (location == null) {
 				location = renameSource(loc);
 			} else if (locationDistance(location, loc) < location.getAccuracy()
-					+ loc.getAccuracy()) {
+					+ loc.getAccuracy()
+					+ ((oldt < newt) ? ((newt - oldt) / 50) : 0)) {
 				location = renameSource(loc);
+			}
+			if (oldt < newt) {
+				location.setAccuracy(location.getAccuracy()
+						+ ((newt - oldt) / 50));
 			}
 		}
 		return location;
@@ -60,12 +74,14 @@ public class LocationData extends LocationDataProvider.Stub implements
 
 	@Override
 	public Location getCurrentLocation() {
-		inBlockOp = true;
-		for (final LocationDataProvider provider : providers.values()) {
-			locations.put(provider.getIdentifier(),
-					provider.getCurrentLocation());
+		synchronized (inBlockOp) {
+			inBlockOp = true;
+			for (final LocationDataProvider provider : providers.values()) {
+				locations.put(provider.getIdentifier(),
+						provider.getCurrentLocation());
+			}
+			inBlockOp = false;
 		}
-		inBlockOp = false;
 		final Location loc = calculateLocation();
 		onLocationChanged(loc);
 		return loc;
