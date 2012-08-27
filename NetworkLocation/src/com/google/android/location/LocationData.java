@@ -36,7 +36,7 @@ public class LocationData extends LocationDataProvider.Stub implements
 		boolean preDidImportant = false;
 		Location location = null;
 		long newt = new Date().getTime() - NEW_TIME;
-		if (locations.containsKey(IMPORTANT_PROVIDER)) {
+		if (locations.containsKey(IMPORTANT_PROVIDER) && locations.get(IMPORTANT_PROVIDER) != null) {
 			long oldt = locations.get(IMPORTANT_PROVIDER).getTime();
 			location = renameSource(locations.get(IMPORTANT_PROVIDER));
 			if (oldt < newt) {
