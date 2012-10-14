@@ -12,7 +12,7 @@ import android.location.Location;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-	// WLANS: version, mac, time, latitude, longitude, accuracy
+	// WLANS: version, mac, time, latitude, longitude, accuracy, altitude
 	public static final String TABLE_WLANS = "wlans";
 	public static final String TABLE_WLANS_OLD = "locations";
 	public static final String COL_VERSION = "version";
@@ -21,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String COL_LATITUDE = "latitude";
 	public static final String COL_LONGITUDE = "longitude";
 	public static final String COL_ACCURACY = "accuracy";
+	public static final String COL_ALTITUDE = "altitude";
 
 	// CELLS: version, mcc, mnc, cid, time, latitude, longitude
 	public static final String TABLE_CELLS = "cells";
@@ -30,7 +31,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "location.sqlite";
 	private static final int WLAN_ONLY_DATABASE_SCHEME_VERSION = 9;
-	private static final int DATABASE_SCHEME_VERSION = 10;
+	private static final int NO_ALTITUDE_DATABASE_SCHEME_VERSION = 10;
+	private static final int LATEST_DATABASE_SCHEME_VERSION = 11;
 	public static final int DEFAULT_ACCURACY = 5000;
 
 	public static Cursor checkCursor(Cursor c) {
@@ -59,7 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public DatabaseHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_SCHEME_VERSION);
+		super(context, DATABASE_NAME, null, LATEST_DATABASE_SCHEME_VERSION);
 		newRequest = false;
 	}
 
@@ -83,7 +85,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + TABLE_WLANS + "(" + COL_VERSION
 				+ " INTEGER, " + COL_MAC + " TEXT PRIMARY KEY, " + COL_TIME
 				+ " INTEGER, " + COL_LATITUDE + " INTEGER, " + COL_LONGITUDE
-				+ " INTEGER, " + COL_ACCURACY + " INTEGER)");
+				+ " INTEGER, " + COL_ACCURACY + " INTEGER, " + COL_ALTITUDE
+				+ " INTEGER)");
 	}
 
 	private Cursor getLocationCursorGsmCell(int mcc, int mnc, int cid) {
@@ -108,14 +111,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return checkCursor(c);
 	}
 
-	private Cursor getLocationCursorWlan() {
-		final SQLiteDatabase db = getReadableDatabase();
-		final Cursor c = db.rawQuery("SELECT " + COL_MAC + ", " + COL_TIME
-				+ ", " + COL_ACCURACY + ", " + COL_LATITUDE + ", "
-				+ COL_LONGITUDE + " FROM " + TABLE_WLANS, null);
-		return checkCursor(c);
-	}
-
 	private Cursor getLocationCursorWlan(String mac) {
 		final SQLiteDatabase db = getReadableDatabase();
 		final Cursor c = db.rawQuery("SELECT " + COL_TIME + ", " + COL_ACCURACY
@@ -132,6 +127,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			location.setAccuracy(c.getLong(accuracyIndex));
 		} else {
 			location.setAccuracy(DEFAULT_ACCURACY);
+		}
+		final int altitudeIndex = c.getColumnIndex(COL_ALTITUDE);
+		if (altitudeIndex != -1) {
+			long alt = c.getLong(altitudeIndex);
+			if (alt > 0) {
+				location.setAltitude(c.getLong(altitudeIndex));
+			}
 		}
 		location.setLatitude(c.getLong(c.getColumnIndexOrThrow(COL_LATITUDE)) / 1E6F);
 		location.setLongitude(c.getLong(c.getColumnIndexOrThrow(COL_LONGITUDE)) / 1E6F);
@@ -182,23 +184,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return map;
 	}
 
-	public Map<String, Location> getWlanTable() {
-		newRequest = true;
-		final HashMap<String, Location> map = new HashMap<String, Location>();
-		final Cursor c = getLocationCursorWlan();
-		if (c == null) {
-			return map;
-		}
-		while (!c.isLast()) {
-			c.moveToNext();
-			final Location location = getLocationFromCursor(c);
-			final String mac = c.getString(c.getColumnIndexOrThrow(COL_MAC));
-			map.put(mac, location);
-		}
-		c.close();
-		return map;
-	}
-
 	public void insertGsmCellLocation(int mcc, int mnc, int cid,
 			Location location) {
 		newRequest = true;
@@ -206,7 +191,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("INSERT OR REPLACE INTO " + TABLE_CELLS + "(" + COL_VERSION
 				+ ", " + COL_MCC + ", " + COL_MNC + ", " + COL_CID + ", "
 				+ COL_TIME + ", " + COL_LATITUDE + ", " + COL_LONGITUDE
-				+ ") VALUES ('" + DATABASE_SCHEME_VERSION + "', '" + mcc
+				+ ") VALUES ('" + LATEST_DATABASE_SCHEME_VERSION + "', '" + mcc
 				+ "', '" + mnc + "', '" + cid + "', '" + location.getTime()
 				+ "', '" + (long) (location.getLatitude() * 1E6) + "', '"
 				+ (long) (location.getLongitude() * 1E6) + "')");
@@ -217,12 +202,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		final SQLiteDatabase db = getWritableDatabase();
 		db.execSQL("INSERT OR REPLACE INTO " + TABLE_WLANS + "(" + COL_VERSION
 				+ ", " + COL_MAC + ", " + COL_TIME + ", " + COL_LATITUDE + ", "
-				+ COL_LONGITUDE + ", " + COL_ACCURACY + ") VALUES ("
-				+ DATABASE_SCHEME_VERSION + ", '" + mac + "', "
-				+ location.getTime() + ", "
+				+ COL_LONGITUDE + ", " + COL_ACCURACY + ", " + COL_ALTITUDE
+				+ ") VALUES (" + LATEST_DATABASE_SCHEME_VERSION + ", '" + mac
+				+ "', " + location.getTime() + ", "
 				+ (long) (location.getLatitude() * 1E6) + ", "
 				+ (long) (location.getLongitude() * 1E6) + ", "
-				+ (long) location.getAccuracy() + ")");
+				+ (long) location.getAccuracy() + ", "
+				+ (long) location.getAltitude() + ")");
 	}
 
 	public boolean isOpen() {
@@ -248,13 +234,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_WLANS_OLD);
 			createWlanTable(db);
 			createCellsTable(db);
-			oldVersion = DATABASE_SCHEME_VERSION;
-		} else if (oldVersion < DATABASE_SCHEME_VERSION) {
+			oldVersion = LATEST_DATABASE_SCHEME_VERSION;
+		}
+		if (oldVersion < NO_ALTITUDE_DATABASE_SCHEME_VERSION) {
 			// RENAME OLD TABLE
 			db.execSQL("ALTER TABLE " + TABLE_WLANS_OLD + " RENAME TO "
 					+ TABLE_WLANS);
 			createCellsTable(db);
-			oldVersion = DATABASE_SCHEME_VERSION;
+			oldVersion = NO_ALTITUDE_DATABASE_SCHEME_VERSION;
+		}
+		if (oldVersion == NO_ALTITUDE_DATABASE_SCHEME_VERSION) {
+			db.execSQL("ALTER TABLE " + TABLE_WLANS + " ADD COLUMN "
+					+ COL_ALTITUDE + " INTEGER");
+			oldVersion = LATEST_DATABASE_SCHEME_VERSION;
 		}
 	}
 

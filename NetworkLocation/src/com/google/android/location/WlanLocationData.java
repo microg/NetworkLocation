@@ -131,10 +131,6 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		return request.build();
 	}
 
-	public Map<String, Location> getCache() {
-		return wlanMap.getMap();
-	}
-
 	@Override
 	public android.location.Location getCurrentLocation() {
 		final Collection<String> wlans = getWLANs();
@@ -250,7 +246,10 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 				loc.setProvider(getIdentifier());
 				loc.setLatitude(rw.getLocation().getLatitude() / 1E8F);
 				loc.setLongitude(rw.getLocation().getLongitude() / 1E8F);
-				loc.setAccuracy(rw.getLocation().getUnknown3());
+				loc.setAccuracy(rw.getLocation().getAccuracy());
+				if (rw.getLocation().getAltitude() != -500) {
+					loc.setAltitude(rw.getLocation().getAltitude());
+				}
 				loc.setTime(new Date().getTime());
 				wlanMap.put(mac2, loc);
 				if (macs.contains(mac2)) {

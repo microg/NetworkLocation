@@ -20,10 +20,6 @@ public class WlanMap {
 		return helper.getLocationWlan(mac);
 	}
 
-	public Map<String, Location> getMap() {
-		return helper.getWlanTable();
-	}
-
 	public Map<String, Location> getNext(double latitude, double longitude,
 			int num) {
 		return helper.getNextWlan(latitude, longitude, num);
