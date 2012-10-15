@@ -1,10 +1,10 @@
-NOGAPPS-NetworkLocation
+NetworkLocation
 =======================
 
-Geolocation using wlan and data from Apple. Part of the NOGAPPS Project.
+Geolocation using wlan and data from Apple. Part of the μg Project.
 
 ###License
-> Copyright 2012 NOGAPPS Project
+> Copyright 2012 μg Project Team
 
 > Licensed under the Apache License, Version 2.0 (the "License");
 > you may not use this file except in compliance with the License.
