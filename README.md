@@ -1,7 +1,7 @@
 NetworkLocation
 =======================
 
-Geolocation using wlan and data from Apple. Part of the μg Project.
+Geolocation using wlan and gsm cells. Data provided by Apple and opencellid.org. Part of the μg Project.
 
 ###License
 > Copyright 2012 μg Project Team
