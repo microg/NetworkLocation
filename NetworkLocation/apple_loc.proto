@@ -14,8 +14,8 @@ message WLANLocation {
 	required int32 zeroField4 = 4; // always 0 - don't ask why
 	optional int32 altitude = 5; // -500 if unknown
 	optional int32 altitudeAccuracy = 6; // Not set if altitude=-500
-	required int32 value11 = 11; // 5..63 ?
-	required int32 value12 = 12; // 30..4000 ? 
+	optional int32 value11 = 11; // 5..63 ?
+	optional int32 value12 = 12; // 30..4000 ? 
 }
 message ResponseWLAN {
 	required string mac = 1;

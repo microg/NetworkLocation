@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 
@@ -49,7 +50,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 	}
 
 	public static String niceMac(String mac) {
-		mac = mac.toLowerCase();
+		mac = mac.toLowerCase(Locale.getDefault());
 		final StringBuilder builder = new StringBuilder();
 		final String[] arr = mac.split(":");
 		for (int i = 0; i < arr.length; i++) {
@@ -235,7 +236,6 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 			while (i++ < 10 && (n = in.read()) != -1) {
 				sb.append("0x").append(n).append(" ");
 			}
-			Log.d(TAG, "Response first bytes: " + sb.toString());
 			final Response response = Response.parseFrom(in);
 			out.close();
 			in.close();
@@ -268,7 +268,6 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 
 	private void requestMissing(final Collection<String> wlans) {
 		addToMissing(missingInCache(wlans));
-		Log.d(TAG, "missingInCache: " + missingMacs);
 		if ((retriever == null || !retriever.isAlive()) && missingMacs != null
 				&& missingMacs.size() > 0) {
 			retriever = new Thread(new Runnable() {

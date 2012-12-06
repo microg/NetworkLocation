@@ -598,11 +598,11 @@ public final class LocationsProtos {
     boolean hasAltitudeAccuracy();
     int getAltitudeAccuracy();
     
-    // required int32 value11 = 11;
+    // optional int32 value11 = 11;
     boolean hasValue11();
     int getValue11();
     
-    // required int32 value12 = 12;
+    // optional int32 value12 = 12;
     boolean hasValue12();
     int getValue12();
   }
@@ -695,7 +695,7 @@ public final class LocationsProtos {
       return altitudeAccuracy_;
     }
     
-    // required int32 value11 = 11;
+    // optional int32 value11 = 11;
     public static final int VALUE11_FIELD_NUMBER = 11;
     private int value11_;
     public boolean hasValue11() {
@@ -705,7 +705,7 @@ public final class LocationsProtos {
       return value11_;
     }
     
-    // required int32 value12 = 12;
+    // optional int32 value12 = 12;
     public static final int VALUE12_FIELD_NUMBER = 12;
     private int value12_;
     public boolean hasValue12() {
@@ -743,14 +743,6 @@ public final class LocationsProtos {
         return false;
       }
       if (!hasZeroField4()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasValue11()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasValue12()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1097,14 +1089,6 @@ public final class LocationsProtos {
           
           return false;
         }
-        if (!hasValue11()) {
-          
-          return false;
-        }
-        if (!hasValue12()) {
-          
-          return false;
-        }
         return true;
       }
       
@@ -1303,7 +1287,7 @@ public final class LocationsProtos {
         return this;
       }
       
-      // required int32 value11 = 11;
+      // optional int32 value11 = 11;
       private int value11_ ;
       public boolean hasValue11() {
         return ((bitField0_ & 0x00000040) == 0x00000040);
@@ -1324,7 +1308,7 @@ public final class LocationsProtos {
         return this;
       }
       
-      // required int32 value12 = 12;
+      // optional int32 value12 = 12;
       private int value12_ ;
       public boolean hasValue12() {
         return ((bitField0_ & 0x00000080) == 0x00000080);
@@ -3175,7 +3159,7 @@ public final class LocationsProtos {
       "Location\022\020\n\010latitude\030\001 \002(\003\022\021\n\tlongitude\030" +
       "\002 \002(\003\022\020\n\010accuracy\030\003 \002(\005\022\022\n\nzeroField4\030\004 " +
       "\002(\005\022\020\n\010altitude\030\005 \001(\005\022\030\n\020altitudeAccurac" +
-      "y\030\006 \001(\005\022\017\n\007value11\030\013 \002(\005\022\017\n\007value12\030\014 \002(" +
+      "y\030\006 \001(\005\022\017\n\007value11\030\013 \001(\005\022\017\n\007value12\030\014 \001(" +
       "\005\"S\n\014ResponseWLAN\022\013\n\003mac\030\001 \002(\t\022%\n\010locati" +
       "on\030\002 \002(\0132\023.apple.WLANLocation\022\017\n\007channel" +
       "\030\025 \001(\005\"\032\n\013RequestWLAN\022\013\n\003mac\030\001 \002(\t\"_\n\007Re" +
