@@ -29,9 +29,9 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 
 	public final static String IDENTIFIER = "wlan";
 
-	private final static String TAG = WlanLocationData.class.getName();
+	private final static String TAG = "WlanLocationData";
 
-	public static Collection<String> getWLANs(Context context) {
+	public static Collection<String> getWLANs(final Context context) {
 		if (context == null) {
 			return null;
 		}
@@ -64,28 +64,28 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		return builder.toString();
 	}
 
-	private final Stack<String> missingMacs;
-
 	private final Context context;
-	private final WlanMap wlanMap;
-	private final LocationListener listener;
-	private Thread retriever;
 
-	public WlanLocationData(Context context, WlanMap wlanMap,
-			LocationListener listener) {
+	private final LocationListener listener;
+	private final Stack<String> missingMacs;
+	private Thread retriever;
+	private final WlanMap wlanMap;
+
+	public WlanLocationData(final Context context, final WlanMap wlanMap,
+			final LocationListener listener) {
 		this.context = context;
 		this.wlanMap = wlanMap;
 		this.listener = listener;
 		missingMacs = new Stack<String>();
 	}
 
-	private void addToMissing(Collection<String> wlans) {
+	private void addToMissing(final Collection<String> wlans) {
 		for (final String wlan : wlans) {
 			addToMissing(wlan);
 		}
 	}
 
-	private void addToMissing(String wlan) {
+	private void addToMissing(final String wlan) {
 		synchronized (missingMacs) {
 			if (!missingMacs.contains(wlan)) {
 				missingMacs.add(wlan);
@@ -94,7 +94,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 	}
 
 	private android.location.Location calculateLocation(
-			Collection<Location> values) {
+			final Collection<Location> values) {
 		if (values == null || values.size() == 0) {
 			return null;
 		}
@@ -121,7 +121,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		return loc;
 	}
 
-	private Request createRequest(Collection<String> macs) {
+	private Request createRequest(final Collection<String> macs) {
 		final Request.Builder request = Request.newBuilder()
 				.setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
 		for (final String mac : macs) {
@@ -151,11 +151,11 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		return IDENTIFIER;
 	}
 
-	private Location getLocation(String mac) {
+	private Location getLocation(final String mac) {
 		return renameSource(wlanMap.get(mac));
 	}
 
-	private Map<String, Location> getLocations(Collection<String> wlans) {
+	private Map<String, Location> getLocations(final Collection<String> wlans) {
 		final HashMap<String, Location> locs = new HashMap<String, Location>();
 		for (final String wlan : wlans) {
 			final Location loc = getLocation(wlan);
@@ -170,7 +170,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		return getWLANs(context);
 	}
 
-	private Collection<String> missingInCache(Collection<String> wlans) {
+	private Collection<String> missingInCache(final Collection<String> wlans) {
 		final ArrayList<String> macs = new ArrayList<String>();
 		for (final String wlan : wlans) {
 			if (!wlanMap.containsKey(wlan)) {
@@ -241,7 +241,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 			in.close();
 			for (final ResponseWLAN rw : response.getWlanList()) {
 				final String mac2 = niceMac(rw.getMac());
-				final Location loc = new Location("wlan");
+				final Location loc = new Location(IDENTIFIER);
 				loc.setProvider(getIdentifier());
 				loc.setLatitude(rw.getLocation().getLatitude() / 1E8F);
 				loc.setLongitude(rw.getLocation().getLongitude() / 1E8F);
@@ -266,7 +266,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		}
 	}
 
-	private void requestMissing(Collection<String> wlans) {
+	private void requestMissing(final Collection<String> wlans) {
 		addToMissing(missingInCache(wlans));
 		Log.d(TAG, "missingInCache: " + missingMacs);
 		if ((retriever == null || !retriever.isAlive()) && missingMacs != null

@@ -2,23 +2,24 @@ package com.google.android.location;
 
 import android.location.Location;
 
-public class GsmCellMap {
+public class CellMap {
 	private final DatabaseHelper helper;
 
-	public GsmCellMap(DatabaseHelper helper) {
+	public CellMap(final DatabaseHelper helper) {
 		this.helper = helper;
 		helper.startAutoCloseThread();
 	}
 
-	public boolean containsKey(int mcc, int mnc, int cid) {
+	public boolean containsKey(final int mcc, final int mnc, final int cid) {
 		return (helper.getLocationGsmCell(mcc, mnc, cid) != null);
 	}
 
-	public Location get(int mcc, int mnc, int cid) {
+	public Location get(final int mcc, final int mnc, final int cid) {
 		return helper.getLocationGsmCell(mcc, mnc, cid);
 	}
 
-	public void put(int mcc, int mnc, int cid, Location location) {
+	public void put(final int mcc, final int mnc, final int cid,
+			final Location location) {
 		helper.insertGsmCellLocation(mcc, mnc, cid, location);
 	}
 }

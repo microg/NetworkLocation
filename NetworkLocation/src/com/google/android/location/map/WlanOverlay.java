@@ -17,24 +17,26 @@ import com.google.android.maps.Overlay;
 public class WlanOverlay extends Overlay {
 
 	public class Entry {
+		private final boolean active;
+		private final Location location;
 		private final String mac;
 		private final String name;
-		private final Location location;
-		private final boolean active;
 
-		public Entry(Location location) {
+		public Entry(final Location location) {
 			this(location, false, null, null);
 		}
 
-		public Entry(Location location, boolean active) {
+		public Entry(final Location location, final boolean active) {
 			this(location, active, null, null);
 		}
 
-		public Entry(Location location, boolean active, String mac) {
+		public Entry(final Location location, final boolean active,
+				final String mac) {
 			this(location, active, mac, null);
 		}
 
-		public Entry(Location location, boolean active, String mac, String name) {
+		public Entry(final Location location, final boolean active,
+				final String mac, final String name) {
 			this.location = location;
 			this.mac = mac;
 			this.name = name;
@@ -58,26 +60,27 @@ public class WlanOverlay extends Overlay {
 		}
 	}
 
-	private final ArrayList<Entry> entryList;
 	private final Context context;
+	private final ArrayList<Entry> entryList;
 
-	public WlanOverlay(Context context) {
+	public WlanOverlay(final Context context) {
 		super(context);
 		this.context = context;
 		entryList = new ArrayList<Entry>();
 	}
 
-	public void addItem(Entry entry) {
+	public void addItem(final Entry entry) {
 		entryList.add(entry);
 	}
 
-	public void addItem(Location location, boolean active, String mac,
-			String name) {
+	public void addItem(final Location location, final boolean active,
+			final String mac, final String name) {
 		addItem(getEntry(location, active, mac, name));
 	}
 
 	@Override
-	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+	public void draw(final Canvas canvas, final MapView mapView,
+			final boolean shadow) {
 		super.draw(canvas, mapView, shadow);
 		final Point pt = new Point();
 		final Paint fillActive = new Paint();
@@ -117,8 +120,8 @@ public class WlanOverlay extends Overlay {
 		}
 	}
 
-	public Entry getEntry(Location location, boolean active, String mac,
-			String name) {
+	public Entry getEntry(final Location location, final boolean active,
+			final String mac, final String name) {
 		return new Entry(location, active, mac, name);
 	}
 

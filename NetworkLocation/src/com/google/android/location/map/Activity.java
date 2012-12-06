@@ -16,8 +16,8 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.location.CellMap;
 import com.google.android.location.DatabaseHelper;
-import com.google.android.location.GsmCellMap;
 import com.google.android.location.R;
 import com.google.android.location.WlanLocationData;
 import com.google.android.location.WlanMap;
@@ -28,27 +28,27 @@ import com.google.android.maps.MapView;
 public class Activity extends android.app.Activity implements LocationListener {
 
 	private static final String TAG = Activity.class.getName();
-	private WlanMap wlans;
-	private GsmCellMap cells;
-	private Map<String, Location> currentWlans;
-	private DatabaseHelper helper;
-
-	private MapView mapView;
-	private MapController mc;
-	private LocationOverlay pos_overlay;
-
-	private WlanOverlay wlan_overlay;
-	private GsmOverlay gsm_overlay;
-	private TextView youLat;
-	private TextView youLon;
-	private TextView cellMcc;
-	private TextView cellMnc;
 	private TextView cellCid;
 	private TextView cellLat;
 	private TextView cellLon;
-	private ListView wlanList;
-	private WlanAdapter wlanAdapter;
+	private TextView cellMcc;
+
+	private TextView cellMnc;
+	private CellMap cells;
+	private Map<String, Location> currentWlans;
+
+	private GsmOverlay gsm_overlay;
+	private DatabaseHelper helper;
+	private MapView mapView;
+	private MapController mc;
+	private LocationOverlay pos_overlay;
 	private TelephonyManager telephonyManager;
+	private WlanOverlay wlan_overlay;
+	private WlanAdapter wlanAdapter;
+	private ListView wlanList;
+	private WlanMap wlans;
+	private TextView youLat;
+	private TextView youLon;
 
 	private GsmCellLocation getGsmCellLocation() {
 		final CellLocation cellLocation = telephonyManager.getCellLocation();
@@ -62,7 +62,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		return WlanLocationData.getWLANs(this);
 	}
 
-	private void makeLocationVisible(Location loc) {
+	private void makeLocationVisible(final Location loc) {
 		youLat.setText("Lat: " + loc.getLatitude());
 		youLon.setText("Lon: " + loc.getLongitude());
 		final GsmCellLocation cell = getGsmCellLocation();
@@ -122,7 +122,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		currentWlans = new HashMap<String, Location>();
@@ -147,7 +147,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		mc.setZoom(17);
 		helper = new DatabaseHelper(this);
 		wlans = new WlanMap(helper);
-		cells = new GsmCellMap(helper);
+		cells = new CellMap(helper);
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(
@@ -162,7 +162,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 	}
 
 	@Override
-	public void onLocationChanged(Location location) {
+	public void onLocationChanged(final Location location) {
 		if (location != null) {
 			makeLocationVisible(location);
 		} else {
@@ -171,15 +171,16 @@ public class Activity extends android.app.Activity implements LocationListener {
 	}
 
 	@Override
-	public void onProviderDisabled(String provider) {
+	public void onProviderDisabled(final String provider) {
 	}
 
 	@Override
-	public void onProviderEnabled(String provider) {
+	public void onProviderEnabled(final String provider) {
 	}
 
 	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
+	public void onStatusChanged(final String provider, final int status,
+			final Bundle extras) {
 	}
 
 }

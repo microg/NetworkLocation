@@ -14,16 +14,17 @@ import com.google.android.maps.Overlay;
 
 public class LocationOverlay extends Overlay {
 
-	private Location location;
 	private final Context context;
+	private Location location;
 
-	public LocationOverlay(Context context) {
+	public LocationOverlay(final Context context) {
 		super(context);
 		this.context = context;
 	}
 
 	@Override
-	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+	public void draw(final Canvas canvas, final MapView mapView,
+			final boolean shadow) {
 		// TODO Auto-generated method stub
 		super.draw(canvas, mapView, shadow);
 		if (location != null) {
@@ -63,7 +64,7 @@ public class LocationOverlay extends Overlay {
 		return location;
 	}
 
-	public void setLocation(Location location) {
+	public void setLocation(final Location location) {
 		this.location = location;
 	}
 

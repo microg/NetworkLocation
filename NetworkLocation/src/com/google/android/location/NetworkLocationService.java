@@ -7,19 +7,19 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class NetworkLocationService extends Service {
-	private static final String TAG = NetworkLocationService.class.getName();
-	private LocationBinder nlprovider;
-	private GeocodeProvider geoprovider;
+	private static final String TAG = "NetworkLocationService";
 	private LocationData data;
+	private GeocodeProvider geoprovider;
+	private CellMap gsmMap;
+	private LocationBinder nlprovider;
 	private WlanMap wlanMap;
-	private GsmCellMap gsmMap;
 
 	public NetworkLocationService() {
 		Log.i(TAG, "new Service-Object constructed");
 	}
 
 	@Override
-	public IBinder onBind(Intent intent) {
+	public IBinder onBind(final Intent intent) {
 		if (intent == null) {
 			return null;
 		}
@@ -49,14 +49,14 @@ public class NetworkLocationService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		wlanMap = new WlanMap(DatabaseHelper.getInstance(this));
-		gsmMap = new GsmCellMap(DatabaseHelper.getInstance(this));
+		gsmMap = new CellMap(DatabaseHelper.getInstance(this));
 		if (Build.VERSION.SDK_INT < 17) {
 			nlprovider = new NetworkLocationProvider();
 		} else {
 			nlprovider = new NetworkLocationProviderV2();
 		}
 		data = new LocationData(nlprovider);
-		data.addProvider(new GsmLocationData(this, gsmMap, data));
+		data.addProvider(new CellLocationData(this, gsmMap, data));
 		data.addProvider(new WlanLocationData(this, wlanMap, data));
 		nlprovider.setData(data);
 		geoprovider = new GeocodeProvider(this);

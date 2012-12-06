@@ -9,24 +9,27 @@ import android.util.Log;
 
 public class GeocodeProvider extends
 		com.android.location.provider.GeocodeProvider {
-	private static final String TAG = GeocodeProvider.class.getName();
+	private static final String TAG = "LocationGeocodeProvider";
 
-	public GeocodeProvider(Context context) {
+	public GeocodeProvider(final Context context) {
 		Log.d(TAG, "new Provider-Object constructed");
 	}
 
 	@Override
-	public String onGetFromLocation(double arg0, double arg1, int arg2,
-			GeocoderParams arg3, List<Address> arg4) {
+	public String onGetFromLocation(final double latitude,
+			final double longitude, final int maxResults,
+			final GeocoderParams params, final List<Address> addrs) {
 		Log.w(TAG,
 				"GeocodeProvider not yet implemented. The application may not work.");
 		return null;
 	}
 
 	@Override
-	public String onGetFromLocationName(String arg0, double arg1, double arg2,
-			double arg3, double arg4, int arg5, GeocoderParams arg6,
-			List<Address> arg7) {
+	public String onGetFromLocationName(final String locationName,
+			final double lowerLeftLatitude, final double lowerLeftLongitude,
+			final double upperRightLatitude, final double upperRightLongitude,
+			final int maxResults, final GeocoderParams params,
+			final List<Address> addrs) {
 		Log.w(TAG,
 				"GeocodeProvider not yet implemented. The application may not work.");
 		return null;

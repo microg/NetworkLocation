@@ -7,25 +7,25 @@ import android.location.Location;
 public class WlanMap {
 	private final DatabaseHelper helper;
 
-	public WlanMap(DatabaseHelper helper) {
+	public WlanMap(final DatabaseHelper helper) {
 		this.helper = helper;
 		helper.startAutoCloseThread();
 	}
 
-	public boolean containsKey(String mac) {
+	public boolean containsKey(final String mac) {
 		return (helper.getLocationWlan(mac) != null);
 	}
 
-	public Location get(String mac) {
+	public Location get(final String mac) {
 		return helper.getLocationWlan(mac);
 	}
 
-	public Map<String, Location> getNext(double latitude, double longitude,
-			int num) {
+	public Map<String, Location> getNext(final double latitude,
+			final double longitude, final int num) {
 		return helper.getNextWlan(latitude, longitude, num);
 	}
 
-	public void put(String mac, Location location) {
+	public void put(final String mac, final Location location) {
 		helper.insertWlanLocation(mac, location);
 	}
 }

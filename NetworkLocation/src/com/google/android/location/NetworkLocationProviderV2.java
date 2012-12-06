@@ -16,12 +16,12 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 
 	private static final String TAG = "NetworkLocationProviderV2";
 
-	private Location lastLocation;
-	private LocationData data;
 	private boolean active;
-	private boolean autoUpdate;
-	private long autoTime;
+	private final long autoTime;
+	private final boolean autoUpdate;
 	private final Thread background;
+	private LocationData data;
+	private Location lastLocation;
 	private long lastTime;
 
 	public NetworkLocationProviderV2() {
@@ -53,7 +53,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	}
 
 	@Override
-	public int onGetStatus(Bundle arg0) {
+	public int onGetStatus(final Bundle arg0) {
 		return android.location.LocationProvider.AVAILABLE;
 	}
 
@@ -63,14 +63,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	}
 
 	@Override
-	public void onSetRequest(ProviderRequestUnbundled arg0, WorkSource arg1) {
-		// TODO Auto-generated method stub
-		Log.w(TAG,
-				"Not yet implemented: NetworkLocationProviderV2.onSetRequest");
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
+	public void onLocationChanged(final Location location) {
 		Log.i(TAG, "onLocationChanged: " + location);
 		if (location != null) {
 			lastTime = SystemClock.elapsedRealtime();
@@ -80,15 +73,24 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	}
 
 	@Override
-	public void onProviderDisabled(String provider) {
+	public void onProviderDisabled(final String provider) {
 	}
 
 	@Override
-	public void onProviderEnabled(String provider) {
+	public void onProviderEnabled(final String provider) {
 	}
 
 	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
+	public void onSetRequest(final ProviderRequestUnbundled arg0,
+			final WorkSource arg1) {
+		// TODO Auto-generated method stub
+		Log.w(TAG,
+				"Not yet implemented: NetworkLocationProviderV2.onSetRequest");
+	}
+
+	@Override
+	public void onStatusChanged(final String provider, final int status,
+			final Bundle extras) {
 	}
 
 	@Override
@@ -152,7 +154,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	}
 
 	@Override
-	public void setData(LocationData data) {
+	public void setData(final LocationData data) {
 		this.data = data;
 	}
 

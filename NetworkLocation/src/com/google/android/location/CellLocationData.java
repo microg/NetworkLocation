@@ -14,20 +14,20 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 
-public class GsmLocationData extends LocationDataProvider.Stub {
+public class CellLocationData extends LocationDataProvider.Stub {
 
-	private static final String TAG = GsmLocationData.class.getName();
+	public static final String IDENTIFIER = "cell";
 
-	public static final String IDENTIFIER = "gsm";
-	private final GsmCellMap gsmMap;
-	private final LocationListener listener;
-	private final Context context;
+	private static final String TAG = "CellLocationData";
 	private final File cellDBFile = new File(
 			Environment.getExternalStorageDirectory(), ".nogapps/cells.db");
+	private final Context context;
+	private final CellMap gsmMap;
+	private final LocationListener listener;
 	private TelephonyManager telephonyManager;
 
-	public GsmLocationData(Context context, GsmCellMap gsmMap,
-			LocationListener listener) {
+	public CellLocationData(final Context context, final CellMap gsmMap,
+			final LocationListener listener) {
 		this.context = context;
 		this.gsmMap = gsmMap;
 		this.listener = listener;
@@ -67,7 +67,7 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 		return IDENTIFIER;
 	}
 
-	private Location getLocation(int mcc, int mnc, int cid) {
+	private Location getLocation(final int mcc, final int mnc, final int cid) {
 		if (mcc == 0 || mcc == -1 || mnc == 0 || mnc == -1 || cid == 0
 				|| cid == -1) {
 			return null;
@@ -81,13 +81,24 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 		return result;
 	}
 
-	private Location readCellLocationFromDatabaseFile(int mcc, int mnc, int cid) {
-		readCellFromDatabaseFile(cellDBFile, mcc, mnc, cid);
-		return renameSource(gsmMap.get(mcc, mnc, cid));
+	private Location getLocation(final String operator,
+			final GsmCellLocation cell) {
+		if (operator == null || operator.length() < 3) {
+			Log.w(TAG,
+					"Not connected to any gsm cell - won't track location...");
+			return null;
+		}
+		return getLocation(operator.substring(0, 3), operator.substring(3),
+				cell.getCid());
 	}
 
-	private void readCellFromDatabaseFile(final File file, int mcc, int mnc,
-			int cid) {
+	private Location getLocation(final String mcc, final String mnc,
+			final int cid) {
+		return getLocation(Integer.parseInt(mcc), Integer.parseInt(mnc), cid);
+	}
+
+	private void readCellFromDatabaseFile(final File file, final int mcc,
+			final int mnc, final int cid) {
 		if (file.exists()) {
 			Log.i(TAG, "checking " + file.getAbsolutePath() + " for " + mcc
 					+ "/" + mnc + "/" + cid);
@@ -116,18 +127,10 @@ public class GsmLocationData extends LocationDataProvider.Stub {
 		}
 	}
 
-	private Location getLocation(String operator, GsmCellLocation cell) {
-		if (operator == null || operator.length() < 3) {
-			Log.w(TAG,
-					"Not connected to any gsm cell - won't track location...");
-			return null;
-		}
-		return getLocation(operator.substring(0, 3), operator.substring(3),
-				cell.getCid());
-	}
-
-	private Location getLocation(String mcc, String mnc, int cid) {
-		return getLocation(Integer.parseInt(mcc), Integer.parseInt(mnc), cid);
+	private Location readCellLocationFromDatabaseFile(final int mcc,
+			final int mnc, final int cid) {
+		readCellFromDatabaseFile(cellDBFile, mcc, mnc, cid);
+		return renameSource(gsmMap.get(mcc, mnc, cid));
 	}
 
 }

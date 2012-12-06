@@ -12,30 +12,32 @@ import android.location.Location;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+	public static final String COL_ACCURACY = "accuracy";
+	public static final String COL_ALTITUDE = "altitude";
+	public static final String COL_CID = "cid";
+	public static final String COL_LATITUDE = "latitude";
+	public static final String COL_LONGITUDE = "longitude";
+	public static final String COL_MAC = "mac";
+	public static final String COL_MCC = "mcc";
+	public static final String COL_MNC = "mnc";
+	public static final String COL_TIME = "time";
+
+	public static final String COL_VERSION = "version";
+	private static final String DATABASE_NAME = "location.sqlite";
+	public static final int DEFAULT_ACCURACY = 5000;
+	private static DatabaseHelper instance;
+
+	private static final int LATEST_DATABASE_SCHEME_VERSION = 11;
+	private static final int NO_ALTITUDE_DATABASE_SCHEME_VERSION = 10;
+	// CELLS: version, mcc, mnc, cid, time, latitude, longitude
+	public static final String TABLE_CELLS = "cells";
 	// WLANS: version, mac, time, latitude, longitude, accuracy, altitude
 	public static final String TABLE_WLANS = "wlans";
 	public static final String TABLE_WLANS_OLD = "locations";
-	public static final String COL_VERSION = "version";
-	public static final String COL_MAC = "mac";
-	public static final String COL_TIME = "time";
-	public static final String COL_LATITUDE = "latitude";
-	public static final String COL_LONGITUDE = "longitude";
-	public static final String COL_ACCURACY = "accuracy";
-	public static final String COL_ALTITUDE = "altitude";
 
-	// CELLS: version, mcc, mnc, cid, time, latitude, longitude
-	public static final String TABLE_CELLS = "cells";
-	public static final String COL_MCC = "mcc";
-	public static final String COL_MNC = "mnc";
-	public static final String COL_CID = "cid";
-
-	private static final String DATABASE_NAME = "location.sqlite";
 	private static final int WLAN_ONLY_DATABASE_SCHEME_VERSION = 9;
-	private static final int NO_ALTITUDE_DATABASE_SCHEME_VERSION = 10;
-	private static final int LATEST_DATABASE_SCHEME_VERSION = 11;
-	public static final int DEFAULT_ACCURACY = 5000;
 
-	public static Cursor checkCursor(Cursor c) {
+	public static Cursor checkCursor(final Cursor c) {
 		if (c == null) {
 			return null;
 		}
@@ -46,21 +48,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return c;
 	}
 
-	private boolean databaseOpen = false;
-	private boolean newRequest;
-
-	private Thread autoClose;
-
-	private static DatabaseHelper instance;
-
-	public static DatabaseHelper getInstance(Context context) {
+	public static DatabaseHelper getInstance(final Context context) {
 		if (instance == null) {
 			instance = new DatabaseHelper(context);
 		}
 		return instance;
 	}
 
-	public DatabaseHelper(Context context) {
+	private Thread autoClose;
+
+	private boolean databaseOpen = false;
+
+	private boolean newRequest;
+
+	public DatabaseHelper(final Context context) {
 		super(context, DATABASE_NAME, null, LATEST_DATABASE_SCHEME_VERSION);
 		newRequest = false;
 	}
@@ -73,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	private void createCellsTable(SQLiteDatabase db) {
+	private void createCellsTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + TABLE_CELLS + "(" + COL_VERSION
 				+ " INTEGER, " + COL_MCC + " INTEGER, " + COL_MNC
 				+ " INTEGER, " + COL_CID + " INTEGER, " + COL_TIME
@@ -81,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " INTEGER)");
 	}
 
-	private void createWlanTable(SQLiteDatabase db) {
+	private void createWlanTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + TABLE_WLANS + "(" + COL_VERSION
 				+ " INTEGER, " + COL_MAC + " TEXT PRIMARY KEY, " + COL_TIME
 				+ " INTEGER, " + COL_LATITUDE + " INTEGER, " + COL_LONGITUDE
@@ -89,7 +90,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " INTEGER)");
 	}
 
-	private Cursor getLocationCursorGsmCell(int mcc, int mnc, int cid) {
+	private Cursor getLocationCursorGsmCell(final int mcc, final int mnc,
+			final int cid) {
 		final SQLiteDatabase db = getReadableDatabase();
 		final Cursor c = db.rawQuery("SELECT " + COL_TIME + ", " + COL_LATITUDE
 				+ ", " + COL_LONGITUDE + " FROM " + TABLE_CELLS + " WHERE "
@@ -98,8 +100,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return checkCursor(c);
 	}
 
-	private Cursor getLocationCursorNextWlan(long latitudeE6, long longitudeE6,
-			int num) {
+	private Cursor getLocationCursorNextWlan(final long latitudeE6,
+			final long longitudeE6, final int num) {
 		final SQLiteDatabase db = getReadableDatabase();
 		final Cursor c = db.rawQuery("SELECT " + COL_MAC + ", " + COL_TIME
 				+ ", " + COL_ACCURACY + ", " + COL_LATITUDE + ", "
@@ -111,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return checkCursor(c);
 	}
 
-	private Cursor getLocationCursorWlan(String mac) {
+	private Cursor getLocationCursorWlan(final String mac) {
 		final SQLiteDatabase db = getReadableDatabase();
 		final Cursor c = db.rawQuery("SELECT " + COL_TIME + ", " + COL_ACCURACY
 				+ ", " + COL_LATITUDE + ", " + COL_LONGITUDE + " FROM "
@@ -120,7 +122,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return checkCursor(c);
 	}
 
-	private Location getLocationFromCursor(Cursor c) {
+	private Location getLocationFromCursor(final Cursor c) {
 		final Location location = new Location("direct");
 		final int accuracyIndex = c.getColumnIndex(COL_ACCURACY);
 		if (accuracyIndex != -1) {
@@ -130,7 +132,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		final int altitudeIndex = c.getColumnIndex(COL_ALTITUDE);
 		if (altitudeIndex != -1) {
-			long alt = c.getLong(altitudeIndex);
+			final long alt = c.getLong(altitudeIndex);
 			if (alt > 0) {
 				location.setAltitude(c.getLong(altitudeIndex));
 			}
@@ -141,7 +143,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return location;
 	}
 
-	public Location getLocationGsmCell(int mcc, int mnc, int cid) {
+	public Location getLocationGsmCell(final int mcc, final int mnc,
+			final int cid) {
 		newRequest = true;
 		final Cursor c = getLocationCursorGsmCell(mcc, mnc, cid);
 		if (c == null) {
@@ -153,7 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return location;
 	}
 
-	public Location getLocationWlan(String mac) {
+	public Location getLocationWlan(final String mac) {
 		newRequest = true;
 		final Cursor c = getLocationCursorWlan(mac);
 		if (c == null) {
@@ -165,8 +168,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return location;
 	}
 
-	public Map<String, Location> getNextWlan(double latitude, double longitude,
-			int num) {
+	public Map<String, Location> getNextWlan(final double latitude,
+			final double longitude, final int num) {
 		newRequest = true;
 		final HashMap<String, Location> map = new HashMap<String, Location>();
 		final Cursor c = getLocationCursorNextWlan((long) (latitude * 1E6),
@@ -184,8 +187,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return map;
 	}
 
-	public void insertGsmCellLocation(int mcc, int mnc, int cid,
-			Location location) {
+	public void insertGsmCellLocation(final int mcc, final int mnc,
+			final int cid, final Location location) {
 		newRequest = true;
 		final SQLiteDatabase db = getWritableDatabase();
 		db.execSQL("INSERT OR REPLACE INTO " + TABLE_CELLS + "(" + COL_VERSION
@@ -197,7 +200,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ (long) (location.getLongitude() * 1E6) + "')");
 	}
 
-	public void insertWlanLocation(String mac, Location location) {
+	public void insertWlanLocation(final String mac, final Location location) {
 		newRequest = true;
 		final SQLiteDatabase db = getWritableDatabase();
 		db.execSQL("INSERT OR REPLACE INTO " + TABLE_WLANS + "(" + COL_VERSION
@@ -216,19 +219,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase db) {
+	public void onCreate(final SQLiteDatabase db) {
 		createWlanTable(db);
 		createCellsTable(db);
 	}
 
 	@Override
-	public void onOpen(SQLiteDatabase db) {
+	public void onOpen(final SQLiteDatabase db) {
 		super.onOpen(db);
 		databaseOpen = true;
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	public void onUpgrade(final SQLiteDatabase db, int oldVersion,
+			final int newVersion) {
 		if (oldVersion < WLAN_ONLY_DATABASE_SCHEME_VERSION) {
 			// ITS TO OLD - RECREATE DATABASE
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_WLANS_OLD);

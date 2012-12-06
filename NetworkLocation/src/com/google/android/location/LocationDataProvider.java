@@ -20,15 +20,17 @@ public interface LocationDataProvider {
 			return DEFAULT_IDENTIFIER;
 		}
 
-		protected Location renameSource(Location location) {
+		protected Location renameSource(final Location location) {
 			return renameSource(location, getIdentifier());
 		}
-		
-		protected Location renameSource(Location location, String source) {
+
+		protected Location renameSource(final Location location,
+				final String source) {
 			return renameSource(location, source, new Date().getTime());
 		}
 
-		protected Location renameSource(Location location, String source, long time) {
+		protected Location renameSource(Location location, final String source,
+				final long time) {
 			if (location == null) {
 				return null;
 			}

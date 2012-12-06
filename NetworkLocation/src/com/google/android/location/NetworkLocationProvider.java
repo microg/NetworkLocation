@@ -13,18 +13,18 @@ import com.android.location.provider.LocationProvider;
 public class NetworkLocationProvider extends LocationProvider implements
 		LocationBinder, Runnable {
 
-	private static final String TAG = NetworkLocationProvider.class.getName();
-
-	private LocationData data;
-	private Location lastLocation;
-	private long lastTime;
-	private boolean autoUpdate;
-
-	private long autoTime;
-
-	private final Thread background;
+	private static final String TAG = "NetworkLocationProvider";
 
 	private boolean active;
+	private long autoTime;
+	private boolean autoUpdate;
+	private final Thread background;
+
+	private LocationData data;
+
+	private Location lastLocation;
+
+	private long lastTime;
 
 	public NetworkLocationProvider() {
 		Log.d(TAG, "new Provider-Object constructed");
@@ -36,13 +36,13 @@ public class NetworkLocationProvider extends LocationProvider implements
 		background.start();
 	}
 
-	public NetworkLocationProvider(LocationData data) {
+	public NetworkLocationProvider(final LocationData data) {
 		this();
 		this.data = data;
 	}
 
 	@Override
-	public void onAddListener(int uid, WorkSource ws) {
+	public void onAddListener(final int uid, final WorkSource ws) {
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onEnableLocationTracking(boolean enable) {
+	public void onEnableLocationTracking(final boolean enable) {
 		autoUpdate = enable;
 		if (autoUpdate) {
 			synchronized (background) {
@@ -89,7 +89,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public int onGetStatus(Bundle extras) {
+	public int onGetStatus(final Bundle extras) {
 		return android.location.LocationProvider.AVAILABLE;
 	}
 
@@ -104,7 +104,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onLocationChanged(Location location) {
+	public void onLocationChanged(final Location location) {
 		Log.i(TAG, "onLocationChanged: " + location);
 		if (location != null) {
 			lastTime = SystemClock.elapsedRealtime();
@@ -114,7 +114,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public boolean onMeetsCriteria(Criteria criteria) {
+	public boolean onMeetsCriteria(final Criteria criteria) {
 		if (criteria.getAccuracy() == Criteria.ACCURACY_FINE) {
 			return false;
 		}
@@ -128,15 +128,15 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onProviderDisabled(String provider) {
+	public void onProviderDisabled(final String provider) {
 	}
 
 	@Override
-	public void onProviderEnabled(String provider) {
+	public void onProviderEnabled(final String provider) {
 	}
 
 	@Override
-	public void onRemoveListener(int uid, WorkSource ws) {
+	public void onRemoveListener(final int uid, final WorkSource ws) {
 	}
 
 	@Override
@@ -155,12 +155,12 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public boolean onSendExtraCommand(String command, Bundle extras) {
+	public boolean onSendExtraCommand(final String command, final Bundle extras) {
 		return false;
 	}
 
 	@Override
-	public void onSetMinTime(long minTime, WorkSource ws) {
+	public void onSetMinTime(final long minTime, final WorkSource ws) {
 		Log.d(TAG, "onSetMinTime: " + minTime);
 		autoTime = minTime;
 		synchronized (background) {
@@ -169,7 +169,8 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
+	public void onStatusChanged(final String provider, final int status,
+			final Bundle extras) {
 	}
 
 	@Override
@@ -188,12 +189,12 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onUpdateLocation(Location location) {
+	public void onUpdateLocation(final Location location) {
 		lastLocation = location;
 	}
 
 	@Override
-	public void onUpdateNetworkState(int state, NetworkInfo info) {
+	public void onUpdateNetworkState(final int state, final NetworkInfo info) {
 		Log.d(TAG, "onUpdateNetworkState: " + state + " (" + info + ")");
 	}
 
@@ -258,7 +259,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void setData(LocationData data) {
+	public void setData(final LocationData data) {
 		this.data = data;
 	}
 }

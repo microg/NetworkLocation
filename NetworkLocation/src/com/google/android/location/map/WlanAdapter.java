@@ -15,10 +15,10 @@ import com.google.android.location.R;
 
 public class WlanAdapter extends BaseAdapter {
 
-	private final Map<String, Location> wlans;
 	private final Context context;
+	private final Map<String, Location> wlans;
 
-	public WlanAdapter(Context context, Map<String, Location> wlans) {
+	public WlanAdapter(final Context context, final Map<String, Location> wlans) {
 		this.context = context;
 		this.wlans = wlans;
 	}
@@ -29,17 +29,17 @@ public class WlanAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public Object getItem(final int position) {
 		return wlans.values().toArray()[position];
 	}
 
 	@Override
-	public long getItemId(int position) {
+	public long getItemId(final int position) {
 		return wlans.keySet().toArray()[position].hashCode();
 	}
 
 	@Override
-	public View getView(int position, View view, ViewGroup parent) {
+	public View getView(final int position, View view, final ViewGroup parent) {
 		if (view == null) {
 			final LayoutInflater layoutInflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
