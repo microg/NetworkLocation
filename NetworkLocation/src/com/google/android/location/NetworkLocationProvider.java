@@ -11,34 +11,25 @@ import android.util.Log;
 import com.android.location.provider.LocationProvider;
 
 public class NetworkLocationProvider extends LocationProvider implements
-		LocationBinder, Runnable {
+		NetworkLocationProviderBase {
 
 	private static final String TAG = "NetworkLocationProvider";
 
-	private boolean active;
 	private long autoTime;
 	private boolean autoUpdate;
-	private final Thread background;
-
-	private LocationData data;
-
-	private Location lastLocation;
-
-	private long lastTime;
+	private final NetworkLocationRetriever background;
 
 	public NetworkLocationProvider() {
 		Log.d(TAG, "new Provider-Object constructed");
-		autoTime = Long.MAX_VALUE;
 		autoUpdate = false;
-		lastTime = 0;
-		active = true;
-		background = new Thread(this);
+		autoTime = Long.MAX_VALUE;
+		background = new NetworkLocationRetriever();
 		background.start();
 	}
 
 	public NetworkLocationProvider(final LocationData data) {
 		this();
-		this.data = data;
+		background.setData(data);
 	}
 
 	@Override
@@ -47,28 +38,18 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onDisable() {
-		active = false;
-		synchronized (background) {
-			background.notify();
-		}
+		background.setActive(false);
 	}
 
 	@Override
 	public void onEnable() {
-		active = true;
-		synchronized (background) {
-			background.notify();
-		}
+		background.setActive(true);
 	}
 
 	@Override
 	public void onEnableLocationTracking(final boolean enable) {
 		autoUpdate = enable;
-		if (autoUpdate) {
-			synchronized (background) {
-				background.notify();
-			}
-		}
+		background.setAuto(autoUpdate, autoTime);
 	}
 
 	@Override
@@ -95,7 +76,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public long onGetStatusUpdateTime() {
-		return lastTime;
+		return background.getLastTime();
 	}
 
 	@Override
@@ -107,8 +88,8 @@ public class NetworkLocationProvider extends LocationProvider implements
 	public void onLocationChanged(final Location location) {
 		Log.i(TAG, "onLocationChanged: " + location);
 		if (location != null) {
-			lastTime = SystemClock.elapsedRealtime();
-			lastLocation = location;
+			background.setLastTime(SystemClock.elapsedRealtime());
+			background.setLastLocation(location);
 			reportLocation(location);
 		}
 	}
@@ -161,11 +142,8 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onSetMinTime(final long minTime, final WorkSource ws) {
-		Log.d(TAG, "onSetMinTime: " + minTime);
 		autoTime = minTime;
-		synchronized (background) {
-			background.notify();
-		}
+		background.setAuto(autoUpdate, autoTime);
 	}
 
 	@Override
@@ -190,7 +168,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onUpdateLocation(final Location location) {
-		lastLocation = location;
+		background.setLastLocation(location);
 	}
 
 	@Override
@@ -199,67 +177,8 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void run() {
-		while (background != null) {
-			boolean waited = false;
-			if (!active) {
-				Log.d(TAG, "waiting till notified...");
-				try {
-					synchronized (background) {
-						background.wait();
-					}
-					waited = true;
-				} catch (final InterruptedException e) {
-					Log.w(TAG, "got interrupt!", e);
-				}
-			}
-			if (!autoUpdate && active) {
-				Log.d(TAG, "waiting max 60s to update...");
-				try {
-					synchronized (background) {
-						background.wait(60000);
-					}
-					waited = true;
-				} catch (final InterruptedException e) {
-					Log.w(TAG, "got interrupt!", e);
-				}
-			}
-			long wait;
-			while ((wait = lastTime + autoTime - SystemClock.elapsedRealtime()) > 0
-					&& autoUpdate && lastLocation != null) {
-				final float w = wait / 1000F;
-				Log.d(TAG, "waiting max " + w + "s to update...");
-				try {
-					synchronized (background) {
-						background.wait(wait);
-					}
-					waited = true;
-				} catch (final InterruptedException e) {
-					Log.w(TAG, "got interrupt!", e);
-				}
-			}
-			if (!waited) {
-				Log.d(TAG, "waiting max 1s to prevent mass update...");
-				try {
-					synchronized (background) {
-						background.wait(1000);
-					}
-					waited = true;
-				} catch (final InterruptedException e) {
-					Log.w(TAG, "got interrupt!", e);
-				}
-			}
-			if (active) {
-				Log.d(TAG, "recieving new location...");
-				data.getCurrentLocation();
-			} else {
-				Log.d(TAG, "we're not active = do not track!");
-			}
-		}
+	public void setData(final LocationData data) {
+		background.setData(data);
 	}
 
-	@Override
-	public void setData(final LocationData data) {
-		this.data = data;
-	}
 }

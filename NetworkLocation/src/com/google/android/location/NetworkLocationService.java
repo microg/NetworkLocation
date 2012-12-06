@@ -11,7 +11,7 @@ public class NetworkLocationService extends Service {
 	private LocationData data;
 	private GeocodeProvider geoprovider;
 	private CellMap gsmMap;
-	private LocationBinder nlprovider;
+	private NetworkLocationProviderBase nlprovider;
 	private WlanMap wlanMap;
 
 	public NetworkLocationService() {
