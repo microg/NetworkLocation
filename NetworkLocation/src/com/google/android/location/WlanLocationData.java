@@ -241,8 +241,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 			in.close();
 			for (final ResponseWLAN rw : response.getWlanList()) {
 				final String mac2 = niceMac(rw.getMac());
-				final Location loc = new Location(
-						NetworkLocationProvider.class.getName());
+				final Location loc = new Location("wlan");
 				loc.setProvider(getIdentifier());
 				loc.setLatitude(rw.getLocation().getLatitude() / 1E8F);
 				loc.setLongitude(rw.getLocation().getLongitude() / 1E8F);

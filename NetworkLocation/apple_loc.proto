@@ -12,7 +12,7 @@ message WLANLocation {
 	required int64 longitude = 2;
 	required int32 accuracy = 3;
 	required int32 zeroField4 = 4; // always 0 - don't ask why
-	required int32 altitude = 5; // -500 if unknown
+	optional int32 altitude = 5; // -500 if unknown
 	optional int32 altitudeAccuracy = 6; // Not set if altitude=-500
 	required int32 value11 = 11; // 5..63 ?
 	required int32 value12 = 12; // 30..4000 ? 

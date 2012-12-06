@@ -590,7 +590,7 @@ public final class LocationsProtos {
     boolean hasZeroField4();
     int getZeroField4();
     
-    // required int32 altitude = 5;
+    // optional int32 altitude = 5;
     boolean hasAltitude();
     int getAltitude();
     
@@ -675,7 +675,7 @@ public final class LocationsProtos {
       return zeroField4_;
     }
     
-    // required int32 altitude = 5;
+    // optional int32 altitude = 5;
     public static final int ALTITUDE_FIELD_NUMBER = 5;
     private int altitude_;
     public boolean hasAltitude() {
@@ -743,10 +743,6 @@ public final class LocationsProtos {
         return false;
       }
       if (!hasZeroField4()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasAltitude()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1101,10 +1097,6 @@ public final class LocationsProtos {
           
           return false;
         }
-        if (!hasAltitude()) {
-          
-          return false;
-        }
         if (!hasValue11()) {
           
           return false;
@@ -1269,7 +1261,7 @@ public final class LocationsProtos {
         return this;
       }
       
-      // required int32 altitude = 5;
+      // optional int32 altitude = 5;
       private int altitude_ ;
       public boolean hasAltitude() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
@@ -3182,7 +3174,7 @@ public final class LocationsProtos {
       "wlan\030\002 \003(\0132\023.apple.ResponseWLAN\"\247\001\n\014WLAN" +
       "Location\022\020\n\010latitude\030\001 \002(\003\022\021\n\tlongitude\030" +
       "\002 \002(\003\022\020\n\010accuracy\030\003 \002(\005\022\022\n\nzeroField4\030\004 " +
-      "\002(\005\022\020\n\010altitude\030\005 \002(\005\022\030\n\020altitudeAccurac" +
+      "\002(\005\022\020\n\010altitude\030\005 \001(\005\022\030\n\020altitudeAccurac" +
       "y\030\006 \001(\005\022\017\n\007value11\030\013 \002(\005\022\017\n\007value12\030\014 \002(" +
       "\005\"S\n\014ResponseWLAN\022\013\n\003mac\030\001 \002(\t\022%\n\010locati" +
       "on\030\002 \002(\0132\023.apple.WLANLocation\022\017\n\007channel" +

@@ -2,47 +2,38 @@ package com.google.android.location;
 
 import android.location.Criteria;
 import android.location.Location;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.WorkSource;
 import android.util.Log;
 
-import com.android.location.provider.LocationProvider;
+import com.android.location.provider.LocationProviderBase;
+import com.android.location.provider.ProviderPropertiesUnbundled;
+import com.android.location.provider.ProviderRequestUnbundled;
 
-public class NetworkLocationProvider extends LocationProvider implements
+public class NetworkLocationProviderV2 extends LocationProviderBase implements
 		LocationBinder, Runnable {
 
-	private static final String TAG = NetworkLocationProvider.class.getName();
+	private static final String TAG = "NetworkLocationProviderV2";
 
-	private LocationData data;
 	private Location lastLocation;
-	private long lastTime;
-	private boolean autoUpdate;
-
-	private long autoTime;
-
-	private final Thread background;
-
+	private LocationData data;
 	private boolean active;
+	private boolean autoUpdate;
+	private long autoTime;
+	private final Thread background;
+	private long lastTime;
 
-	public NetworkLocationProvider() {
-		Log.d(TAG, "new Provider-Object constructed");
-		autoTime = Long.MAX_VALUE;
-		autoUpdate = false;
-		lastTime = 0;
+	public NetworkLocationProviderV2() {
+		super(TAG, ProviderPropertiesUnbundled.create(true, false, true, false,
+				false, false, false, Criteria.POWER_LOW,
+				Criteria.ACCURACY_COARSE));
 		active = true;
+		autoUpdate = false;
+		autoTime = Long.MAX_VALUE;
+		lastTime = 0;
 		background = new Thread(this);
 		background.start();
-	}
-
-	public NetworkLocationProvider(LocationData data) {
-		this();
-		this.data = data;
-	}
-
-	@Override
-	public void onAddListener(int uid, WorkSource ws) {
 	}
 
 	@Override
@@ -62,34 +53,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onEnableLocationTracking(boolean enable) {
-		autoUpdate = enable;
-		if (autoUpdate) {
-			synchronized (background) {
-				background.notify();
-			}
-		}
-	}
-
-	@Override
-	public int onGetAccuracy() {
-		return Criteria.ACCURACY_COARSE;
-	}
-
-	@Override
-	public String onGetInternalState() {
-		Log.w(TAG,
-				"Internal State not yet implemented. The application may not work.");
-		return "[INTERNAL STATE NOT IMPLEMENTED]";
-	}
-
-	@Override
-	public int onGetPowerRequirement() {
-		return Criteria.POWER_LOW;
-	}
-
-	@Override
-	public int onGetStatus(Bundle extras) {
+	public int onGetStatus(Bundle arg0) {
 		return android.location.LocationProvider.AVAILABLE;
 	}
 
@@ -99,8 +63,10 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public boolean onHasMonetaryCost() {
-		return false;
+	public void onSetRequest(ProviderRequestUnbundled arg0, WorkSource arg1) {
+		// TODO Auto-generated method stub
+		Log.w(TAG,
+				"Not yet implemented: NetworkLocationProviderV2.onSetRequest");
 	}
 
 	@Override
@@ -114,20 +80,6 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public boolean onMeetsCriteria(Criteria criteria) {
-		if (criteria.getAccuracy() == Criteria.ACCURACY_FINE) {
-			return false;
-		}
-		if (criteria.isAltitudeRequired()) {
-			return false;
-		}
-		if (criteria.isSpeedRequired()) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public void onProviderDisabled(String provider) {
 	}
 
@@ -136,65 +88,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onRemoveListener(int uid, WorkSource ws) {
-	}
-
-	@Override
-	public boolean onRequiresCell() {
-		return true;
-	}
-
-	@Override
-	public boolean onRequiresNetwork() {
-		return true;
-	}
-
-	@Override
-	public boolean onRequiresSatellite() {
-		return false;
-	}
-
-	@Override
-	public boolean onSendExtraCommand(String command, Bundle extras) {
-		return false;
-	}
-
-	@Override
-	public void onSetMinTime(long minTime, WorkSource ws) {
-		Log.d(TAG, "onSetMinTime: " + minTime);
-		autoTime = minTime;
-		synchronized (background) {
-			background.notify();
-		}
-	}
-
-	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-	}
-
-	@Override
-	public boolean onSupportsAltitude() {
-		return false;
-	}
-
-	@Override
-	public boolean onSupportsBearing() {
-		return true;
-	}
-
-	@Override
-	public boolean onSupportsSpeed() {
-		return false;
-	}
-
-	@Override
-	public void onUpdateLocation(Location location) {
-		lastLocation = location;
-	}
-
-	@Override
-	public void onUpdateNetworkState(int state, NetworkInfo info) {
-		Log.d(TAG, "onUpdateNetworkState: " + state + " (" + info + ")");
 	}
 
 	@Override
@@ -261,4 +155,5 @@ public class NetworkLocationProvider extends LocationProvider implements
 	public void setData(LocationData data) {
 		this.data = data;
 	}
+
 }

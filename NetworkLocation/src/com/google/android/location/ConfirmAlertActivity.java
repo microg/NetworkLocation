@@ -9,7 +9,7 @@ public class ConfirmAlertActivity extends Activity {
 	private static final String TAG = ConfirmAlertActivity.class.getName();
 
 	public ConfirmAlertActivity() {
-		Log.i(TAG, "new Service-Object constructed");
+		Log.i(TAG, "new Activty-Object constructed");
 	}
 
 	@Override
