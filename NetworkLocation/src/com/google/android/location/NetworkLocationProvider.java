@@ -86,7 +86,6 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onLocationChanged(final Location location) {
-		Log.i(TAG, "onLocationChanged: " + location);
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);

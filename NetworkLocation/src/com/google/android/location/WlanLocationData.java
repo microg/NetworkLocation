@@ -110,7 +110,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		final Collection<String> wlans = getWLANs();
 		requestMissing(wlans);
 		final Map<String, Location> locs = getLocations(wlans);
-		final Location location = calculateLocation(locs.values());
+		final Location location = calculateLocation(locs.values(), 1000);
 		if (location == null
 				|| (location.getLatitude() == 0 && location.getLongitude() == 0)) {
 			Log.d(TAG, "could not get location via wlan");

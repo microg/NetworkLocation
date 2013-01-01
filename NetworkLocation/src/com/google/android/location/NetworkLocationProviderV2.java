@@ -1,17 +1,18 @@
 package com.google.android.location;
 
+import android.annotation.TargetApi;
 import android.location.Criteria;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.WorkSource;
-import android.util.Log;
 
 import com.android.location.provider.LocationProviderBase;
 import com.android.location.provider.LocationRequestUnbundled;
 import com.android.location.provider.ProviderPropertiesUnbundled;
 import com.android.location.provider.ProviderRequestUnbundled;
 
+@TargetApi(17)
 public class NetworkLocationProviderV2 extends LocationProviderBase implements
 		NetworkLocationProviderBase {
 
@@ -49,7 +50,6 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 
 	@Override
 	public void onLocationChanged(final Location location) {
-		Log.i(TAG, "onLocationChanged: " + location);
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
@@ -77,6 +77,9 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 				autoTime = request.getInterval();
 			}
 			autoUpdate = true;
+		}
+		if (autoTime < 5000) {
+			autoTime = 5000;
 		}
 		background.setAuto(autoUpdate, autoTime);
 	}

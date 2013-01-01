@@ -7,7 +7,6 @@ import java.util.Map;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.util.Log;
 
 public class LocationData extends LocationDataProvider.Stub implements
 		LocationListener {
@@ -106,8 +105,6 @@ public class LocationData extends LocationDataProvider.Stub implements
 				+ Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1)
 				* Math.cos(lat2);
 		final double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		Log.d("LocationData", "distance between " + loc1 + " and " + loc2
-				+ " = " + R * c * 1000);
 		return R * c * 1000;
 	}
 

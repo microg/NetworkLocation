@@ -40,54 +40,50 @@ public class NetworkLocationRetriever extends Thread {
 		while (enabled) {
 			boolean waited = false;
 			if (!active) {
-				Log.d(TAG, "waiting till notified...");
 				try {
 					synchronized (this) {
 						wait();
 					}
 					waited = true;
 				} catch (final InterruptedException e) {
-					Log.w(TAG, "got interrupt!", e);
 				}
 			}
 			if (!autoUpdate && active) {
-				Log.d(TAG, "waiting max 60s to update...");
 				try {
 					synchronized (this) {
 						wait(60000);
 					}
 					waited = true;
 				} catch (final InterruptedException e) {
-					Log.w(TAG, "got interrupt!", e);
 				}
 			}
 			long wait;
 			while ((wait = lastTime + autoTime - SystemClock.elapsedRealtime()) > 0
 					&& autoUpdate && lastLocation != null) {
 				final float w = wait / 1000F;
-				Log.d(TAG, "waiting max " + w + "s to update...");
+				Log.d(TAG, "waiting " + w + "s to update...");
 				try {
 					synchronized (this) {
 						wait(wait);
 					}
 					waited = true;
 				} catch (final InterruptedException e) {
-					Log.w(TAG, "got interrupt!", e);
+					break;
 				}
 			}
+
 			if (!waited) {
-				Log.d(TAG, "waiting min 1s to prevent mass update...");
+				Log.d(TAG, "waiting min 5s to prevent mass update...");
 				try {
 					synchronized (this) {
-						wait(1000);
+						wait(5000);
 					}
 					waited = true;
 				} catch (final InterruptedException e) {
-					Log.w(TAG, "got interrupt!", e);
+					break;
 				}
 			}
 			if (active) {
-				Log.d(TAG, "recieving new location...");
 				data.getCurrentLocation();
 			} else {
 				Log.d(TAG, "we're not active = do not track!");

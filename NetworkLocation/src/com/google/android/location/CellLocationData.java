@@ -43,13 +43,19 @@ public class CellLocationData extends LocationDataProvider.Stub {
 		}
 		final GsmCellLocation cell = getGsmCellLocation();
 		final String operator = telephonyManager.getNetworkOperator();
-		if (cell == null || operator == null) {
-			Log.d(TAG, "could not get location via gsm");
+		if (operator == null) {
+			Log.d(TAG, "could not get location via gsm (operator is null)");
 			return null;
 		}
-
 		final ArrayList<Location> locations = new ArrayList<Location>();
-		locations.add(getLocation(operator, cell.getCid()));
+
+		if (cell != null) {
+			final Location loc = getLocation(operator, cell.getCid());
+			if (loc != null) {
+				locations.add(loc);
+			}
+		}
+
 		for (final NeighboringCellInfo neighbor : telephonyManager
 				.getNeighboringCellInfo()) {
 			if (neighbor.getCid() != -1) {
@@ -60,9 +66,10 @@ public class CellLocationData extends LocationDataProvider.Stub {
 				}
 			}
 		}
-		final Location location = calculateLocation(locations);
+		final Location location = calculateLocation(locations, 20000);
 		if (location == null) {
-			Log.d(TAG, "could not get location via gsm");
+			Log.d(TAG,
+					"could not get location via gsm calculateLocation is null");
 			return null;
 		}
 		listener.onLocationChanged(location);
@@ -85,6 +92,8 @@ public class CellLocationData extends LocationDataProvider.Stub {
 	private Location getLocation(final int mcc, final int mnc, final int cid) {
 		if (mcc == 0 || mcc == -1 || mnc == 0 || mnc == -1 || cid == 0
 				|| cid == -1) {
+			Log.w(TAG, "gsm cell " + mcc + "/" + mnc + "/" + cid
+					+ " is invalid");
 			return null;
 		}
 		final Location result = renameSource(gsmMap.get(mcc, mnc, cid));
