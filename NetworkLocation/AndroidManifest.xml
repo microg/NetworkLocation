@@ -25,7 +25,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <application android:label="@string/app_label" >
+    <application android:label="@string/app_label" android:icon="@drawable/app_icon">
         <uses-library android:name="com.android.location.provider" />
         <uses-library
             android:name="com.google.android.maps"
