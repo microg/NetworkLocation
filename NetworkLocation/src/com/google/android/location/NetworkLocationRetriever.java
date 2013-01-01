@@ -76,7 +76,7 @@ public class NetworkLocationRetriever extends Thread {
 				}
 			}
 			if (!waited) {
-				Log.d(TAG, "waiting max 1s to prevent mass update...");
+				Log.d(TAG, "waiting min 1s to prevent mass update...");
 				try {
 					synchronized (this) {
 						wait(1000);

@@ -16,6 +16,9 @@ USE_SUPPORT=false
 EXTRA_INCLUDES=""
 EXTRA_USES="com.android.location.provider.jar:android.location.jar"
 
-# Script file to be called after default script
-EXTRA_BUILD_SCRIPT=""
+# Additional compile directory [api only]
+EXTRA_COMPILE=""
 
+# Script file to be called
+BEFORE_BUILD_SCRIPT=""
+AFTER_BUILD_SCRIPT=""

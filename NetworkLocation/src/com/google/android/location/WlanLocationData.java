@@ -17,6 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -94,34 +95,6 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		}
 	}
 
-	private android.location.Location calculateLocation(
-			final Collection<Location> values) {
-		if (values == null || values.size() == 0) {
-			return null;
-		}
-		float lat = 0;
-		float lon = 0;
-		float acc = 0;
-		float minacc = Float.MAX_VALUE;
-		int n = 0;
-		for (final Location location : values) {
-			if (location.getAccuracy() != -1 && location.getAccuracy() < 1000) {
-				lat += location.getLatitude();
-				lon += location.getLongitude();
-				acc += location.getAccuracy();
-				minacc = Math.min(minacc, location.getAccuracy());
-				n++;
-			}
-		}
-		final Location loc = new android.location.Location(getIdentifier());
-		loc.setAccuracy(Math.max(42,
-				Math.min((float) Math.exp(1 - n) * acc / n, minacc)));
-		loc.setLatitude(lat / n);
-		loc.setLongitude(lon / n);
-		loc.setTime(new Date().getTime());
-		return loc;
-	}
-
 	private Request createRequest(final Collection<String> macs) {
 		final Request.Builder request = Request.newBuilder()
 				.setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
@@ -169,6 +142,14 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 
 	private Collection<String> getWLANs() {
 		return getWLANs(context);
+	}
+
+	private boolean isOnline() {
+		final ConnectivityManager cm = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		return cm.getActiveNetworkInfo() != null
+				&& cm.getActiveNetworkInfo().isConnectedOrConnecting();
 	}
 
 	private Collection<String> missingInCache(final Collection<String> wlans) {
@@ -230,12 +211,6 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 			out.write(bytes);
 			out.flush();
 			final InputStream in = connection.getInputStream();
-			int i = 0;
-			int n = -1;
-			final StringBuilder sb = new StringBuilder();
-			while (i++ < 10 && (n = in.read()) != -1) {
-				sb.append("0x").append(n).append(" ");
-			}
 			final Response response = Response.parseFrom(in);
 			out.close();
 			in.close();
@@ -279,7 +254,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 
 				@Override
 				public void run() {
-					while (hasWork()) {
+					while (hasWork() && isOnline()) {
 						requestLocations();
 						final Location loc = getCurrentLocation();
 						listener.onLocationChanged(loc);

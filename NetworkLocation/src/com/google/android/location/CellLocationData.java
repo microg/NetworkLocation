@@ -1,6 +1,7 @@
 package com.google.android.location;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Environment;
 import android.telephony.CellLocation;
+import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
@@ -45,7 +47,20 @@ public class CellLocationData extends LocationDataProvider.Stub {
 			Log.d(TAG, "could not get location via gsm");
 			return null;
 		}
-		final Location location = getLocation(operator, cell);
+
+		final ArrayList<Location> locations = new ArrayList<Location>();
+		locations.add(getLocation(operator, cell.getCid()));
+		for (final NeighboringCellInfo neighbor : telephonyManager
+				.getNeighboringCellInfo()) {
+			if (neighbor.getCid() != -1) {
+				final Location loc = getLocation(operator, neighbor.getCid());
+				if (loc != null) {
+					loc.setAccuracy(loc.getAccuracy() * 3);
+					locations.add(loc);
+				}
+			}
+		}
+		final Location location = calculateLocation(locations);
 		if (location == null) {
 			Log.d(TAG, "could not get location via gsm");
 			return null;
@@ -81,15 +96,13 @@ public class CellLocationData extends LocationDataProvider.Stub {
 		return result;
 	}
 
-	private Location getLocation(final String operator,
-			final GsmCellLocation cell) {
+	private Location getLocation(final String operator, final int cid) {
 		if (operator == null || operator.length() < 3) {
 			Log.w(TAG,
 					"Not connected to any gsm cell - won't track location...");
 			return null;
 		}
-		return getLocation(operator.substring(0, 3), operator.substring(3),
-				cell.getCid());
+		return getLocation(operator.substring(0, 3), operator.substring(3), cid);
 	}
 
 	private Location getLocation(final String mcc, final String mnc,
