@@ -38,7 +38,7 @@ public class LocationData extends LocationDataProvider.Stub implements
 		if (locations.containsKey(IMPORTANT_PROVIDER)
 				&& locations.get(IMPORTANT_PROVIDER) != null) {
 			final long oldt = locations.get(IMPORTANT_PROVIDER).getTime();
-			location = renameSource(locations.get(IMPORTANT_PROVIDER));
+			location = locations.get(IMPORTANT_PROVIDER);
 			if (oldt < newt) {
 				location.setAccuracy(location.getAccuracy()
 						+ ((newt - oldt) / 50));
@@ -58,11 +58,11 @@ public class LocationData extends LocationDataProvider.Stub implements
 			}
 			final long oldt = loc.getTime();
 			if (location == null) {
-				location = renameSource(loc);
+				location = loc;
 			} else if (locationDistance(location, loc) < location.getAccuracy()
 					+ loc.getAccuracy()
 					+ ((oldt < newt) ? ((newt - oldt) / 50) : 0)) {
-				location = renameSource(loc);
+				location = loc;
 			}
 			if (oldt < newt) {
 				location.setAccuracy(location.getAccuracy()

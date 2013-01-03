@@ -1,8 +1,5 @@
 package com.google.android.location;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -12,8 +9,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,14 +17,13 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import com.apple.iphone.services.LocationsProtos.Request;
-import com.apple.iphone.services.LocationsProtos.RequestWLAN;
+import com.apple.iphone.services.LocationRetriever;
 import com.apple.iphone.services.LocationsProtos.Response;
 import com.apple.iphone.services.LocationsProtos.ResponseWLAN;
 
 public class WlanLocationData extends LocationDataProvider.Stub {
 
-	public final static String IDENTIFIER = "wlan";
+	public final static String IDENTIFIER = "network-wifi";
 
 	private final static String TAG = "WlanLocationData";
 
@@ -95,16 +89,6 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		}
 	}
 
-	private Request createRequest(final Collection<String> macs) {
-		final Request.Builder request = Request.newBuilder()
-				.setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
-		for (final String mac : macs) {
-			request.addWlan(RequestWLAN.newBuilder().setMac(mac));
-		}
-
-		return request.build();
-	}
-
 	@Override
 	public android.location.Location getCurrentLocation() {
 		final Collection<String> wlans = getWLANs();
@@ -166,12 +150,11 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		if (missingMacs == null) {
 			return;
 		}
-		Collection<String> macs;
+		final Collection<String> macs = new ArrayList<String>();
 		synchronized (missingMacs) {
 			if (missingMacs.size() == 0) {
 				return;
 			}
-			macs = new ArrayList<String>();
 			while (macs.size() < 10 && missingMacs.size() > 0) {
 				final String mac = missingMacs.pop();
 				if (!wlanMap.containsKey(mac)) {
@@ -182,40 +165,11 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		}
 
 		try {
-			final URL url = new URL(
-					"https://iphone-services.apple.com/clls/wloc");
-			final Request request = createRequest(macs);
-			final byte[] bytea = new byte[] { 0, 1, 0, 5, 101, 110, 95, 85, 83,
-					0, 0, 0, 11, 52, 46, 50, 46, 49, 46, 56, 67, 49, 52, 56, 0,
-					0, 0, 1, 0, 0, 0 }; // 120
-			final byte[] byteb = request.toByteArray();
-			final byte[] bytes = new byte[bytea.length + byteb.length + 1];
-			for (int i = 0; i < bytea.length; i++) {
-				bytes[i] = bytea[i];
-			}
-			bytes[bytea.length] = (byte) byteb.length;
-			for (int i = 0; i < byteb.length; i++) {
-				bytes[i + bytea.length + 1] = byteb[i];
-			}
-			final HttpsURLConnection connection = (HttpsURLConnection) url
-					.openConnection();
-			connection.setRequestMethod("POST");
-			connection.setDoInput(true);
-			connection.setDoOutput(true);
-			connection.setUseCaches(false);
-			connection.setRequestProperty("Content-Type",
-					"application/x-www-form-urlencoded");
-			connection.setRequestProperty("Content-Length",
-					String.valueOf(bytes.length));
-			final OutputStream out = connection.getOutputStream();
-			out.write(bytes);
-			out.flush();
-			final InputStream in = connection.getInputStream();
-			final Response response = Response.parseFrom(in);
-			out.close();
-			in.close();
+			final Response response = LocationRetriever.retrieveLocations(macs);
+			int newLocs = 0;
+			int reqLocs = 0;
 			for (final ResponseWLAN rw : response.getWlanList()) {
-				final String mac2 = niceMac(rw.getMac());
+				final String mac = niceMac(rw.getMac());
 				final Location loc = new Location(IDENTIFIER);
 				loc.setProvider(getIdentifier());
 				loc.setLatitude(rw.getLocation().getLatitude() / 1E8F);
@@ -225,17 +179,22 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 					loc.setAltitude(rw.getLocation().getAltitude());
 				}
 				loc.setTime(new Date().getTime());
-				wlanMap.put(mac2, loc);
-				if (macs.contains(mac2)) {
-					macs.remove(mac2);
+				if (!wlanMap.containsKey(mac)) {
+					newLocs++;
+				}
+				wlanMap.put(mac, loc);
+				if (macs.contains(mac)) {
+					macs.remove(mac);
 				}
 				synchronized (missingMacs) {
-					if (missingMacs.contains(mac2)) {
-						missingMacs.remove(mac2);
+					if (missingMacs.contains(mac)) {
+						reqLocs++;
+						missingMacs.remove(mac);
 					}
 				}
 			}
-
+			Log.d(TAG, "requestLocations: " + response.getWlanCount()
+					+ " results, " + newLocs + " new, " + reqLocs + " required");
 		} catch (final Exception e) {
 			Log.e(TAG, "requestLocations: " + macs, e);
 		}

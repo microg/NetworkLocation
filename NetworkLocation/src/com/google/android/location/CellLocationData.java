@@ -18,7 +18,7 @@ import android.util.Log;
 
 public class CellLocationData extends LocationDataProvider.Stub {
 
-	public static final String IDENTIFIER = "cell";
+	public static final String IDENTIFIER = "network-cell";
 
 	private static final String TAG = "CellLocationData";
 	private final File cellDBFile = new File(

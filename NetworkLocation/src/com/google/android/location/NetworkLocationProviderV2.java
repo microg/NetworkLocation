@@ -18,14 +18,23 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 
 	private static final String TAG = "NetworkLocationProviderV2";
 
+	private final static String IDENTIFIER = "network";
+
 	private final NetworkLocationRetriever background;
 
+	private final boolean internal;
+
 	public NetworkLocationProviderV2() {
+		this(false);
+	}
+
+	public NetworkLocationProviderV2(boolean internal) {
 		super(TAG, ProviderPropertiesUnbundled.create(true, false, true, false,
 				false, false, false, Criteria.POWER_LOW,
 				Criteria.ACCURACY_COARSE));
 		background = new NetworkLocationRetriever();
 		background.start();
+		this.internal = internal;
 	}
 
 	@Override
@@ -49,12 +58,17 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	}
 
 	@Override
-	public void onLocationChanged(final Location location) {
+	public void onLocationChanged(Location location) {
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
+			if (internal) {
+				location = LocationDataProvider.Stub.renameSource(location,
+						IDENTIFIER);
+			}
 			background.setLastLocation(location);
 			location.makeComplete();
-			reportLocation(location);
+			reportLocation(LocationDataProvider.Stub.renameSource(location,
+					IDENTIFIER));
 		}
 	}
 

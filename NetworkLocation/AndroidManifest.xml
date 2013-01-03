@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.android.location"
-    android:versionCode="0914"
-    android:versionName="0.9.14" >
+    android:versionCode="0915"
+    android:versionName="0.9.15" >
 
     <uses-sdk
         android:minSdkVersion="9"
-        android:targetSdkVersion="12" />
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -21,7 +21,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
-    <application android:label="@string/app_label" android:icon="@drawable/app_icon">
+    <application android:label="@string/app_label" android:icon="@drawable/app_icon" android:allowBackup="false">
         <uses-library android:name="com.android.location.provider" />
         <uses-library
             android:name="com.google.android.maps"

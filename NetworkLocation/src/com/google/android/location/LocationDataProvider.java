@@ -11,8 +11,24 @@ public interface LocationDataProvider {
 
 		public static final String DEFAULT_IDENTIFIER = "unknown";
 
+		protected static Location renameSource(final Location location,
+				final String source) {
+			return renameSource(location, source, new Date().getTime());
+		}
+
+		protected static Location renameSource(Location location,
+				final String source, final long time) {
+			if (location == null) {
+				return null;
+			}
+			location = new Location(location);
+			location.setProvider(source);
+			location.setTime(time);
+			return location;
+		}
+
 		public android.location.Location calculateLocation(
-				final Collection<Location> values, int minAccuracy) {
+				final Collection<Location> values, final int minAccuracy) {
 			if (values == null || values.size() == 0) {
 				return null;
 			}
@@ -55,22 +71,6 @@ public interface LocationDataProvider {
 
 		protected Location renameSource(final Location location) {
 			return renameSource(location, getIdentifier());
-		}
-
-		protected Location renameSource(final Location location,
-				final String source) {
-			return renameSource(location, source, new Date().getTime());
-		}
-
-		protected Location renameSource(Location location, final String source,
-				final long time) {
-			if (location == null) {
-				return null;
-			}
-			location = new Location(location);
-			location.setProvider(source);
-			location.setTime(time);
-			return location;
 		}
 
 	}

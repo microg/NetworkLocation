@@ -39,6 +39,10 @@ public class NetworkLocationService extends Service {
 				|| action
 						.equalsIgnoreCase("com.android.location.service.GeocodeProvider")) {
 			return geoprovider.getBinder();
+		} else if (action
+				.equalsIgnoreCase("com.google.android.location.internal.ANDROID_NLP")) {
+			Log.w(TAG, "somebody wants internal stuff o.O");
+			return nlprovider.getBinder();
 		} else {
 			Log.w(TAG, "Unknown Action onBind: " + action);
 		}

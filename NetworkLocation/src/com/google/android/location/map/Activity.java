@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -26,7 +27,6 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
 public class Activity extends android.app.Activity implements LocationListener {
-
 	private static final String TAG = Activity.class.getName();
 	private TextView cellCid;
 	private TextView cellLat;
@@ -149,9 +149,9 @@ public class Activity extends android.app.Activity implements LocationListener {
 		wlans = new WlanMap(helper);
 		cells = new CellMap(helper);
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		Criteria criteria = new Criteria();
 		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, 2000, 10, this);
+		locationManager.requestLocationUpdates(2000, 10, criteria, this, null);
 	}
 
 	@Override
@@ -163,10 +163,11 @@ public class Activity extends android.app.Activity implements LocationListener {
 
 	@Override
 	public void onLocationChanged(final Location location) {
+		Log.d(TAG, "onLocationChanged:" + location);
 		if (location != null) {
 			makeLocationVisible(location);
 		} else {
-			Log.d("LocationActivity", "could not lock!");
+			Log.d(TAG, "could not lock!");
 		}
 	}
 

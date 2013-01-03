@@ -13,18 +13,26 @@ import com.android.location.provider.LocationProvider;
 public class NetworkLocationProvider extends LocationProvider implements
 		NetworkLocationProviderBase {
 
+	private static final String IDENTIFIER = "network";
 	private static final String TAG = "NetworkLocationProvider";
 
 	private long autoTime;
 	private boolean autoUpdate;
 	private final NetworkLocationRetriever background;
 
+	private final boolean internal;
+
 	public NetworkLocationProvider() {
+		this(false);
+	}
+
+	public NetworkLocationProvider(boolean internal) {
 		Log.d(TAG, "new Provider-Object constructed");
 		autoUpdate = false;
 		autoTime = Long.MAX_VALUE;
 		background = new NetworkLocationRetriever();
 		background.start();
+		this.internal = internal;
 	}
 
 	public NetworkLocationProvider(final LocationData data) {
@@ -85,9 +93,13 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onLocationChanged(final Location location) {
+	public void onLocationChanged(Location location) {
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
+			if (internal) {
+				location = LocationDataProvider.Stub.renameSource(location,
+						IDENTIFIER);
+			}
 			background.setLastLocation(location);
 			reportLocation(location);
 		}
