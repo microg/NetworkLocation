@@ -26,7 +26,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 		this(false);
 	}
 
-	public NetworkLocationProvider(boolean internal) {
+	public NetworkLocationProvider(final boolean internal) {
 		Log.d(TAG, "new Provider-Object constructed");
 		autoUpdate = false;
 		autoTime = Long.MAX_VALUE;
@@ -96,7 +96,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	public void onLocationChanged(Location location) {
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
-			if (internal) {
+			if (!internal) {
 				location = LocationDataProvider.Stub.renameSource(location,
 						IDENTIFIER);
 			}

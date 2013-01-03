@@ -16,9 +16,9 @@ import com.android.location.provider.ProviderRequestUnbundled;
 public class NetworkLocationProviderV2 extends LocationProviderBase implements
 		NetworkLocationProviderBase {
 
-	private static final String TAG = "NetworkLocationProviderV2";
-
 	private final static String IDENTIFIER = "network";
+
+	private static final String TAG = "NetworkLocationProviderV2";
 
 	private final NetworkLocationRetriever background;
 
@@ -28,7 +28,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 		this(false);
 	}
 
-	public NetworkLocationProviderV2(boolean internal) {
+	public NetworkLocationProviderV2(final boolean internal) {
 		super(TAG, ProviderPropertiesUnbundled.create(true, false, true, false,
 				false, false, false, Criteria.POWER_LOW,
 				Criteria.ACCURACY_COARSE));
@@ -61,7 +61,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	public void onLocationChanged(Location location) {
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
-			if (internal) {
+			if (!internal) {
 				location = LocationDataProvider.Stub.renameSource(location,
 						IDENTIFIER);
 			}

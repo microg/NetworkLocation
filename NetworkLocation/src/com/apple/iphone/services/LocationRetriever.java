@@ -15,48 +15,15 @@ import com.apple.iphone.services.LocationsProtos.RequestWLAN;
 import com.apple.iphone.services.LocationsProtos.Response;
 
 public class LocationRetriever {
-	private LocationRetriever() {
-
-	}
+	public static final byte[] firstBytes = new byte[] { 0, 1, 0, 5, 101, 110,
+			95, 85, 83, 0, 0, 0, 11, 52, 46, 50, 46, 49, 46, 56, 67, 49, 52,
+			56, 0, 0, 0, 1, 0, 0, 0 };
 
 	private static final String SERVICE_URL = "https://iphone-services.apple.com/clls/wloc";
 
-	public static HttpsURLConnection createConnection() throws IOException {
-		return createConnection(SERVICE_URL);
-	}
-
-	public static HttpsURLConnection createConnection(String url)
-			throws MalformedURLException, IOException {
-		return createConnection(new URL(url));
-	}
-
-	public static HttpsURLConnection createConnection(URL url)
-			throws IOException {
-		return (HttpsURLConnection) url.openConnection();
-	}
-
-	public static void prepareConnection(HttpsURLConnection connection,
-			int length) throws ProtocolException {
-		connection.setRequestMethod("POST");
-		connection.setDoInput(true);
-		connection.setDoOutput(true);
-		connection.setUseCaches(false);
-		connection.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
-		connection.setRequestProperty("Content-Length", String.valueOf(length));
-	}
-
-	public static Request createRequest(String... macs) {
-		Request.Builder builder = Request.newBuilder()
-				.setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
-		for (String mac : macs) {
-			builder.addWlan(RequestWLAN.newBuilder().setMac(mac));
-		}
-		return builder.build();
-	}
-
-	public static byte[] combineBytes(byte[] first, byte[] second, byte divider) {
-		byte[] bytes = new byte[first.length + second.length + 1];
+	public static byte[] combineBytes(final byte[] first, final byte[] second,
+			final byte divider) {
+		final byte[] bytes = new byte[first.length + second.length + 1];
 		for (int i = 0; i < first.length; i++) {
 			bytes[i] = first[i];
 		}
@@ -67,31 +34,66 @@ public class LocationRetriever {
 		return bytes;
 	}
 
-	public static final byte[] firstBytes = new byte[] { 0, 1, 0, 5, 101, 110,
-			95, 85, 83, 0, 0, 0, 11, 52, 46, 50, 46, 49, 46, 56, 67, 49, 52,
-			56, 0, 0, 0, 1, 0, 0, 0 };
+	public static HttpsURLConnection createConnection() throws IOException {
+		return createConnection(SERVICE_URL);
+	}
 
-	public static Response retrieveLocations(Collection<String> macs)
+	public static HttpsURLConnection createConnection(final String url)
+			throws MalformedURLException, IOException {
+		return createConnection(new URL(url));
+	}
+
+	public static HttpsURLConnection createConnection(final URL url)
+			throws IOException {
+		return (HttpsURLConnection) url.openConnection();
+	}
+
+	public static Request createRequest(final String... macs) {
+		final Request.Builder builder = Request.newBuilder()
+				.setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
+		for (final String mac : macs) {
+			builder.addWlan(RequestWLAN.newBuilder().setMac(mac));
+		}
+		return builder.build();
+	}
+
+	public static void prepareConnection(final HttpsURLConnection connection,
+			final int length) throws ProtocolException {
+		connection.setRequestMethod("POST");
+		connection.setDoInput(true);
+		connection.setDoOutput(true);
+		connection.setUseCaches(false);
+		connection.setRequestProperty("Content-Type",
+				"application/x-www-form-urlencoded");
+		connection.setRequestProperty("Content-Length", String.valueOf(length));
+	}
+
+	public static Response retrieveLocations(final Collection<String> macs)
 			throws MalformedURLException, ProtocolException, IOException {
 		return retrieveLocations(macs.toArray(new String[macs.size()]));
 	}
 
-	public static Response retrieveLocations(String... macs)
+	public static Response retrieveLocations(final String... macs)
 			throws IOException, ProtocolException {
-		Request request = createRequest(macs);
-		byte[] byteb = request.toByteArray();
-		byte[] bytes = combineBytes(firstBytes, byteb, (byte) byteb.length);
-		HttpsURLConnection connection = createConnection();
+		final Request request = createRequest(macs);
+		final byte[] byteb = request.toByteArray();
+		final byte[] bytes = combineBytes(firstBytes, byteb,
+				(byte) byteb.length);
+		final HttpsURLConnection connection = createConnection();
 		prepareConnection(connection, bytes.length);
-		OutputStream out = connection.getOutputStream();
+		final OutputStream out = connection.getOutputStream();
 		out.write(bytes);
 		out.flush();
 		out.close();
-		InputStream in = connection.getInputStream();
-		int i = 0;
+		final InputStream in = connection.getInputStream();
+		final int i = 0;
 		in.skip(10);
-		Response response = Response.parseFrom(in);
+		final Response response = Response.parseFrom(in);
 		in.close();
 		return response;
+	}
+
+	private LocationRetriever() {
+
 	}
 }

@@ -149,7 +149,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		wlans = new WlanMap(helper);
 		cells = new CellMap(helper);
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		Criteria criteria = new Criteria();
+		final Criteria criteria = new Criteria();
 		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(2000, 10, criteria, this, null);
 	}
