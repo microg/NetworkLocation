@@ -1,4 +1,4 @@
-package com.google.android.location;
+package com.google.android.location.provider;
 
 import android.annotation.TargetApi;
 import android.location.Criteria;
@@ -11,6 +11,9 @@ import com.android.location.provider.LocationProviderBase;
 import com.android.location.provider.LocationRequestUnbundled;
 import com.android.location.provider.ProviderPropertiesUnbundled;
 import com.android.location.provider.ProviderRequestUnbundled;
+import com.google.android.location.NetworkLocationThread;
+import com.google.android.location.data.LocationData;
+import com.google.android.location.data.LocationDataProvider;
 
 @TargetApi(17)
 public class NetworkLocationProviderV2 extends LocationProviderBase implements
@@ -20,21 +23,19 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 
 	private static final String TAG = "NetworkLocationProviderV2";
 
-	private final NetworkLocationRetriever background;
-
-	private final boolean internal;
+	private final NetworkLocationThread background;
 
 	public NetworkLocationProviderV2() {
-		this(false);
-	}
-
-	public NetworkLocationProviderV2(final boolean internal) {
 		super(TAG, ProviderPropertiesUnbundled.create(true, false, true, false,
 				false, false, false, Criteria.POWER_LOW,
 				Criteria.ACCURACY_COARSE));
-		background = new NetworkLocationRetriever();
+		background = new NetworkLocationThread();
 		background.start();
-		this.internal = internal;
+	}
+
+	@Deprecated
+	public NetworkLocationProviderV2(final boolean internal) {
+		this();
 	}
 
 	@Override
@@ -61,14 +62,14 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	public void onLocationChanged(Location location) {
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
-			if (!internal) {
-				location = LocationDataProvider.Stub.renameSource(location,
-						IDENTIFIER);
-			}
 			background.setLastLocation(location);
+			Bundle b = new Bundle();
+			b.putString("networkLocationType", location.getProvider());
+			location.setExtras(b);
 			location.makeComplete();
-			reportLocation(LocationDataProvider.Stub.renameSource(location,
-					IDENTIFIER));
+			location = LocationDataProvider.Stub.renameSource(location,
+					IDENTIFIER);
+			reportLocation(location);
 		}
 	}
 

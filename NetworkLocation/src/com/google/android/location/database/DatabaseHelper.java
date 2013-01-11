@@ -1,4 +1,4 @@
-package com.google.android.location;
+package com.google.android.location.database;
 
 import java.lang.Thread.State;
 import java.util.HashMap;

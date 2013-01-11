@@ -1,4 +1,4 @@
-package com.google.android.location;
+package com.google.android.location.provider;
 
 import android.location.Criteria;
 import android.location.Location;
@@ -9,6 +9,9 @@ import android.os.WorkSource;
 import android.util.Log;
 
 import com.android.location.provider.LocationProvider;
+import com.google.android.location.NetworkLocationThread;
+import com.google.android.location.data.LocationData;
+import com.google.android.location.data.LocationDataProvider;
 
 public class NetworkLocationProvider extends LocationProvider implements
 		NetworkLocationProviderBase {
@@ -18,21 +21,19 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	private long autoTime;
 	private boolean autoUpdate;
-	private final NetworkLocationRetriever background;
-
-	private final boolean internal;
+	private final NetworkLocationThread background;
 
 	public NetworkLocationProvider() {
-		this(false);
-	}
-
-	public NetworkLocationProvider(final boolean internal) {
 		Log.d(TAG, "new Provider-Object constructed");
 		autoUpdate = false;
 		autoTime = Long.MAX_VALUE;
-		background = new NetworkLocationRetriever();
+		background = new NetworkLocationThread();
 		background.start();
-		this.internal = internal;
+	}
+
+	@Deprecated
+	public NetworkLocationProvider(final boolean internal) {
+		this();
 	}
 
 	public NetworkLocationProvider(final LocationData data) {
@@ -96,11 +97,12 @@ public class NetworkLocationProvider extends LocationProvider implements
 	public void onLocationChanged(Location location) {
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
-			if (!internal) {
-				location = LocationDataProvider.Stub.renameSource(location,
-						IDENTIFIER);
-			}
 			background.setLastLocation(location);
+			Bundle b = new Bundle();
+			b.putString("networkLocationType", location.getProvider());
+			location.setExtras(b);
+			location = LocationDataProvider.Stub.renameSource(location,
+					IDENTIFIER);
 			reportLocation(location);
 		}
 	}

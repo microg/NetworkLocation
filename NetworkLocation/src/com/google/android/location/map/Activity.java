@@ -17,11 +17,11 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.location.CellMap;
-import com.google.android.location.DatabaseHelper;
 import com.google.android.location.R;
-import com.google.android.location.WlanLocationData;
-import com.google.android.location.WlanMap;
+import com.google.android.location.data.WlanLocationData;
+import com.google.android.location.database.CellMap;
+import com.google.android.location.database.DatabaseHelper;
+import com.google.android.location.database.WlanMap;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -151,7 +151,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		final Criteria criteria = new Criteria();
 		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(2000, 10, criteria, this, null);
+		locationManager.requestLocationUpdates("network", 0, 0, this);
 	}
 
 	@Override
@@ -165,6 +165,7 @@ public class Activity extends android.app.Activity implements LocationListener {
 	public void onLocationChanged(final Location location) {
 		Log.d(TAG, "onLocationChanged:" + location);
 		if (location != null) {
+			Log.d(TAG, location.getExtras().getString("networkLocationType"));
 			makeLocationVisible(location);
 		} else {
 			Log.d(TAG, "could not lock!");

@@ -1,4 +1,4 @@
-package com.google.android.location;
+package com.google.android.location.data;
 
 import java.util.Collection;
 import java.util.Date;
@@ -11,7 +11,7 @@ public interface LocationDataProvider {
 
 		public static final String DEFAULT_IDENTIFIER = "unknown";
 
-		protected static Location renameSource(final Location location,
+		public static Location renameSource(final Location location,
 				final String source) {
 			return renameSource(location, source, new Date().getTime());
 		}

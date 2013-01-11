@@ -1,38 +1,36 @@
-package com.google.android.location;
+package com.google.android.location.data;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
-import android.os.Environment;
 import android.telephony.CellLocation;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 
+import com.google.android.location.database.CellMap;
+import com.google.android.location.source.CellLocationSource;
+
 public class CellLocationData extends LocationDataProvider.Stub {
 
-	public static final String IDENTIFIER = "network-cell";
+	public static final String IDENTIFIER = "cell";
 
 	private static final String TAG = "CellLocationData";
-	private final File cellDBFile = new File(
-			Environment.getExternalStorageDirectory(), ".nogapps/cells.db");
 	private final Context context;
 	private final CellMap gsmMap;
 	private final LocationListener listener;
 	private TelephonyManager telephonyManager;
+	private final CellLocationSource source;
 
 	public CellLocationData(final Context context, final CellMap gsmMap,
-			final LocationListener listener) {
+			final CellLocationSource source, final LocationListener listener) {
 		this.context = context;
 		this.gsmMap = gsmMap;
 		this.listener = listener;
+		this.source = source;
 	}
 
 	@Override
@@ -119,39 +117,9 @@ public class CellLocationData extends LocationDataProvider.Stub {
 		return getLocation(Integer.parseInt(mcc), Integer.parseInt(mnc), cid);
 	}
 
-	private void readCellFromDatabaseFile(final File file, final int mcc,
-			final int mnc, final int cid) {
-		if (file.exists()) {
-			Log.i(TAG, "checking " + file.getAbsolutePath() + " for " + mcc
-					+ "/" + mnc + "/" + cid);
-			final SQLiteDatabase db = SQLiteDatabase.openDatabase(
-					file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY
-							+ SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-			final Cursor c = DatabaseHelper.checkCursor(db.rawQuery(
-					"SELECT * FROM cells WHERE mcc=? AND mnc=? AND cellid=?",
-					new String[] { mcc + "", mnc + "", cid + "" }));
-			if (c != null) {
-				while (!c.isLast()) {
-					c.moveToNext();
-					final Location location = new Location(getIdentifier());
-					location.setLatitude(c.getDouble(c
-							.getColumnIndexOrThrow("lat")));
-					location.setLongitude(c.getDouble(c
-							.getColumnIndexOrThrow("lon")));
-					location.setTime(new Date().getTime());
-					gsmMap.put(mcc, mnc, cid, location);
-				}
-				c.close();
-			}
-			db.close();
-		} else {
-			Log.w(TAG, "could not find input file at " + file.getAbsolutePath());
-		}
-	}
-
 	private Location readCellLocationFromDatabaseFile(final int mcc,
 			final int mnc, final int cid) {
-		readCellFromDatabaseFile(cellDBFile, mcc, mnc, cid);
+		source.requestCellLocation(mcc, mnc, cid, gsmMap);
 		return renameSource(gsmMap.get(mcc, mnc, cid));
 	}
 

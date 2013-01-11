@@ -1,10 +1,12 @@
 package com.google.android.location;
 
+import com.google.android.location.data.LocationData;
+
 import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class NetworkLocationRetriever extends Thread {
+public class NetworkLocationThread extends Thread {
 
 	private final static String TAG = "NetworkLocationRetriever";
 	private boolean active;
@@ -16,7 +18,7 @@ public class NetworkLocationRetriever extends Thread {
 	private Location lastLocation;
 	private long lastTime;
 
-	public NetworkLocationRetriever() {
+	public NetworkLocationThread() {
 		active = true;
 		autoUpdate = false;
 		autoTime = Long.MAX_VALUE;

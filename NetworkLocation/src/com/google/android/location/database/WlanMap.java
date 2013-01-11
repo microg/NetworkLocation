@@ -1,6 +1,7 @@
-package com.google.android.location;
+package com.google.android.location.database;
 
 import java.util.Map;
+
 
 import android.location.Location;
 

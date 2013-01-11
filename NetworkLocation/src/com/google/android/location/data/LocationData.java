@@ -1,12 +1,15 @@
-package com.google.android.location;
+package com.google.android.location.data;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.android.location.data.LocationDataProvider.Stub;
+
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.util.Log;
 
 public class LocationData extends LocationDataProvider.Stub implements
 		LocationListener {
@@ -14,10 +17,10 @@ public class LocationData extends LocationDataProvider.Stub implements
 	public static final String IDENTIFIER = "network";
 	private static final String IMPORTANT_PROVIDER = CellLocationData.IDENTIFIER;
 	private static final int NEW_TIME = 30000;
-
 	private Boolean inBlockOp = false;
 	private final LocationListener listener;
 	private final Map<String, Location> locations;
+	private Location overlayLocation = null;
 
 	private final Map<String, LocationDataProvider> providers;
 
@@ -32,13 +35,26 @@ public class LocationData extends LocationDataProvider.Stub implements
 	}
 
 	private Location calculateLocation() {
+		if (overlayLocation != null
+				&& overlayLocation.getTime() + 5 * 60 * 1000 > System
+						.currentTimeMillis()) {
+			final Location location = new Location("wifi");
+			location.setAccuracy(42);
+			location.setAltitude(overlayLocation.getAltitude());
+			location.setLatitude(overlayLocation.getLatitude());
+			location.setLongitude(overlayLocation.getLongitude());
+			location.setProvider("wifi");
+			return location;
+		} else if (overlayLocation != null) {
+			Log.d("LocationData", overlayLocation.toString());
+		}
 		boolean preDidImportant = false;
 		Location location = null;
 		final long newt = new Date().getTime() - NEW_TIME;
 		if (locations.containsKey(IMPORTANT_PROVIDER)
 				&& locations.get(IMPORTANT_PROVIDER) != null) {
 			final long oldt = locations.get(IMPORTANT_PROVIDER).getTime();
-			location = locations.get(IMPORTANT_PROVIDER);
+			location = new Location(locations.get(IMPORTANT_PROVIDER));
 			if (oldt < newt) {
 				location.setAccuracy(location.getAccuracy()
 						+ ((newt - oldt) / 50));
@@ -58,11 +74,11 @@ public class LocationData extends LocationDataProvider.Stub implements
 			}
 			final long oldt = loc.getTime();
 			if (location == null) {
-				location = loc;
+				location = new Location(loc);
 			} else if (locationDistance(location, loc) < location.getAccuracy()
 					+ loc.getAccuracy()
 					+ ((oldt < newt) ? ((newt - oldt) / 50) : 0)) {
-				location = loc;
+				location = new Location(loc);
 			}
 			if (oldt < newt) {
 				location.setAccuracy(location.getAccuracy()
@@ -138,6 +154,19 @@ public class LocationData extends LocationDataProvider.Stub implements
 			final Bundle bundle) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setOverlayLocation(final double lat, final double lon,
+			final double alt) {
+		final Location l = new Location("static");
+		l.setAltitude(alt);
+		l.setLatitude(lat);
+		l.setLongitude(lon);
+		l.setTime(System.currentTimeMillis());
+		overlayLocation = l;
+		if (!inBlockOp) {
+			listener.onLocationChanged(calculateLocation());
+		}
 	}
 
 }

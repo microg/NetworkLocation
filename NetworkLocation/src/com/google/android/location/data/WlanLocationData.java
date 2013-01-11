@@ -1,8 +1,7 @@
-package com.google.android.location;
+package com.google.android.location.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,14 +16,12 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import com.apple.iphone.services.LocationRetriever;
-import com.apple.iphone.services.LocationsProtos.Response;
-import com.apple.iphone.services.LocationsProtos.ResponseWLAN;
+import com.google.android.location.database.WlanMap;
+import com.google.android.location.source.WlanLocationSource;
 
 public class WlanLocationData extends LocationDataProvider.Stub {
 
-	public final static String IDENTIFIER = "network-wifi";
-
+	public final static String IDENTIFIER = "wifi";
 	private final static String TAG = "WlanLocationData";
 
 	public static Collection<String> getWLANs(final Context context) {
@@ -66,12 +63,14 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 	private final Stack<String> missingMacs;
 	private Thread retriever;
 	private final WlanMap wlanMap;
+	private final WlanLocationSource source;
 
 	public WlanLocationData(final Context context, final WlanMap wlanMap,
-			final LocationListener listener) {
+			final WlanLocationSource source, final LocationListener listener) {
 		this.context = context;
 		this.wlanMap = wlanMap;
 		this.listener = listener;
+		this.source = source;
 		missingMacs = new Stack<String>();
 	}
 
@@ -164,40 +163,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 			missingMacs.addAll(macs);
 		}
 
-		try {
-			final Response response = LocationRetriever.retrieveLocations(macs);
-			int newLocs = 0;
-			int reqLocs = 0;
-			for (final ResponseWLAN rw : response.getWlanList()) {
-				final String mac = niceMac(rw.getMac());
-				final Location loc = new Location(IDENTIFIER);
-				loc.setProvider(getIdentifier());
-				loc.setLatitude(rw.getLocation().getLatitude() / 1E8F);
-				loc.setLongitude(rw.getLocation().getLongitude() / 1E8F);
-				loc.setAccuracy(rw.getLocation().getAccuracy());
-				if (rw.getLocation().getAltitude() != -500) {
-					loc.setAltitude(rw.getLocation().getAltitude());
-				}
-				loc.setTime(new Date().getTime());
-				if (!wlanMap.containsKey(mac)) {
-					newLocs++;
-				}
-				wlanMap.put(mac, loc);
-				if (macs.contains(mac)) {
-					macs.remove(mac);
-				}
-				synchronized (missingMacs) {
-					if (missingMacs.contains(mac)) {
-						reqLocs++;
-						missingMacs.remove(mac);
-					}
-				}
-			}
-			Log.d(TAG, "requestLocations: " + response.getWlanCount()
-					+ " results, " + newLocs + " new, " + reqLocs + " required");
-		} catch (final Exception e) {
-			Log.e(TAG, "requestLocations: " + macs, e);
-		}
+		source.requestMacLocations(macs, missingMacs, wlanMap);
 	}
 
 	private void requestMissing(final Collection<String> wlans) {

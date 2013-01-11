@@ -1,4 +1,6 @@
-package com.google.android.location;
+package com.google.android.location.provider;
+
+import com.google.android.location.data.LocationData;
 
 import android.location.LocationListener;
 import android.os.IBinder;

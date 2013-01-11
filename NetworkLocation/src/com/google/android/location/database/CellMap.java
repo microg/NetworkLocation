@@ -1,4 +1,5 @@
-package com.google.android.location;
+package com.google.android.location.database;
+
 
 import android.location.Location;
 
