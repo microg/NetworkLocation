@@ -10,9 +10,9 @@ import java.util.Collection;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import com.apple.iphone.services.LocationsProtos.Request;
-import com.apple.iphone.services.LocationsProtos.RequestWLAN;
-import com.apple.iphone.services.LocationsProtos.Response;
+import com.apple.iphone.services.Location.Request;
+import com.apple.iphone.services.Location.RequestWLAN;
+import com.apple.iphone.services.Location.Response;
 
 public class LocationRetriever {
 	public static final byte[] firstBytes = new byte[] { 0, 1, 0, 5, 101, 110,
@@ -49,8 +49,7 @@ public class LocationRetriever {
 	}
 
 	public static Request createRequest(final String... macs) {
-		final Request.Builder builder = Request.newBuilder()
-				.setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
+		final Request.Builder builder = Request.newBuilder();
 		for (final String mac : macs) {
 			builder.addWlan(RequestWLAN.newBuilder().setMac(mac));
 		}

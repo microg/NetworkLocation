@@ -13,8 +13,8 @@ USE_MAPS=true
 USE_SUPPORT=true
 
 # Add or use packages not from those above [apk only]
-EXTRA_INCLUDES=""
-EXTRA_USES="com.android.location.provider.jar:android.location.jar"
+EXTRA_INCLUDES="protobuf-lite.jar"
+EXTRA_USES="protobuf-lite.jar:com.android.location.provider.jar:android.location.jar"
 
 # Additional compile directory [api only]
 EXTRA_COMPILE=""

@@ -1,7 +1,6 @@
-package apple;
-
 option java_package = "com.apple.iphone.services";
-option java_outer_classname = "LocationsProtos";
+option optimize_for = LITE_RUNTIME;
+option java_outer_classname = "Location";
 message Response {
 	repeated ResponseWLAN wlan = 2;
 }

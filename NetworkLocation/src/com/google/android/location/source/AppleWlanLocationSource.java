@@ -6,9 +6,9 @@ import java.util.Date;
 import android.location.Location;
 import android.util.Log;
 
+import com.apple.iphone.services.Location.Response;
+import com.apple.iphone.services.Location.ResponseWLAN;
 import com.apple.iphone.services.LocationRetriever;
-import com.apple.iphone.services.LocationsProtos.Response;
-import com.apple.iphone.services.LocationsProtos.ResponseWLAN;
 import com.google.android.location.data.WlanLocationData;
 import com.google.android.location.database.WlanMap;
 
