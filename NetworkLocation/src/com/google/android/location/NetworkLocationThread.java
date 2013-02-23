@@ -1,10 +1,10 @@
 package com.google.android.location;
 
-import com.google.android.location.data.LocationData;
-
 import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
+
+import com.google.android.location.data.LocationData;
 
 public class NetworkLocationThread extends Thread {
 
@@ -37,9 +37,14 @@ public class NetworkLocationThread extends Thread {
 		return lastTime;
 	}
 
+	public boolean isActive() {
+		return enabled && autoUpdate && autoTime < 60000;
+	}
+
 	@Override
 	public void run() {
 		while (enabled) {
+			data.getService().reInitOverlayNotification();
 			boolean waited = false;
 			if (!active) {
 				try {

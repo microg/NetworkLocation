@@ -22,8 +22,8 @@ public class CellLocationData extends LocationDataProvider.Stub {
 	private final Context context;
 	private final CellMap gsmMap;
 	private final LocationListener listener;
-	private TelephonyManager telephonyManager;
 	private final CellLocationSource source;
+	private TelephonyManager telephonyManager;
 
 	public CellLocationData(final Context context, final CellMap gsmMap,
 			final CellLocationSource source, final LocationListener listener) {

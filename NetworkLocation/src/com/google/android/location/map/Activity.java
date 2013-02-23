@@ -155,13 +155,6 @@ public class Activity extends android.app.Activity implements LocationListener {
 	}
 
 	@Override
-	protected void onDestroy() {
-		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		locationManager.removeUpdates(this);
-		super.onDestroy();
-	}
-
-	@Override
 	public void onLocationChanged(final Location location) {
 		Log.d(TAG, "onLocationChanged:" + location);
 		if (location != null) {
@@ -183,6 +176,13 @@ public class Activity extends android.app.Activity implements LocationListener {
 	@Override
 	public void onStatusChanged(final String provider, final int status,
 			final Bundle extras) {
+	}
+
+	@Override
+	protected void onStop() {
+		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		locationManager.removeUpdates(this);
+		super.onStop();
 	}
 
 }

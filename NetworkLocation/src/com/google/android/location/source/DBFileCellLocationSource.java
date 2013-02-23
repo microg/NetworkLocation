@@ -13,15 +13,16 @@ import com.google.android.location.database.CellMap;
 import com.google.android.location.database.DatabaseHelper;
 
 public class DBFileCellLocationSource implements CellLocationSource {
-	private final File dbFile;
 	private static final String TAG = "DBFileCellLocationSource";
+	private final File dbFile;
 
-	public DBFileCellLocationSource(File dbFile) {
+	public DBFileCellLocationSource(final File dbFile) {
 		this.dbFile = dbFile;
 	}
 
 	@Override
-	public void requestCellLocation(int mcc, int mnc, int cid, CellMap cellMap) {
+	public void requestCellLocation(final int mcc, final int mnc,
+			final int cid, final CellMap cellMap) {
 		if (dbFile.exists()) {
 			Log.i(TAG, "checking " + dbFile.getAbsolutePath() + " for " + mcc
 					+ "/" + mnc + "/" + cid);

@@ -14,7 +14,7 @@ public class GeocodeProvider extends
 	private static final String TAG = "LocationGeocodeProvider";
 	private final GeocodeDataSource source;
 
-	public GeocodeProvider(final Context context, GeocodeDataSource source) {
+	public GeocodeProvider(final Context context, final GeocodeDataSource source) {
 		this.source = source;
 	}
 

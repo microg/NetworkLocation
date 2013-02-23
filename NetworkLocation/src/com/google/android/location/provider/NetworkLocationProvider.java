@@ -42,6 +42,12 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
+	public boolean isActive() {
+		return background != null && background.isAlive()
+				&& background.isActive();
+	}
+
+	@Override
 	public void onAddListener(final int uid, final WorkSource ws) {
 	}
 
@@ -98,7 +104,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
-			Bundle b = new Bundle();
+			final Bundle b = new Bundle();
 			b.putString("networkLocationType", location.getProvider());
 			location.setExtras(b);
 			location = LocationDataProvider.Stub.renameSource(location,

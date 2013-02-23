@@ -1,4 +1,4 @@
-package com.google.android.location;
+package com.google.android.location.debug;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,31 +6,16 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.google.android.location.data.LocationData;
-
 import android.util.Log;
 
+import com.google.android.location.NetworkLocationService;
+
 public class OverlayLocationServer extends Thread {
-
-	private static final String TAG = "LocationOverlay";
-
-	public OverlayLocationServer(LocationData data,
-			NetworkLocationService service) {
-		this.data = data;
-		this.service = service;
-	}
-
-	private double lat = 0;
-	private double lon = 0;
-	private double alt = 100;
-	private LocationData data;
-	private boolean enabled = true;
-	private NetworkLocationService service;
 
 	public class SocketThread extends Thread {
 		Socket socket;
 
-		public SocketThread(Socket socket) {
+		public SocketThread(final Socket socket) {
 			this.socket = socket;
 		}
 
@@ -55,33 +40,45 @@ public class OverlayLocationServer extends Thread {
 						if (args.length >= 3) {
 							alt = Double.parseDouble(args[0]);
 						}
-						data.setOverlayLocation(lat, lon, alt);
+						service.setOverlayLocation(lat, lon, alt);
 					}
 					line = reader.readLine();
 				}
 				reader.close();
 				socket.close();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				Log.w(TAG, e);
 				return;
 			} finally {
 				if (reader != null) {
 					try {
 						reader.close();
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						Log.w(TAG, e);
 					}
 				}
 				if (socket != null) {
 					try {
 						socket.close();
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						Log.w(TAG, e);
 					}
 				}
 			}
 
 		}
+	}
+
+	private static final String TAG = "LocationOverlay";
+
+	private double alt = 100;
+	private boolean enabled = true;
+	private double lat = 0;
+	private double lon = 0;
+	private final NetworkLocationService service;
+
+	public OverlayLocationServer(final NetworkLocationService service) {
+		this.service = service;
 	}
 
 	public void disable() {
@@ -97,14 +94,14 @@ public class OverlayLocationServer extends Thread {
 			while ((socket = server.accept()) != null) {
 				new SocketThread(socket).start();
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.w(TAG, e);
 			return;
 		} finally {
 			if (server != null) {
 				try {
 					server.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					Log.w(TAG, e);
 					return;
 				}

@@ -2,7 +2,6 @@ package com.google.android.location.database;
 
 import java.util.Map;
 
-
 import android.location.Location;
 
 public class WlanMap {

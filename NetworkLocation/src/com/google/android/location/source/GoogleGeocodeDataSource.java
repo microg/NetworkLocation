@@ -26,33 +26,34 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	private static final String BASE_URL = "http://maps.googleapis.com/maps/api/geocode/xml?latlng=%lat%,%lon%&sensor=false&region=%region%&language=%lang%";
 	private static final String TAG = "GoogleGeocodeDataSource";
 
-	private final Object lock = new Object();
-	private List<Address> addrs = null;
 	private Address addr = null;
-	private Locale locale = null;
-	private ArrayList<String> parsingState = null;
+	private List<Address> addrs = null;
+	private final HashMap<Long, List<Address>> cache = new HashMap<Long, List<Address>>();
 	private String compLong = null;
 	private String compShort = null;
 	private String compType = null;
-	private HashMap<Long, List<Address>> cache = new HashMap<Long, List<Address>>();
-	private long E9 = 1000000000L;
+	private final long E9 = 1000000000L;
+	private Locale locale = null;
+	private final Object lock = new Object();
+	private ArrayList<String> parsingState = null;
 
 	@Override
-	public void addAdressesToListForLocation(double lat, double lon,
-			Locale locale, List<Address> addrs) {
-		String urlString = BASE_URL.replace("%lat%", lat + "")
+	public void addAdressesToListForLocation(final double lat,
+			final double lon, final Locale locale, final List<Address> addrs) {
+		final String urlString = BASE_URL.replace("%lat%", lat + "")
 				.replace("%lon%", lon + "")
 				.replace("%region%", locale.getCountry())
 				.replace("%lang%", locale.getLanguage());
 		try {
-			long hash = (long) (lat * E9 * E9 + lon * E9);
+			final long hash = (long) (lat * E9 * E9 + lon * E9);
 			synchronized (lock) {
 				if (cache.containsKey(hash)) {
 				} else {
-					URL url = new URL(urlString);
-					URLConnection connection = url.openConnection();
-					InputStream stream = (InputStream) connection.getContent();
-					XMLReader reader = SAXParserFactory.newInstance()
+					final URL url = new URL(urlString);
+					final URLConnection connection = url.openConnection();
+					final InputStream stream = (InputStream) connection
+							.getContent();
+					final XMLReader reader = SAXParserFactory.newInstance()
 							.newSAXParser().getXMLReader();
 					reader.setContentHandler(this);
 					parsingState = new ArrayList<String>();
@@ -65,19 +66,19 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 					parsingState = null;
 				}
 			}
-			List<Address> a = cache.get(hash);
-			for (Address address : a) {
+			final List<Address> a = cache.get(hash);
+			for (final Address address : a) {
 				addrs.add(address);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.w(TAG, e);
 		}
 	}
 
 	@Override
-	public void characters(char[] ch, int start, int length)
+	public void characters(final char[] ch, final int start, final int length)
 			throws SAXException {
-		String text = new String(ch, start, length);
+		final String text = new String(ch, start, length);
 		if (parsingState.get(0).equalsIgnoreCase("GeocodeResponse")
 				&& parsingState.size() > 1) {
 			if (parsingState.get(1).equalsIgnoreCase("status")) {
@@ -125,8 +126,8 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String qName)
-			throws SAXException {
+	public void endElement(final String uri, final String localName,
+			final String qName) throws SAXException {
 		if (parsingState.get(parsingState.size() - 1).equalsIgnoreCase(
 				localName)) {
 			parsingState.remove(parsingState.size() - 1);
@@ -171,29 +172,29 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void endPrefixMapping(String prefix) throws SAXException {
+	public void endPrefixMapping(final String prefix) throws SAXException {
 
 	}
 
 	@Override
-	public void ignorableWhitespace(char[] ch, int start, int length)
+	public void ignorableWhitespace(final char[] ch, final int start,
+			final int length) throws SAXException {
+
+	}
+
+	@Override
+	public void processingInstruction(final String target, final String data)
 			throws SAXException {
 
 	}
 
 	@Override
-	public void processingInstruction(String target, String data)
-			throws SAXException {
+	public void setDocumentLocator(final Locator locator) {
 
 	}
 
 	@Override
-	public void setDocumentLocator(Locator locator) {
-
-	}
-
-	@Override
-	public void skippedEntity(String name) throws SAXException {
+	public void skippedEntity(final String name) throws SAXException {
 
 	}
 
@@ -203,8 +204,8 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName,
-			Attributes atts) throws SAXException {
+	public void startElement(final String uri, final String localName,
+			final String qName, final Attributes atts) throws SAXException {
 		parsingState.add(localName);
 		if (parsingState.get(0).equalsIgnoreCase("GeocodeResponse")) {
 			if (localName.equalsIgnoreCase("result")) {
@@ -214,7 +215,7 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void startPrefixMapping(String prefix, String uri)
+	public void startPrefixMapping(final String prefix, final String uri)
 			throws SAXException {
 
 	}

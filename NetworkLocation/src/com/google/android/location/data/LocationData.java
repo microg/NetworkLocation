@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.android.location.data.LocationDataProvider.Stub;
-
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.google.android.location.NetworkLocationService;
 
 public class LocationData extends LocationDataProvider.Stub implements
 		LocationListener {
@@ -21,13 +21,17 @@ public class LocationData extends LocationDataProvider.Stub implements
 	private final LocationListener listener;
 	private final Map<String, Location> locations;
 	private Location overlayLocation = null;
-
 	private final Map<String, LocationDataProvider> providers;
+	private Location realLocation;
 
-	public LocationData(final LocationListener listener) {
+	private final NetworkLocationService service;
+
+	public LocationData(final LocationListener listener,
+			final NetworkLocationService service) {
 		providers = new HashMap<String, LocationDataProvider>();
 		locations = new HashMap<String, Location>();
 		this.listener = listener;
+		this.service = service;
 	}
 
 	public void addProvider(final LocationDataProvider provider) {
@@ -35,19 +39,6 @@ public class LocationData extends LocationDataProvider.Stub implements
 	}
 
 	private Location calculateLocation() {
-		if (overlayLocation != null
-				&& overlayLocation.getTime() + 5 * 60 * 1000 > System
-						.currentTimeMillis()) {
-			final Location location = new Location("wifi");
-			location.setAccuracy(42);
-			location.setAltitude(overlayLocation.getAltitude());
-			location.setLatitude(overlayLocation.getLatitude());
-			location.setLongitude(overlayLocation.getLongitude());
-			location.setProvider("wifi");
-			return location;
-		} else if (overlayLocation != null) {
-			Log.d("LocationData", overlayLocation.toString());
-		}
 		boolean preDidImportant = false;
 		Location location = null;
 		final long newt = new Date().getTime() - NEW_TIME;
@@ -85,7 +76,30 @@ public class LocationData extends LocationDataProvider.Stub implements
 						+ ((newt - oldt) / 50));
 			}
 		}
+		realLocation = location;
+		if (overlayLocation != null
+				&& overlayLocation.getTime() + 5 * 60 * 1000 > System
+						.currentTimeMillis()) {
+			Log.d("LocationData", "overlay:" + overlayLocation);
+			location = new Location("wifi");
+			location.setAccuracy(42);
+			location.setAltitude(overlayLocation.getAltitude());
+			location.setLatitude(overlayLocation.getLatitude());
+			location.setLongitude(overlayLocation.getLongitude());
+			location.setProvider("wifi");
+			return location;
+		} else if (overlayLocation != null) {
+			overlayLocation = null;
+			service.reInitOverlayNotification();
+		}
 		return location;
+	}
+
+	public void clearOverlayLocation() {
+		overlayLocation = null;
+		if (!inBlockOp) {
+			listener.onLocationChanged(calculateLocation());
+		}
 	}
 
 	@Override
@@ -106,6 +120,18 @@ public class LocationData extends LocationDataProvider.Stub implements
 	@Override
 	public String getIdentifier() {
 		return IDENTIFIER;
+	}
+
+	public Location getOverlayLocation() {
+		return overlayLocation;
+	}
+
+	public Location getRealLocation() {
+		return realLocation;
+	}
+
+	public NetworkLocationService getService() {
+		return service;
 	}
 
 	private double locationDistance(final Location loc1, final Location loc2) {

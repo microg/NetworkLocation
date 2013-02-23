@@ -2,7 +2,6 @@ package apple;
 
 option java_package = "com.apple.iphone.services";
 option java_outer_classname = "LocationsProtos";
-
 message Response {
 	repeated ResponseWLAN wlan = 2;
 }
@@ -11,12 +10,13 @@ message WLANLocation {
 	required int64 latitude = 1;
 	required int64 longitude = 2;
 	required int32 accuracy = 3;
-	required int32 zeroField4 = 4; // always 0 - don't ask why
+	optional int32 zeroField4 = 4; // always 0 - don't ask why
 	optional int32 altitude = 5; // -500 if unknown
 	optional int32 altitudeAccuracy = 6; // Not set if altitude=-500
-	optional int32 value11 = 11; // 5..63 ?
-	optional int32 value12 = 12; // 30..4000 ? 
+	optional int32 unknown11 = 11; // 5..63 ?
+	optional int32 unknown12 = 12; // 30..4000 ?
 }
+
 message ResponseWLAN {
 	required string mac = 1;
 	required WLANLocation location = 2;
@@ -29,7 +29,7 @@ message RequestWLAN {
 
 message Request {
 	repeated RequestWLAN wlan = 2;
-	required int32 unknown3 = 3; // set to 0
-	required int32 unknown4 = 4; // set to 0
-	required string source = 5; // set to source package (e.g: com.apple.maps)
+	required int32 unknown3 = 3 [default = 0];
+	required int32 unknown4 = 4 [default = 0];
+	required string source = 5 [default = "com.apple.maps"];
 }

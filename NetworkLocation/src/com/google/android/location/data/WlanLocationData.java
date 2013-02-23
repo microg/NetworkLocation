@@ -62,8 +62,8 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 	private final LocationListener listener;
 	private final Stack<String> missingMacs;
 	private Thread retriever;
-	private final WlanMap wlanMap;
 	private final WlanLocationSource source;
+	private final WlanMap wlanMap;
 
 	public WlanLocationData(final Context context, final WlanMap wlanMap,
 			final WlanLocationSource source, final LocationListener listener) {

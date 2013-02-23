@@ -17,8 +17,8 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 	private static final String TAG = "AppleWlanLocationSource";
 
 	@Override
-	public void requestMacLocations(Collection<String> macs,
-			Collection<String> missingMacs, WlanMap wlanMap) {
+	public void requestMacLocations(final Collection<String> macs,
+			final Collection<String> missingMacs, final WlanMap wlanMap) {
 		try {
 			final Response response = LocationRetriever.retrieveLocations(macs);
 			int newLocs = 0;

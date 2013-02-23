@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="128dp"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/left"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="⏪" />
+
+    <Button
+        android:id="@+id/right"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/left"
+        android:layout_toRightOf="@+id/left"
+        android:text="⏩" />
+
+    <Button
+        android:id="@+id/up"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/right"
+        android:layout_toRightOf="@+id/right"
+        android:text="⏫" />
+
+    <Button
+        android:id="@+id/down"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/up"
+        android:layout_toRightOf="@+id/up"
+        android:text="⏬" />
+
+    <Button
+        android:id="@+id/toggle"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/down"
+        android:layout_toRightOf="@+id/down"
+        android:text="OFF" />
+
+    <TextView
+        android:id="@+id/loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/left"
+        android:layout_marginLeft="5dp"
+        android:text="50.000000, 7.000000"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>
