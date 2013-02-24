@@ -28,7 +28,7 @@ message RequestWLAN {
 
 message Request {
 	repeated RequestWLAN wlan = 2;
-	required int32 unknown3 = 3 [default = 0];
-	required int32 unknown4 = 4 [default = 0];
-	required string source = 5 [default = "com.apple.maps"];
+	required int32 unknown3 = 3;
+	required int32 unknown4 = 4;
+	required string source = 5;
 }

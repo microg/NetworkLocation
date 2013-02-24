@@ -49,7 +49,8 @@ public class LocationRetriever {
 	}
 
 	public static Request createRequest(final String... macs) {
-		final Request.Builder builder = Request.newBuilder();
+		final Request.Builder builder = Request.newBuilder()
+				.setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
 		for (final String mac : macs) {
 			builder.addWlan(RequestWLAN.newBuilder().setMac(mac));
 		}
