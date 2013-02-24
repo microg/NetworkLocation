@@ -6,9 +6,9 @@ message Response {
 }
 
 message WLANLocation {
-	required int64 latitude = 1;
-	required int64 longitude = 2;
-	required int32 accuracy = 3;
+	optional int64 latitude = 1;
+	optional int64 longitude = 2;
+	optional int32 accuracy = 3;
 	optional int32 zeroField4 = 4; // always 0 - don't ask why
 	optional int32 altitude = 5; // -500 if unknown
 	optional int32 altitudeAccuracy = 6; // Not set if altitude=-500
@@ -17,8 +17,8 @@ message WLANLocation {
 }
 
 message ResponseWLAN {
-	required string mac = 1;
-	required WLANLocation location = 2;
+	optional string mac = 1;
+	optional WLANLocation location = 2;
 	optional int32 channel = 21;
 }
 

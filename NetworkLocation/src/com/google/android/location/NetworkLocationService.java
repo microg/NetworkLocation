@@ -41,8 +41,8 @@ public class NetworkLocationService extends Service {
 			.getName() + ".DEBUG_MOVE_OVERLAY_UP";
 	public final static String ACTION_DEBUG_TOGGLE_OVERLAY = NetworkLocationService.class
 			.getName() + ".DEBUG_TOGGLE_OVERLAY";
-
 	private static final String TAG = "NetworkLocationService";
+
 	private LocationData data;
 	private GeocodeProvider geoprovider;
 	private CellMap gsmMap;
@@ -92,6 +92,7 @@ public class NetworkLocationService extends Service {
 			}
 		}
 	};
+	private boolean registered = false;
 	private WlanMap wlanMap;
 
 	public NetworkLocationService() {
@@ -192,7 +193,7 @@ public class NetworkLocationService extends Service {
 	}
 
 	private void reInitDebug() {
-		if (debugEnabled()) {
+		if (debugEnabled() && !registered) {
 			registerReceiver(overlayToggleReciever, new IntentFilter(
 					ACTION_DEBUG_TOGGLE_OVERLAY));
 			registerReceiver(overlayMoveReceiver, new IntentFilter(
@@ -203,9 +204,11 @@ public class NetworkLocationService extends Service {
 					ACTION_DEBUG_MOVE_OVERLAY_LEFT));
 			registerReceiver(overlayMoveReceiver, new IntentFilter(
 					ACTION_DEBUG_MOVE_OVERLAY_RIGHT));
-		} else {
+			registered = true;
+		} else if (registered) {
 			unregisterReceiver(overlayMoveReceiver);
 			unregisterReceiver(overlayToggleReciever);
+			registered = false;
 		}
 		reInitOverlayServer();
 		reInitOverlayNotification();
