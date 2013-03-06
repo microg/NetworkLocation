@@ -6,5 +6,20 @@
     <string name="location_warning_message">"Allow Google's location service to collect anonymous location data. Some data may be stored on your device. Collection may occur even when no apps are running."</string>
     <string name="agree">Agree</string>
     <string name="disagree">Disagree</string>
+    <string name="left_arrow">⏪</string>
+    <string name="right_arrow">⏩</string>
+    <string name="up_arrow">⏫</string>
+    <string name="down_arrow">⏬</string>
+    <string name="toggle_off">OFF</string>
+    <string name="loc_coords">50.000000, 7.000000</string>
+    <string name="you_label">You:</string>
+    <string name="lat_label">Lat:</string>
+    <string name="lon_label">Lon:</string>
+    <string name="gsm_cell_label">GSM Cell:</string>
+    <string name="mcc_label">MCC:</string>
+    <string name="mnc_label">MNC:</string>
+    <string name="cid_label">CID:</string>
+    <string name="wlans_label">WLANs:</string>
+    <string name="mac_label">MAC:</string>
 
 </resources>

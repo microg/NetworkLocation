@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="⏪" />
+        android:text="@string/left_arrow" />
 
     <Button
         android:id="@+id/right"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/left"
         android:layout_toRightOf="@+id/left"
-        android:text="⏩" />
+        android:text="@string/right_arrow" />
 
     <Button
         android:id="@+id/up"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/right"
         android:layout_toRightOf="@+id/right"
-        android:text="⏫" />
+        android:text="@string/up_arrow" />
 
     <Button
         android:id="@+id/down"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/up"
         android:layout_toRightOf="@+id/up"
-        android:text="⏬" />
+        android:text="@string/down_arrow" />
 
     <Button
         android:id="@+id/toggle"
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/down"
         android:layout_toRightOf="@+id/down"
-        android:text="OFF" />
+        android:text="@string/toggle_off" />
 
     <TextView
         android:id="@+id/loc"
@@ -57,7 +57,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/left"
         android:layout_marginLeft="5dp"
-        android:text="50.000000, 7.000000"
+        android:text="@string/loc_coords"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
