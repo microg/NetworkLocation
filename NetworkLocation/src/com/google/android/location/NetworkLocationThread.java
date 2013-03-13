@@ -44,7 +44,9 @@ public class NetworkLocationThread extends Thread {
 	@Override
 	public void run() {
 		while (enabled) {
-			data.getService().reInitOverlayNotification();
+			if (data != null && data.getService() != null) {
+				data.getService().reInitOverlayNotification();
+			}
 			boolean waited = false;
 			if (!active) {
 				try {
@@ -90,10 +92,11 @@ public class NetworkLocationThread extends Thread {
 					break;
 				}
 			}
-			if (active) {
+			if (active && data != null) {
 				data.getCurrentLocation();
 			} else {
-				Log.d(TAG, "we're not active = do not track!");
+				Log.d(TAG,
+						"we're not active (or not initialized yet) = do not track!");
 			}
 		}
 	}

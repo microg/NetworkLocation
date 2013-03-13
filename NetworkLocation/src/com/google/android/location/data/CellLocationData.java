@@ -39,6 +39,11 @@ public class CellLocationData extends LocationDataProvider.Stub {
 			telephonyManager = (TelephonyManager) context
 					.getSystemService(Context.TELEPHONY_SERVICE);
 		}
+		if (telephonyManager == null) {
+			Log.d(TAG,
+					"could not get location via gsm (could not initialize TelephonyManager)");
+			return null;
+		}
 		final GsmCellLocation cell = getGsmCellLocation();
 		final String operator = telephonyManager.getNetworkOperator();
 		if (operator == null) {
@@ -54,13 +59,16 @@ public class CellLocationData extends LocationDataProvider.Stub {
 			}
 		}
 
-		for (final NeighboringCellInfo neighbor : telephonyManager
-				.getNeighboringCellInfo()) {
-			if (neighbor.getCid() != -1) {
-				final Location loc = getLocation(operator, neighbor.getCid());
-				if (loc != null) {
-					loc.setAccuracy(loc.getAccuracy() * 3);
-					locations.add(loc);
+		if (telephonyManager.getNeighboringCellInfo() != null) {
+			for (final NeighboringCellInfo neighbor : telephonyManager
+					.getNeighboringCellInfo()) {
+				if (neighbor != null && neighbor.getCid() != -1) {
+					final Location loc = getLocation(operator,
+							neighbor.getCid());
+					if (loc != null) {
+						loc.setAccuracy(loc.getAccuracy() * 3);
+						locations.add(loc);
+					}
 				}
 			}
 		}
@@ -75,9 +83,12 @@ public class CellLocationData extends LocationDataProvider.Stub {
 	}
 
 	private GsmCellLocation getGsmCellLocation() {
-		final CellLocation cellLocation = telephonyManager.getCellLocation();
-		if (cellLocation instanceof GsmCellLocation) {
-			return (GsmCellLocation) cellLocation;
+		if (telephonyManager != null) {
+			final CellLocation cellLocation = telephonyManager
+					.getCellLocation();
+			if (cellLocation instanceof GsmCellLocation) {
+				return (GsmCellLocation) cellLocation;
+			}
 		}
 		return null;
 	}

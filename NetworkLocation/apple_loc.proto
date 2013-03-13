@@ -23,12 +23,12 @@ message ResponseWLAN {
 }
 
 message RequestWLAN {
-	required string mac = 1;
+	optional string mac = 1;
 }
 
 message Request {
 	repeated RequestWLAN wlan = 2;
-	required int32 unknown3 = 3;
-	required int32 unknown4 = 4;
-	required string source = 5;
+	optional int32 unknown3 = 3;
+	optional int32 unknown4 = 4;
+	optional string source = 5;
 }
