@@ -26,7 +26,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	private final NetworkLocationThread background;
 
 	public NetworkLocationProviderV2() {
-		super(TAG, ProviderPropertiesUnbundled.create(true, false, true, false,
+		super(TAG, ProviderPropertiesUnbundled.create(false, false, false, false,
 				false, false, false, Criteria.POWER_LOW,
 				Criteria.ACCURACY_COARSE));
 		background = new NetworkLocationThread();

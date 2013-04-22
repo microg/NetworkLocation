@@ -132,7 +132,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		return cm.getActiveNetworkInfo() != null
-				&& cm.getActiveNetworkInfo().isConnectedOrConnecting();
+				&& cm.getActiveNetworkInfo().isConnected();
 	}
 
 	private Collection<String> missingInCache(final Collection<String> wlans) {

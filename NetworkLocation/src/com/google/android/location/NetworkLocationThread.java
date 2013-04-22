@@ -13,6 +13,7 @@ public class NetworkLocationThread extends Thread {
 
 	private long autoTime;
 	private boolean autoUpdate;
+	private boolean forceUpdate;
 	private LocationData data;
 	private boolean enabled;
 	private Location lastLocation;
@@ -24,6 +25,7 @@ public class NetworkLocationThread extends Thread {
 		autoTime = Long.MAX_VALUE;
 		lastTime = 0;
 		enabled = true;
+		forceUpdate = true;
 	}
 
 	public void disable() {
@@ -70,6 +72,7 @@ public class NetworkLocationThread extends Thread {
 			while ((wait = lastTime + autoTime - SystemClock.elapsedRealtime()) > 0
 					&& autoUpdate && lastLocation != null) {
 				final float w = wait / 1000F;
+				Log.d(TAG, "lastTime: "+lastTime+" autoTime: "+autoTime+" currentTime: "+SystemClock.elapsedRealtime());
 				Log.d(TAG, "waiting " + w + "s to update...");
 				try {
 					synchronized (this) {
@@ -93,7 +96,9 @@ public class NetworkLocationThread extends Thread {
 				}
 			}
 			if (active && data != null) {
+				Log.d(TAG, "Now requesting \\o/");
 				data.getCurrentLocation();
+				forceUpdate = false;
 			} else {
 				Log.d(TAG,
 						"we're not active (or not initialized yet) = do not track!");
@@ -103,12 +108,16 @@ public class NetworkLocationThread extends Thread {
 
 	public void setActive(final boolean bool) {
 		active = true;
+		forceUpdate = true;
 		synchronized (this) {
 			notify();
 		}
 	}
 
 	public void setAuto(final boolean autoUpdate, final long autoTime) {
+		if (autoTime < this.autoTime) {
+			forceUpdate = true;
+		}
 		this.autoUpdate = autoUpdate;
 		this.autoTime = autoTime;
 		synchronized (this) {
@@ -127,5 +136,4 @@ public class NetworkLocationThread extends Thread {
 	public void setLastTime(final long lastTime) {
 		this.lastTime = lastTime;
 	}
-
 }

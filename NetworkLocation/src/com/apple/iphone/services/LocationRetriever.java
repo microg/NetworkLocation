@@ -8,7 +8,9 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Collection;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 
 import com.apple.iphone.services.Location.Request;
 import com.apple.iphone.services.Location.RequestWLAN;
@@ -80,6 +82,14 @@ public class LocationRetriever {
 		final byte[] bytes = combineBytes(firstBytes, byteb,
 				(byte) byteb.length);
 		final HttpsURLConnection connection = createConnection();
+		connection.setHostnameVerifier(new HostnameVerifier() {
+
+			@Override
+			public boolean verify(String hostname, SSLSession session) {
+				// TODO really implement or check why apple fails sometimes...
+				return true;
+			}
+		});
 		prepareConnection(connection, bytes.length);
 		final OutputStream out = connection.getOutputStream();
 		out.write(bytes);
