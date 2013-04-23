@@ -8,7 +8,7 @@ import com.google.android.location.data.LocationData;
 
 public class NetworkLocationThread extends Thread {
 
-	private final static String TAG = "NetworkLocationRetriever";
+	private final static String TAG = "NetworkLocationThread";
 	private boolean active;
 
 	private long autoTime;
@@ -50,7 +50,8 @@ public class NetworkLocationThread extends Thread {
 				data.getService().reInitOverlayNotification();
 			}
 			boolean waited = false;
-			if (!active) {
+			if (!active && !forceUpdate) {
+				Log.d(TAG, "We're not active, wait until we are...");
 				try {
 					synchronized (this) {
 						wait();
@@ -59,7 +60,8 @@ public class NetworkLocationThread extends Thread {
 				} catch (final InterruptedException e) {
 				}
 			}
-			if (!autoUpdate && active) {
+			if (!autoUpdate && active && !forceUpdate) {
+				Log.d(TAG, "We're active, but nobody needs us. Wait up to a minute and check again...");
 				try {
 					synchronized (this) {
 						wait(60000);
@@ -70,7 +72,7 @@ public class NetworkLocationThread extends Thread {
 			}
 			long wait;
 			while ((wait = lastTime + autoTime - SystemClock.elapsedRealtime()) > 0
-					&& autoUpdate && lastLocation != null) {
+					&& autoUpdate && lastLocation != null && !forceUpdate) {
 				final float w = wait / 1000F;
 				Log.d(TAG, "lastTime: "+lastTime+" autoTime: "+autoTime+" currentTime: "+SystemClock.elapsedRealtime());
 				Log.d(TAG, "waiting " + w + "s to update...");
@@ -85,7 +87,8 @@ public class NetworkLocationThread extends Thread {
 			}
 
 			if (!waited) {
-				Log.d(TAG, "waiting min 5s to prevent mass update...");
+				Log.d(TAG, "We did not wait, lastTime: "+lastTime+" autoTime: "+autoTime+" currentTime: "+SystemClock.elapsedRealtime());
+				Log.d(TAG, "waiting 5s to prevent mass update...");
 				try {
 					synchronized (this) {
 						wait(5000);
@@ -96,9 +99,12 @@ public class NetworkLocationThread extends Thread {
 				}
 			}
 			if (active && data != null) {
+				if (forceUpdate) {
+					Log.d(TAG, "Update forced because of new incoming request");
+					forceUpdate = false;
+				}
 				Log.d(TAG, "Now requesting \\o/");
 				data.getCurrentLocation();
-				forceUpdate = false;
 			} else {
 				Log.d(TAG,
 						"we're not active (or not initialized yet) = do not track!");
