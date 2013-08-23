@@ -9,7 +9,7 @@ TYPE=apk
 
 # Flags for different packages that may be used [apk only]
 USE_JGAPI=false
-USE_MAPS=true
+USE_MAPS=false
 USE_SUPPORT=true
 
 # Add or use packages not from those above [apk only]
