@@ -1,4 +1,4 @@
-package com.google.android.location.provider;
+package org.microg.netlocation.provider;
 
 import android.annotation.TargetApi;
 import android.location.Criteria;
@@ -6,31 +6,26 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.WorkSource;
-
 import com.android.location.provider.LocationProviderBase;
 import com.android.location.provider.LocationRequestUnbundled;
 import com.android.location.provider.ProviderPropertiesUnbundled;
 import com.android.location.provider.ProviderRequestUnbundled;
-import com.google.android.location.NetworkLocationThread;
-import com.google.android.location.data.LocationData;
-import com.google.android.location.data.LocationDataProvider;
+import org.microg.netlocation.NetworkLocationThread;
+import org.microg.netlocation.data.LocationData;
+import org.microg.netlocation.data.LocationDataProvider;
 
 @TargetApi(17)
-public class NetworkLocationProviderV2 extends LocationProviderBase implements
-		NetworkLocationProviderBase {
+public class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkLocationProviderBase {
 
 	private final static String IDENTIFIER = "network";
-
 	private static final String TAG = "NetworkLocationProviderV2";
-
-	private final NetworkLocationThread background;
+	private NetworkLocationThread background = new NetworkLocationThread();
+	private boolean enabledByService = false;
+	private boolean enabledBySetting = false;
 
 	public NetworkLocationProviderV2() {
-		super(TAG, ProviderPropertiesUnbundled.create(false, false, false, false,
-				false, false, false, Criteria.POWER_LOW,
-				Criteria.ACCURACY_COARSE));
-		background = new NetworkLocationThread();
-		background.start();
+		super(TAG, ProviderPropertiesUnbundled
+				.create(false, false, false, false, false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_COARSE));
 	}
 
 	@Deprecated
@@ -40,18 +35,26 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 
 	@Override
 	public boolean isActive() {
-		return background != null && background.isAlive()
-				&& background.isActive();
+		return background != null && background.isAlive() && background.isActive();
 	}
 
 	@Override
-	public void onDisable() {
-		background.setActive(false);
+	public synchronized void onDisable() {
+		enabledBySetting = false;
+		background.disable();
 	}
 
 	@Override
-	public void onEnable() {
-		background.setActive(true);
+	public synchronized void onEnable() {
+		enabledBySetting = true;
+		if (enabledByService)
+			enableBackground();
+	}
+
+	private void enableBackground() {
+		background.disable();
+		background = new NetworkLocationThread(background);
+		background.start();
 	}
 
 	@Override
@@ -73,9 +76,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 			b.putString("networkLocationType", location.getProvider());
 			location.setExtras(b);
 			location.makeComplete();
-			location = LocationDataProvider.Stub.renameSource(location,
-					IDENTIFIER);
-			reportLocation(location);
+			reportLocation(LocationDataProvider.Stub.renameSource(location, IDENTIFIER));
 		}
 	}
 
@@ -88,12 +89,10 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	}
 
 	@Override
-	public void onSetRequest(final ProviderRequestUnbundled requests,
-			final WorkSource ws) {
+	public void onSetRequest(final ProviderRequestUnbundled requests, final WorkSource ws) {
 		long autoTime = Long.MAX_VALUE;
 		boolean autoUpdate = false;
-		for (final LocationRequestUnbundled request : requests
-				.getLocationRequests()) {
+		for (final LocationRequestUnbundled request : requests.getLocationRequests()) {
 			if (request.getInterval() < autoTime) {
 				autoTime = request.getInterval();
 			}
@@ -106,13 +105,25 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements
 	}
 
 	@Override
-	public void onStatusChanged(final String provider, final int status,
-			final Bundle extras) {
+	public void onStatusChanged(final String provider, final int status, final Bundle extras) {
 	}
 
 	@Override
 	public void setData(final LocationData data) {
 		background.setData(data);
+	}
+
+	@Override
+	public synchronized void disable() {
+		background.disable();
+		enabledByService = false;
+	}
+
+	@Override
+	public synchronized void enable() {
+		enabledByService = true;
+		if (enabledBySetting)
+			enableBackground();
 	}
 
 }

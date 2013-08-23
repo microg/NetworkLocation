@@ -1,14 +1,13 @@
-package com.google.android.location.database;
-
-import java.lang.Thread.State;
-import java.util.HashMap;
-import java.util.Map;
+package org.microg.netlocation.database;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -63,7 +62,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public DatabaseHelper(final Context context) {
 		super(context, DATABASE_NAME, null, LATEST_DATABASE_SCHEME_VERSION);
-		newRequest = false;
+		startAutoCloseThread();
+		newRequest = true;
 	}
 
 	@Override
@@ -75,50 +75,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	private void createCellsTable(final SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE " + TABLE_CELLS + "(" + COL_VERSION
-				+ " INTEGER, " + COL_MCC + " INTEGER, " + COL_MNC
-				+ " INTEGER, " + COL_CID + " INTEGER, " + COL_TIME
-				+ " INTEGER, " + COL_LATITUDE + " INTEGER, " + COL_LONGITUDE
-				+ " INTEGER)");
+		db.execSQL("CREATE TABLE " + TABLE_CELLS + "(" + COL_VERSION + " INTEGER, " + COL_MCC + " INTEGER, " + COL_MNC +
+				   " INTEGER, " + COL_CID + " INTEGER, " + COL_TIME + " INTEGER, " + COL_LATITUDE + " INTEGER, " +
+				   COL_LONGITUDE + " INTEGER)");
 	}
 
 	private void createWlanTable(final SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE " + TABLE_WLANS + "(" + COL_VERSION
-				+ " INTEGER, " + COL_MAC + " TEXT PRIMARY KEY, " + COL_TIME
-				+ " INTEGER, " + COL_LATITUDE + " INTEGER, " + COL_LONGITUDE
-				+ " INTEGER, " + COL_ACCURACY + " INTEGER, " + COL_ALTITUDE
-				+ " INTEGER)");
+		db.execSQL("CREATE TABLE " + TABLE_WLANS + "(" + COL_VERSION + " INTEGER, " + COL_MAC + " TEXT PRIMARY KEY, " +
+				   COL_TIME + " INTEGER, " + COL_LATITUDE + " INTEGER, " + COL_LONGITUDE + " INTEGER, " + COL_ACCURACY +
+				   " INTEGER, " + COL_ALTITUDE + " INTEGER)");
 	}
 
-	private Cursor getLocationCursorGsmCell(final int mcc, final int mnc,
-			final int cid) {
+	private Cursor getLocationCursorGsmCell(final int mcc, final int mnc, final int cid) {
 		final SQLiteDatabase db = getReadableDatabase();
-		final Cursor c = db.rawQuery("SELECT " + COL_TIME + ", " + COL_LATITUDE
-				+ ", " + COL_LONGITUDE + " FROM " + TABLE_CELLS + " WHERE "
-				+ COL_MCC + "=" + mcc + " AND mnc=" + mnc + " AND cid=" + cid
-				+ " LIMIT 1", null);
+		final Cursor c = db.rawQuery(
+				"SELECT " + COL_TIME + ", " + COL_LATITUDE + ", " + COL_LONGITUDE + " FROM " + TABLE_CELLS + " WHERE " +
+				COL_MCC + "=" + mcc + " AND mnc=" + mnc + " AND cid=" + cid + " LIMIT 1", null);
 		return checkCursor(c);
 	}
 
-	private Cursor getLocationCursorNextWlan(final long latitudeE6,
-			final long longitudeE6, final int num) {
+	private Cursor getLocationCursorNextWlan(final long latitudeE6, final long longitudeE6, final int num) {
 		final SQLiteDatabase db = getReadableDatabase();
-		final Cursor c = db.rawQuery("SELECT " + COL_MAC + ", " + COL_TIME
-				+ ", " + COL_ACCURACY + ", " + COL_LATITUDE + ", "
-				+ COL_LONGITUDE + " FROM " + TABLE_WLANS + " ORDER BY (("
-				+ COL_LATITUDE + " - " + latitudeE6 + ") * (" + COL_LATITUDE
-				+ " - " + latitudeE6 + ") + (" + COL_LONGITUDE + " - "
-				+ longitudeE6 + ") * (" + COL_LONGITUDE + " - " + longitudeE6
-				+ ")) ASC LIMIT " + num, null);
+		final Cursor c =
+				db.rawQuery("SELECT " + COL_MAC + ", " + COL_TIME + ", " + COL_ACCURACY + ", " + COL_LATITUDE + ", " +
+							COL_LONGITUDE + " FROM " + TABLE_WLANS + " ORDER BY ((" + COL_LATITUDE + " - " +
+							latitudeE6 + ") * (" +
+							COL_LATITUDE + " - " + latitudeE6 + ") + (" + COL_LONGITUDE + " - " + longitudeE6 +
+							") * (" +
+							COL_LONGITUDE + " - " + longitudeE6 + ")) ASC LIMIT " + num, null);
 		return checkCursor(c);
 	}
 
 	private Cursor getLocationCursorWlan(final String mac) {
 		final SQLiteDatabase db = getReadableDatabase();
-		final Cursor c = db.rawQuery("SELECT " + COL_TIME + ", " + COL_ACCURACY
-				+ ", " + COL_LATITUDE + ", " + COL_LONGITUDE + " FROM "
-				+ TABLE_WLANS + " WHERE " + COL_MAC + " LIKE '" + mac
-				+ "' LIMIT 1", null);
+		final Cursor c = db.rawQuery(
+				"SELECT " + COL_TIME + ", " + COL_ACCURACY + ", " + COL_LATITUDE + ", " + COL_LONGITUDE + " FROM " +
+				TABLE_WLANS + " WHERE " + COL_MAC + " LIKE '" + mac + "' LIMIT 1", null);
 		return checkCursor(c);
 	}
 
@@ -143,8 +135,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return location;
 	}
 
-	public Location getLocationGsmCell(final int mcc, final int mnc,
-			final int cid) {
+	public Location getLocationGsmCell(final int mcc, final int mnc, final int cid) {
 		newRequest = true;
 		final Cursor c = getLocationCursorGsmCell(mcc, mnc, cid);
 		if (c == null) {
@@ -168,12 +159,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return location;
 	}
 
-	public Map<String, Location> getNextWlan(final double latitude,
-			final double longitude, final int num) {
+	public Map<String, Location> getNextWlan(final double latitude, final double longitude, final int num) {
 		newRequest = true;
 		final HashMap<String, Location> map = new HashMap<String, Location>();
-		final Cursor c = getLocationCursorNextWlan((long) (latitude * 1E6),
-				(long) (longitude * 1E6), num);
+		final Cursor c = getLocationCursorNextWlan((long) (latitude * 1E6), (long) (longitude * 1E6), num);
 		if (c == null) {
 			return map;
 		}
@@ -187,31 +176,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return map;
 	}
 
-	public void insertGsmCellLocation(final int mcc, final int mnc,
-			final int cid, final Location location) {
+	public void insertGsmCellLocation(final int mcc, final int mnc, final int cid, final Location location) {
 		newRequest = true;
 		final SQLiteDatabase db = getWritableDatabase();
-		db.execSQL("INSERT OR REPLACE INTO " + TABLE_CELLS + "(" + COL_VERSION
-				+ ", " + COL_MCC + ", " + COL_MNC + ", " + COL_CID + ", "
-				+ COL_TIME + ", " + COL_LATITUDE + ", " + COL_LONGITUDE
-				+ ") VALUES ('" + LATEST_DATABASE_SCHEME_VERSION + "', '" + mcc
-				+ "', '" + mnc + "', '" + cid + "', '" + location.getTime()
-				+ "', '" + (long) (location.getLatitude() * 1E6) + "', '"
-				+ (long) (location.getLongitude() * 1E6) + "')");
+		db.execSQL(
+				"INSERT OR REPLACE INTO " + TABLE_CELLS + "(" + COL_VERSION + ", " + COL_MCC + ", " + COL_MNC + ", " +
+				COL_CID + ", " + COL_TIME + ", " + COL_LATITUDE + ", " + COL_LONGITUDE + ") VALUES ('" +
+				LATEST_DATABASE_SCHEME_VERSION + "', '" + mcc + "', '" + mnc + "', '" + cid + "', '" +
+				location.getTime() + "', '" + (long) (location.getLatitude() * 1E6) + "', '" +
+				(long) (location.getLongitude() * 1E6) + "')");
 	}
 
 	public void insertWlanLocation(final String mac, final Location location) {
 		newRequest = true;
 		final SQLiteDatabase db = getWritableDatabase();
-		db.execSQL("INSERT OR REPLACE INTO " + TABLE_WLANS + "(" + COL_VERSION
-				+ ", " + COL_MAC + ", " + COL_TIME + ", " + COL_LATITUDE + ", "
-				+ COL_LONGITUDE + ", " + COL_ACCURACY + ", " + COL_ALTITUDE
-				+ ") VALUES (" + LATEST_DATABASE_SCHEME_VERSION + ", '" + mac
-				+ "', " + location.getTime() + ", "
-				+ (long) (location.getLatitude() * 1E6) + ", "
-				+ (long) (location.getLongitude() * 1E6) + ", "
-				+ (long) location.getAccuracy() + ", "
-				+ (long) location.getAltitude() + ")");
+		db.execSQL(
+				"INSERT OR REPLACE INTO " + TABLE_WLANS + "(" + COL_VERSION + ", " + COL_MAC + ", " + COL_TIME + ", " +
+				COL_LATITUDE + ", " + COL_LONGITUDE + ", " + COL_ACCURACY + ", " + COL_ALTITUDE + ") VALUES (" +
+				LATEST_DATABASE_SCHEME_VERSION + ", '" + mac + "', " + location.getTime() + ", " +
+				(long) (location.getLatitude() * 1E6) + ", " + (long) (location.getLongitude() * 1E6) + ", " +
+				(long) location.getAccuracy() + ", " + (long) location.getAltitude() + ")");
 	}
 
 	public boolean isOpen() {
@@ -231,8 +215,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onUpgrade(final SQLiteDatabase db, int oldVersion,
-			final int newVersion) {
+	public void onUpgrade(final SQLiteDatabase db, int oldVersion, final int newVersion) {
 		if (oldVersion < WLAN_ONLY_DATABASE_SCHEME_VERSION) {
 			// ITS TO OLD - RECREATE DATABASE
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_WLANS_OLD);
@@ -242,20 +225,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		if (oldVersion < NO_ALTITUDE_DATABASE_SCHEME_VERSION) {
 			// RENAME OLD TABLE
-			db.execSQL("ALTER TABLE " + TABLE_WLANS_OLD + " RENAME TO "
-					+ TABLE_WLANS);
+			db.execSQL("ALTER TABLE " + TABLE_WLANS_OLD + " RENAME TO " + TABLE_WLANS);
 			createCellsTable(db);
 			oldVersion = NO_ALTITUDE_DATABASE_SCHEME_VERSION;
 		}
 		if (oldVersion == NO_ALTITUDE_DATABASE_SCHEME_VERSION) {
-			db.execSQL("ALTER TABLE " + TABLE_WLANS + " ADD COLUMN "
-					+ COL_ALTITUDE + " INTEGER");
+			db.execSQL("ALTER TABLE " + TABLE_WLANS + " ADD COLUMN " + COL_ALTITUDE + " INTEGER");
 			oldVersion = LATEST_DATABASE_SCHEME_VERSION;
 		}
 	}
 
-	public Thread startAutoCloseThread() {
-		if (autoClose == null || autoClose.getState() == State.TERMINATED) {
+	private Thread startAutoCloseThread() {
+		if (autoClose == null || !autoClose.isAlive()) {
 			autoClose = new Thread(new Runnable() {
 
 				@Override

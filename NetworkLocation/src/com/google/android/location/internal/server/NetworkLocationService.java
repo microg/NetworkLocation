@@ -1,6 +1,7 @@
 package com.google.android.location.internal.server;
 
-public class NetworkLocationService extends
-		com.google.android.location.NetworkLocationService {
+import org.microg.netlocation.MainService;
+
+public class NetworkLocationService extends MainService {
 
 }

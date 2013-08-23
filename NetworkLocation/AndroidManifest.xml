@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.android.location"
-    android:versionCode="1009"
-    android:versionName="1.0.9" >
+    android:versionCode="1100"
+    android:versionName="1.1.0" >
 
     <uses-sdk
         android:minSdkVersion="9"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -23,10 +23,6 @@
 
     <application android:label="@string/app_label" android:icon="@drawable/app_icon" android:allowBackup="false">
         <uses-library android:name="com.android.location.provider" />
-        <uses-library
-            android:name="com.google.android.maps"
-            android:required="false" />
-
         <service
             android:name="com.google.android.location.NetworkLocationService"
             android:exported="true"
@@ -64,21 +60,6 @@
                 android:name="nlpServiceIntent"
                 android:value="com.google.android.location.internal.ANDROID_NLP" />
         </service>
-
-        <activity
-            android:name="com.google.android.location.ConfirmAlertActivity"
-            android:excludeFromRecents="true"
-            android:theme="@style/AlertThemeSelector" />
-        <activity
-            android:name="com.google.android.location.map.Activity"
-            android:label="NetworkLocation TestApp" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

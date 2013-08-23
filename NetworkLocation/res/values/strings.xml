@@ -2,15 +2,8 @@
 <resources>
 
     <string name="app_label">Network Location</string>
-    <string name="location_warning_title">Location consent</string>
-    <string name="location_warning_message">"Allow Google's location service to collect anonymous location data. Some data may be stored on your device. Collection may occur even when no apps are running."</string>
-    <string name="agree">Agree</string>
-    <string name="disagree">Disagree</string>
-    <string name="left_arrow">⏪</string>
-    <string name="right_arrow">⏩</string>
-    <string name="up_arrow">⏫</string>
-    <string name="down_arrow">⏬</string>
-    <string name="toggle_off">OFF</string>
+    <string name="warning_title">Warning!</string>
+    <string name="warning_message">"This may send sensitive location data to Apple! For more information and full instructions, please consult the μg Project Website"</string>
     <string name="loc_coords">50.000000, 7.000000</string>
     <string name="you_label">You:</string>
     <string name="lat_label">Lat:</string>

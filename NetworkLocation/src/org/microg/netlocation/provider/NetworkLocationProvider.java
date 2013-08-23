@@ -1,4 +1,4 @@
-package com.google.android.location.provider;
+package org.microg.netlocation.provider;
 
 import android.location.Criteria;
 import android.location.Location;
@@ -7,28 +7,26 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.WorkSource;
 import android.util.Log;
-
 import com.android.location.provider.LocationProvider;
-import com.google.android.location.NetworkLocationThread;
-import com.google.android.location.data.LocationData;
-import com.google.android.location.data.LocationDataProvider;
+import org.microg.netlocation.MainService;
+import org.microg.netlocation.NetworkLocationThread;
+import org.microg.netlocation.data.LocationData;
+import org.microg.netlocation.data.LocationDataProvider;
 
-public class NetworkLocationProvider extends LocationProvider implements
-		NetworkLocationProviderBase {
+public class NetworkLocationProvider extends LocationProvider implements NetworkLocationProviderBase {
 
 	private static final String IDENTIFIER = "network";
 	private static final String TAG = "NetworkLocationProvider";
-
+	private NetworkLocationThread background;
 	private long autoTime;
 	private boolean autoUpdate;
-	private final NetworkLocationThread background;
+	private boolean enabledByService = false;
+	private boolean enabledBySetting = false;
 
 	public NetworkLocationProvider() {
-		Log.d(TAG, "new Provider-Object constructed");
 		autoUpdate = false;
 		autoTime = Long.MAX_VALUE;
 		background = new NetworkLocationThread();
-		background.start();
 	}
 
 	@Deprecated
@@ -43,22 +41,47 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public boolean isActive() {
-		return background != null && background.isAlive()
-				&& background.isActive();
+		return background != null && background.isAlive() && background.isActive();
 	}
 
 	@Override
 	public void onAddListener(final int uid, final WorkSource ws) {
+		if (MainService.DEBUG) {
+			Log.d(TAG, uid + " is listening as " + ws != null ? (ws + " (contents:" + ws.describeContents() + ")") :
+					   "[unknown WorkSource]");
+		}
 	}
 
 	@Override
 	public void onDisable() {
-		background.setActive(false);
+		enabledBySetting = false;
+		background.disable();
 	}
 
 	@Override
 	public void onEnable() {
-		background.setActive(true);
+		enabledBySetting = true;
+		if (enabledByService)
+			enableBackground();
+	}
+
+	@Override
+	public synchronized void disable() {
+		background.disable();
+		enabledByService = false;
+	}
+
+	@Override
+	public synchronized void enable() {
+		enabledByService = true;
+		if (enabledBySetting)
+			enableBackground();
+	}
+
+	private void enableBackground() {
+		background.disable();
+		background = new NetworkLocationThread(background);
+		background.start();
 	}
 
 	@Override
@@ -74,8 +97,8 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public String onGetInternalState() {
-		Log.w(TAG,
-				"Internal State not yet implemented. The application may not work.");
+		if (MainService.DEBUG)
+			Log.w(TAG, "Internal State not yet implemented. The application may not work.");
 		return "[INTERNAL STATE NOT IMPLEMENTED]";
 	}
 
@@ -107,9 +130,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 			final Bundle b = new Bundle();
 			b.putString("networkLocationType", location.getProvider());
 			location.setExtras(b);
-			location = LocationDataProvider.Stub.renameSource(location,
-					IDENTIFIER);
-			reportLocation(location);
+			reportLocation(LocationDataProvider.Stub.renameSource(location, IDENTIFIER));
 		}
 	}
 
@@ -166,8 +187,7 @@ public class NetworkLocationProvider extends LocationProvider implements
 	}
 
 	@Override
-	public void onStatusChanged(final String provider, final int status,
-			final Bundle extras) {
+	public void onStatusChanged(final String provider, final int status, final Bundle extras) {
 	}
 
 	@Override
@@ -192,7 +212,8 @@ public class NetworkLocationProvider extends LocationProvider implements
 
 	@Override
 	public void onUpdateNetworkState(final int state, final NetworkInfo info) {
-		Log.d(TAG, "onUpdateNetworkState: " + state + " (" + info + ")");
+		if (MainService.DEBUG)
+			Log.d(TAG, "onUpdateNetworkState: " + state + " (" + info + ")");
 	}
 
 	@Override

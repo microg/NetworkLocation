@@ -4,7 +4,7 @@ NetworkLocation
 Geolocation using wlan and gsm cells. Data provided by Apple and opencellid.org. Part of the μg Project.
 
 ###License
-> Copyright 2012 μg Project Team
+> Copyright 2013 μg Project Team
 
 > Licensed under the Apache License, Version 2.0 (the "License");
 > you may not use this file except in compliance with the License.

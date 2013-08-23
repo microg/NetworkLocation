@@ -1,15 +1,14 @@
-package com.google.android.location.database;
-
-import java.util.Map;
+package org.microg.netlocation.database;
 
 import android.location.Location;
+
+import java.util.Map;
 
 public class WlanMap {
 	private final DatabaseHelper helper;
 
 	public WlanMap(final DatabaseHelper helper) {
 		this.helper = helper;
-		helper.startAutoCloseThread();
 	}
 
 	public boolean containsKey(final String mac) {
@@ -20,8 +19,7 @@ public class WlanMap {
 		return helper.getLocationWlan(mac);
 	}
 
-	public Map<String, Location> getNext(final double latitude,
-			final double longitude, final int num) {
+	public Map<String, Location> getNext(final double latitude, final double longitude, final int num) {
 		return helper.getNextWlan(latitude, longitude, num);
 	}
 

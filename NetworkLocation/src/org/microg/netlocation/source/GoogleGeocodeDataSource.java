@@ -1,5 +1,10 @@
-package com.google.android.location.source;
+package org.microg.netlocation.source;
 
+import android.location.Address;
+import android.util.Log;
+import org.xml.sax.*;
+
+import javax.xml.parsers.SAXParserFactory;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -8,22 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import javax.xml.parsers.SAXParserFactory;
+public class GoogleGeocodeDataSource implements GeocodeDataSource, ContentHandler {
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-
-import android.location.Address;
-import android.util.Log;
-
-public class GoogleGeocodeDataSource implements GeocodeDataSource,
-		ContentHandler {
-
-	private static final String BASE_URL = "http://maps.googleapis.com/maps/api/geocode/xml?latlng=%lat%,%lon%&sensor=false&region=%region%&language=%lang%";
+	private static final String BASE_URL =
+			"http://maps.googleapis.com/maps/api/geocode/xml?latlng=%lat%,%lon%&sensor=false&region=%region%&language=%lang%";
 	private static final String TAG = "GoogleGeocodeDataSource";
 
 	private Address addr = null;
@@ -38,12 +31,11 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	private ArrayList<String> parsingState = null;
 
 	@Override
-	public void addAdressesToListForLocation(final double lat,
-			final double lon, final Locale locale, final List<Address> addrs) {
-		final String urlString = BASE_URL.replace("%lat%", lat + "")
-				.replace("%lon%", lon + "")
-				.replace("%region%", locale.getCountry())
-				.replace("%lang%", locale.getLanguage());
+	public void addAdressesToListForLocation(final double lat, final double lon, final Locale locale,
+											 final List<Address> addrs) {
+		final String urlString =
+				BASE_URL.replace("%lat%", lat + "").replace("%lon%", lon + "").replace("%region%", locale.getCountry())
+						.replace("%lang%", locale.getLanguage());
 		try {
 			final long hash = (long) (lat * E9 * E9 + lon * E9);
 			synchronized (lock) {
@@ -51,10 +43,8 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 				} else {
 					final URL url = new URL(urlString);
 					final URLConnection connection = url.openConnection();
-					final InputStream stream = (InputStream) connection
-							.getContent();
-					final XMLReader reader = SAXParserFactory.newInstance()
-							.newSAXParser().getXMLReader();
+					final InputStream stream = (InputStream) connection.getContent();
+					final XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 					reader.setContentHandler(this);
 					parsingState = new ArrayList<String>();
 					this.addrs = new ArrayList<Address>();
@@ -76,40 +66,29 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void characters(final char[] ch, final int start, final int length)
-			throws SAXException {
+	public void characters(final char[] ch, final int start, final int length) throws SAXException {
 		final String text = new String(ch, start, length);
-		if (parsingState.get(0).equalsIgnoreCase("GeocodeResponse")
-				&& parsingState.size() > 1) {
+		if (parsingState.get(0).equalsIgnoreCase("GeocodeResponse") && parsingState.size() > 1) {
 			if (parsingState.get(1).equalsIgnoreCase("status")) {
 				if (!text.equalsIgnoreCase("OK")) {
-					throw new RuntimeException("GeocodeResponse->status = "
-							+ text + " (!=OK)");
+					throw new RuntimeException("GeocodeResponse->status = " + text + " (!=OK)");
 				}
-			} else if (parsingState.get(1).equalsIgnoreCase("result")
-					&& parsingState.size() > 2) {
+			} else if (parsingState.get(1).equalsIgnoreCase("result") && parsingState.size() > 2) {
 				if (parsingState.get(2).equalsIgnoreCase("type")) {
-				} else if (parsingState.get(2).equalsIgnoreCase(
-						"formatted_address")) {
+				} else if (parsingState.get(2).equalsIgnoreCase("formatted_address")) {
 					addr.setAddressLine(addr.getMaxAddressLineIndex() + 1, text);
-				} else if (parsingState.get(2).equalsIgnoreCase(
-						"address_component")
-						&& parsingState.size() > 3) {
+				} else if (parsingState.get(2).equalsIgnoreCase("address_component") && parsingState.size() > 3) {
 					if (parsingState.get(3).equalsIgnoreCase("long_name")) {
 						compLong = text;
-					} else if (parsingState.get(3).equalsIgnoreCase(
-							"short_name")) {
+					} else if (parsingState.get(3).equalsIgnoreCase("short_name")) {
 						compShort = text;
 					} else if (parsingState.get(3).equalsIgnoreCase("type")) {
-						if (compType == null
-								|| !text.equalsIgnoreCase("political")) {
+						if (compType == null || !text.equalsIgnoreCase("political")) {
 							compType = text;
 						}
 					}
-				} else if (parsingState.get(2).equalsIgnoreCase("geometry")
-						&& parsingState.size() > 3) {
-					if (parsingState.get(3).equalsIgnoreCase("location")
-							&& parsingState.size() > 4) {
+				} else if (parsingState.get(2).equalsIgnoreCase("geometry") && parsingState.size() > 3) {
+					if (parsingState.get(3).equalsIgnoreCase("location") && parsingState.size() > 4) {
 						if (parsingState.get(4).equalsIgnoreCase("lat")) {
 							addr.setLatitude(Double.parseDouble(text));
 						} else if (parsingState.get(4).equalsIgnoreCase("lon")) {
@@ -126,23 +105,18 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void endElement(final String uri, final String localName,
-			final String qName) throws SAXException {
-		if (parsingState.get(parsingState.size() - 1).equalsIgnoreCase(
-				localName)) {
+	public void endElement(final String uri, final String localName, final String qName) throws SAXException {
+		if (parsingState.get(parsingState.size() - 1).equalsIgnoreCase(localName)) {
 			parsingState.remove(parsingState.size() - 1);
 		} else {
 			throw new RuntimeException("end of non-open element?! " + localName);
 		}
-		if (parsingState.size() >= 1
-				&& parsingState.get(0).equalsIgnoreCase("GeocodeResponse")) {
-			if (parsingState.size() == 1
-					&& localName.equalsIgnoreCase("result")) {
+		if (parsingState.size() >= 1 && parsingState.get(0).equalsIgnoreCase("GeocodeResponse")) {
+			if (parsingState.size() == 1 && localName.equalsIgnoreCase("result")) {
 				addrs.add(addr);
 				addr = null;
 			}
-			if (parsingState.size() == 2
-					&& localName.equalsIgnoreCase("address_component")) {
+			if (parsingState.size() == 2 && localName.equalsIgnoreCase("address_component")) {
 				if (compType.equalsIgnoreCase("street_number")) {
 					addr.setSubThoroughfare(compShort);
 				} else if (compType.equalsIgnoreCase("route")) {
@@ -152,11 +126,9 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 
 				} else if (compType.equalsIgnoreCase("locality")) {
 					addr.setLocality(compLong);
-				} else if (compType
-						.equalsIgnoreCase("administrative_area_level_3")) {
+				} else if (compType.equalsIgnoreCase("administrative_area_level_3")) {
 
-				} else if (compType
-						.equalsIgnoreCase("administrative_area_level_1")) {
+				} else if (compType.equalsIgnoreCase("administrative_area_level_1")) {
 					addr.setAdminArea(compShort);
 				} else if (compType.equalsIgnoreCase("country")) {
 					addr.setCountryName(compLong);
@@ -177,14 +149,12 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void ignorableWhitespace(final char[] ch, final int start,
-			final int length) throws SAXException {
+	public void ignorableWhitespace(final char[] ch, final int start, final int length) throws SAXException {
 
 	}
 
 	@Override
-	public void processingInstruction(final String target, final String data)
-			throws SAXException {
+	public void processingInstruction(final String target, final String data) throws SAXException {
 
 	}
 
@@ -204,8 +174,8 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void startElement(final String uri, final String localName,
-			final String qName, final Attributes atts) throws SAXException {
+	public void startElement(final String uri, final String localName, final String qName, final Attributes atts)
+			throws SAXException {
 		parsingState.add(localName);
 		if (parsingState.get(0).equalsIgnoreCase("GeocodeResponse")) {
 			if (localName.equalsIgnoreCase("result")) {
@@ -215,9 +185,12 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource,
 	}
 
 	@Override
-	public void startPrefixMapping(final String prefix, final String uri)
-			throws SAXException {
+	public void startPrefixMapping(final String prefix, final String uri) throws SAXException {
 
 	}
 
+	@Override
+	public boolean isSourceAvailable() {
+		return false; // TODO: Always disabled these days, we really need a settings dialog!
+	}
 }

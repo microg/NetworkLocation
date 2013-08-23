@@ -1,24 +1,34 @@
-package com.google.android.location.source;
+package org.microg.netlocation.source;
+
+import android.content.Context;
+import android.location.Location;
+import android.net.ConnectivityManager;
+import android.util.Log;
+import com.apple.iphone.services.Location.Response;
+import com.apple.iphone.services.Location.ResponseWLAN;
+import com.apple.iphone.services.LocationRetriever;
+import org.microg.netlocation.data.WlanLocationData;
+import org.microg.netlocation.database.WlanMap;
 
 import java.util.Collection;
 import java.util.Date;
 
-import android.location.Location;
-import android.util.Log;
-
-import com.apple.iphone.services.Location.Response;
-import com.apple.iphone.services.Location.ResponseWLAN;
-import com.apple.iphone.services.LocationRetriever;
-import com.google.android.location.data.WlanLocationData;
-import com.google.android.location.database.WlanMap;
-
 public class AppleWlanLocationSource implements WlanLocationSource {
 
 	private static final String TAG = "AppleWlanLocationSource";
+	private final ConnectivityManager connectivityManager;
+
+	public AppleWlanLocationSource(Context context) {
+		this((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+	}
+
+	public AppleWlanLocationSource(ConnectivityManager connectivityManager) {
+		this.connectivityManager = connectivityManager;
+	}
 
 	@Override
-	public void requestMacLocations(final Collection<String> macs,
-			final Collection<String> missingMacs, final WlanMap wlanMap) {
+	public void requestMacLocations(final Collection<String> macs, final Collection<String> missingMacs,
+									final WlanMap wlanMap) {
 		try {
 			final Response response = LocationRetriever.retrieveLocations(macs);
 			int newLocs = 0;
@@ -47,11 +57,17 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 					}
 				}
 			}
-			Log.d(TAG, "requestMacLocations: " + response.getWlanCount()
-					+ " results, " + newLocs + " new, " + reqLocs + " required");
+			Log.d(TAG, "requestMacLocations: " + response.getWlanCount() + " results, " + newLocs + " new, " + reqLocs +
+					   " required");
 		} catch (final Exception e) {
 			Log.e(TAG, "requestMacLocations: " + macs, e);
 		}
 	}
 
+	@Override
+	public boolean isSourceAvailable() {
+		return connectivityManager.getActiveNetworkInfo() != null &&
+			   connectivityManager.getActiveNetworkInfo().isAvailable() &&
+			   connectivityManager.getActiveNetworkInfo().isConnected();
+	}
 }

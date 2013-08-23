@@ -1,9 +1,9 @@
-package com.google.android.location.data;
+package org.microg.netlocation.data;
+
+import android.location.Location;
 
 import java.util.Collection;
 import java.util.Date;
-
-import android.location.Location;
 
 public interface LocationDataProvider {
 
@@ -11,13 +11,11 @@ public interface LocationDataProvider {
 
 		public static final String DEFAULT_IDENTIFIER = "unknown";
 
-		public static Location renameSource(final Location location,
-				final String source) {
+		public static Location renameSource(final Location location, final String source) {
 			return renameSource(location, source, new Date().getTime());
 		}
 
-		protected static Location renameSource(Location location,
-				final String source, final long time) {
+		protected static Location renameSource(Location location, final String source, final long time) {
 			if (location == null) {
 				return null;
 			}
@@ -27,8 +25,7 @@ public interface LocationDataProvider {
 			return location;
 		}
 
-		public android.location.Location calculateLocation(
-				final Collection<Location> values, final int minAccuracy) {
+		public android.location.Location calculateLocation(final Collection<Location> values, final int minAccuracy) {
 			if (values == null || values.size() == 0) {
 				return null;
 			}
@@ -38,8 +35,7 @@ public interface LocationDataProvider {
 			float minacc = Float.MAX_VALUE;
 			int n = 0;
 			for (final Location location : values) {
-				if (location != null && location.getAccuracy() != -1
-						&& location.getAccuracy() < minAccuracy) {
+				if (location != null && location.getAccuracy() != -1 && location.getAccuracy() < minAccuracy) {
 					lat += location.getLatitude();
 					lon += location.getLongitude();
 					acc += location.getAccuracy();
@@ -51,8 +47,7 @@ public interface LocationDataProvider {
 				return null;
 			}
 			final Location loc = new android.location.Location(getIdentifier());
-			loc.setAccuracy(Math.max(42,
-					Math.min((float) Math.exp(1 - n) * acc / n, minacc)));
+			loc.setAccuracy(Math.max(42, Math.min((float) Math.exp(1 - n) * acc / n, minacc)));
 			loc.setLatitude(lat / n);
 			loc.setLongitude(lon / n);
 			loc.setTime(new Date().getTime());

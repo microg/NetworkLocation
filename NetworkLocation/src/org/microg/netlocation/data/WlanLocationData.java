@@ -1,12 +1,4 @@
-package com.google.android.location.data;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Stack;
+package org.microg.netlocation.data;
 
 import android.content.Context;
 import android.location.Location;
@@ -15,9 +7,10 @@ import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import org.microg.netlocation.database.WlanMap;
+import org.microg.netlocation.source.WlanLocationSource;
 
-import com.google.android.location.database.WlanMap;
-import com.google.android.location.source.WlanLocationSource;
+import java.util.*;
 
 public class WlanLocationData extends LocationDataProvider.Stub {
 
@@ -29,8 +22,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 			return null;
 		}
 		final ArrayList<String> wlans = new ArrayList<String>();
-		final WifiManager wifiManager = (WifiManager) context
-				.getSystemService(Context.WIFI_SERVICE);
+		final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		final List<ScanResult> result = wifiManager.getScanResults();
 		if (result != null) {
 			for (final ScanResult scanResult : result) {
@@ -65,8 +57,8 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 	private final WlanLocationSource source;
 	private final WlanMap wlanMap;
 
-	public WlanLocationData(final Context context, final WlanMap wlanMap,
-			final WlanLocationSource source, final LocationListener listener) {
+	public WlanLocationData(final Context context, final WlanMap wlanMap, final WlanLocationSource source,
+							final LocationListener listener) {
 		this.context = context;
 		this.wlanMap = wlanMap;
 		this.listener = listener;
@@ -94,8 +86,7 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 		requestMissing(wlans);
 		final Map<String, Location> locs = getLocations(wlans);
 		final Location location = calculateLocation(locs.values(), 1000);
-		if (location == null
-				|| (location.getLatitude() == 0 && location.getLongitude() == 0)) {
+		if (location == null || (location.getLatitude() == 0 && location.getLongitude() == 0)) {
 			Log.d(TAG, "could not get location via wlan");
 			return null;
 		}
@@ -128,11 +119,9 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 	}
 
 	private boolean isOnline() {
-		final ConnectivityManager cm = (ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-		return cm.getActiveNetworkInfo() != null
-				&& cm.getActiveNetworkInfo().isConnected();
+		return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
 	}
 
 	private Collection<String> missingInCache(final Collection<String> wlans) {
@@ -146,6 +135,8 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 	}
 
 	private void requestLocations() {
+		if (!source.isSourceAvailable())
+			return;
 		if (missingMacs == null) {
 			return;
 		}
@@ -167,9 +158,10 @@ public class WlanLocationData extends LocationDataProvider.Stub {
 	}
 
 	private void requestMissing(final Collection<String> wlans) {
+		if (!source.isSourceAvailable())
+			return;
 		addToMissing(missingInCache(wlans));
-		if ((retriever == null || !retriever.isAlive()) && missingMacs != null
-				&& missingMacs.size() > 0) {
+		if ((retriever == null || !retriever.isAlive()) && missingMacs != null && missingMacs.size() > 0) {
 			retriever = new Thread(new Runnable() {
 				private boolean hasWork() {
 					synchronized (missingMacs) {
