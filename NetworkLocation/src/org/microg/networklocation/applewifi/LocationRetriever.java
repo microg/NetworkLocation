@@ -1,12 +1,6 @@
 package org.microg.networklocation.applewifi;
 
-import com.apple.iphone.services.Location.Request;
-import com.apple.iphone.services.Location.RequestWLAN;
-import com.apple.iphone.services.Location.Response;
-
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,10 +44,10 @@ public class LocationRetriever {
 		return (HttpsURLConnection) url.openConnection();
 	}
 
-	private static Request createRequest(final String... macs) {
-		final Request builder = new Request().setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
+	private static Location.Request createRequest(final String... macs) {
+		final Location.Request builder = new Location.Request().setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
 		for (final String mac : macs) {
-			builder.addWlan(new RequestWLAN().setMac(mac));
+			builder.addWlan(new Location.RequestWLAN().setMac(mac));
 		}
 		return builder;
 	}
@@ -68,33 +62,24 @@ public class LocationRetriever {
 		connection.setRequestProperty("Content-Length", String.valueOf(length));
 	}
 
-	public static Response retrieveLocations(final Collection<String> macs)
+	public static Location.Response retrieveLocations(final Collection<String> macs)
 			throws MalformedURLException, ProtocolException, IOException {
 		return retrieveLocations(macs.toArray(new String[macs.size()]));
 	}
 
-	public static Response retrieveLocations(final String... macs) throws IOException, ProtocolException {
-		final Request request = createRequest(macs);
-		final byte[] byteb = request.toByteArray();
-		final byte[] bytes = combineBytes(firstBytes, byteb, (byte) byteb.length);
-		final HttpsURLConnection connection = createConnection();
-		connection.setHostnameVerifier(new HostnameVerifier() {
-
-			@Override
-			public boolean verify(String hostname, SSLSession session) {
-				// TODO really implement or check why apple fails sometimes...
-				return true;
-			}
-		});
+	public static Location.Response retrieveLocations(final String... macs) throws IOException {
+		Location.Request request = createRequest(macs);
+		byte[] byteb = request.toByteArray();
+		byte[] bytes = combineBytes(firstBytes, byteb, (byte) byteb.length);
+		HttpsURLConnection connection = createConnection();
 		prepareConnection(connection, bytes.length);
-		final OutputStream out = connection.getOutputStream();
+		OutputStream out = connection.getOutputStream();
 		out.write(bytes);
 		out.flush();
 		out.close();
-		final InputStream in = connection.getInputStream();
-		final int i = 0;
+		InputStream in = connection.getInputStream();
 		in.skip(10);
-		final Response response = Response.parseFrom(readStreamToEnd(in));
+		Location.Response response = Location.Response.parseFrom(readStreamToEnd(in));
 		in.close();
 		return response;
 	}
