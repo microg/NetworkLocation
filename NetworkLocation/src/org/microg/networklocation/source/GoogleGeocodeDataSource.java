@@ -1,4 +1,4 @@
-package org.microg.netlocation.source;
+package org.microg.networklocation.source;
 
 import android.location.Address;
 import android.util.Log;

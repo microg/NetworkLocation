@@ -1,9 +1,9 @@
-package org.microg.netlocation.data;
+package org.microg.networklocation.data;
 
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import org.microg.netlocation.MainService;
+import org.microg.networklocation.MainService;
 
 import java.util.Date;
 import java.util.HashMap;

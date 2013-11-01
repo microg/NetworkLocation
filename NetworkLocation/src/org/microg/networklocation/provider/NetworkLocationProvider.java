@@ -1,4 +1,4 @@
-package org.microg.netlocation.provider;
+package org.microg.networklocation.provider;
 
 import android.location.Criteria;
 import android.location.Location;
@@ -8,10 +8,10 @@ import android.os.SystemClock;
 import android.os.WorkSource;
 import android.util.Log;
 import com.android.location.provider.LocationProvider;
-import org.microg.netlocation.MainService;
-import org.microg.netlocation.NetworkLocationThread;
-import org.microg.netlocation.data.LocationData;
-import org.microg.netlocation.data.LocationDataProvider;
+import org.microg.networklocation.MainService;
+import org.microg.networklocation.NetworkLocationThread;
+import org.microg.networklocation.data.LocationData;
+import org.microg.networklocation.data.LocationDataProvider;
 
 public class NetworkLocationProvider extends LocationProvider implements NetworkLocationProviderBase {
 

@@ -1,2 +1,2 @@
 #!/bin/sh
-protoc-micro --javamicro_out=gen apple_loc.proto
+protoc-micro --javamicro_out=gen proto/apple_loc.proto

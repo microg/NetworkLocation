@@ -1,4 +1,4 @@
-package org.microg.netlocation.data;
+package org.microg.networklocation.data;
 
 import android.location.Location;
 

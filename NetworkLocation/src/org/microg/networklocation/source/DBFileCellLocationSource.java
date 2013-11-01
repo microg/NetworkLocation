@@ -1,13 +1,13 @@
-package org.microg.netlocation.source;
+package org.microg.networklocation.source;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.util.Log;
-import org.microg.netlocation.MainService;
-import org.microg.netlocation.data.CellLocationData;
-import org.microg.netlocation.database.CellMap;
-import org.microg.netlocation.database.DatabaseHelper;
+import org.microg.networklocation.MainService;
+import org.microg.networklocation.data.CellLocationData;
+import org.microg.networklocation.database.CellMap;
+import org.microg.networklocation.database.DatabaseHelper;
 
 import java.io.File;
 import java.util.Date;

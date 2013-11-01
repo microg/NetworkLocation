@@ -1,8 +1,8 @@
-package org.microg.netlocation.provider;
+package org.microg.networklocation.provider;
 
 import android.location.LocationListener;
 import android.os.IBinder;
-import org.microg.netlocation.data.LocationData;
+import org.microg.networklocation.data.LocationData;
 
 public interface NetworkLocationProviderBase extends LocationListener {
 	public IBinder getBinder();

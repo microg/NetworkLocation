@@ -1,4 +1,4 @@
-package org.microg.netlocation.data;
+package org.microg.networklocation.data;
 
 import android.content.Context;
 import android.location.Location;
@@ -7,8 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
-import org.microg.netlocation.database.WlanMap;
-import org.microg.netlocation.source.WlanLocationSource;
+import org.microg.networklocation.database.WlanMap;
+import org.microg.networklocation.source.WlanLocationSource;
 
 import java.util.*;
 

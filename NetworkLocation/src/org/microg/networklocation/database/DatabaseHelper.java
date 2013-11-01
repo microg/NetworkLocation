@@ -1,4 +1,4 @@
-package org.microg.netlocation.database;
+package org.microg.networklocation.database;
 
 import android.content.Context;
 import android.database.Cursor;

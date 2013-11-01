@@ -1,4 +1,4 @@
-package com.apple.iphone.services;
+package org.microg.networklocation.applewifi;
 
 import com.apple.iphone.services.Location.Request;
 import com.apple.iphone.services.Location.RequestWLAN;
@@ -26,31 +26,31 @@ public class LocationRetriever {
 
 	}
 
-	public static byte[] combineBytes(final byte[] first, final byte[] second, final byte divider) {
+	private static byte[] combineBytes(final byte[] first, final byte[] second, final byte divider) {
 		final byte[] bytes = new byte[first.length + second.length + 1];
 		for (int i = 0; i < first.length; i++) {
 			bytes[i] = first[i];
 		}
-		bytes[first.length] = (byte) second.length;
+		bytes[first.length] = divider;
 		for (int i = 0; i < second.length; i++) {
 			bytes[i + first.length + 1] = second[i];
 		}
 		return bytes;
 	}
 
-	public static HttpsURLConnection createConnection() throws IOException {
+	private static HttpsURLConnection createConnection() throws IOException {
 		return createConnection(SERVICE_URL);
 	}
 
-	public static HttpsURLConnection createConnection(final String url) throws MalformedURLException, IOException {
+	private static HttpsURLConnection createConnection(final String url) throws MalformedURLException, IOException {
 		return createConnection(new URL(url));
 	}
 
-	public static HttpsURLConnection createConnection(final URL url) throws IOException {
+	private static HttpsURLConnection createConnection(final URL url) throws IOException {
 		return (HttpsURLConnection) url.openConnection();
 	}
 
-	public static Request createRequest(final String... macs) {
+	private static Request createRequest(final String... macs) {
 		final Request builder = new Request().setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
 		for (final String mac : macs) {
 			builder.addWlan(new RequestWLAN().setMac(mac));
@@ -58,7 +58,7 @@ public class LocationRetriever {
 		return builder;
 	}
 
-	public static void prepareConnection(final HttpsURLConnection connection, final int length)
+	private static void prepareConnection(final HttpsURLConnection connection, final int length)
 			throws ProtocolException {
 		connection.setRequestMethod("POST");
 		connection.setDoInput(true);
@@ -99,7 +99,7 @@ public class LocationRetriever {
 		return response;
 	}
 
-	protected static byte[] readStreamToEnd(final InputStream is) throws IOException {
+	private static byte[] readStreamToEnd(final InputStream is) throws IOException {
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		if (is != null) {
 			final byte[] buff = new byte[1024];

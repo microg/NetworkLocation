@@ -1,11 +1,11 @@
-package org.microg.netlocation.provider;
+package org.microg.networklocation.provider;
 
 import android.content.Context;
 import android.location.Address;
 import android.location.GeocoderParams;
 import android.util.Log;
-import org.microg.netlocation.MainService;
-import org.microg.netlocation.source.GeocodeDataSource;
+import org.microg.networklocation.MainService;
+import org.microg.networklocation.source.GeocodeDataSource;
 
 import java.util.List;
 

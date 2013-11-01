@@ -1,4 +1,4 @@
-package org.microg.netlocation;
+package org.microg.networklocation;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -12,24 +12,24 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
-import org.microg.netlocation.data.CellLocationData;
-import org.microg.netlocation.data.LocationData;
-import org.microg.netlocation.data.WlanLocationData;
-import org.microg.netlocation.database.CellMap;
-import org.microg.netlocation.database.DatabaseHelper;
-import org.microg.netlocation.database.WlanMap;
-import org.microg.netlocation.provider.GeocodeProvider;
-import org.microg.netlocation.provider.NetworkLocationProvider;
-import org.microg.netlocation.provider.NetworkLocationProviderBase;
-import org.microg.netlocation.provider.NetworkLocationProviderV2;
-import org.microg.netlocation.source.AppleWlanLocationSource;
-import org.microg.netlocation.source.DBFileCellLocationSource;
-import org.microg.netlocation.source.GoogleGeocodeDataSource;
+import org.microg.networklocation.data.CellLocationData;
+import org.microg.networklocation.data.LocationData;
+import org.microg.networklocation.data.WlanLocationData;
+import org.microg.networklocation.database.CellMap;
+import org.microg.networklocation.database.DatabaseHelper;
+import org.microg.networklocation.database.WlanMap;
+import org.microg.networklocation.provider.GeocodeProvider;
+import org.microg.networklocation.provider.NetworkLocationProvider;
+import org.microg.networklocation.provider.NetworkLocationProviderBase;
+import org.microg.networklocation.provider.NetworkLocationProviderV2;
+import org.microg.networklocation.source.AppleWlanLocationSource;
+import org.microg.networklocation.source.DBFileCellLocationSource;
+import org.microg.networklocation.source.GoogleGeocodeDataSource;
 
 import java.io.File;
 
 public class MainService extends Service {
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	private static final String TAG = "NetworkLocationService";
 	private LocationData data;
 	private GeocodeProvider geoprovider;

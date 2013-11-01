@@ -1,4 +1,4 @@
-package org.microg.netlocation.data;
+package org.microg.networklocation.data;
 
 import android.content.Context;
 import android.location.Location;
@@ -8,9 +8,9 @@ import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
-import org.microg.netlocation.MainService;
-import org.microg.netlocation.database.CellMap;
-import org.microg.netlocation.source.CellLocationSource;
+import org.microg.networklocation.MainService;
+import org.microg.networklocation.database.CellMap;
+import org.microg.networklocation.source.CellLocationSource;
 
 import java.util.ArrayList;
 

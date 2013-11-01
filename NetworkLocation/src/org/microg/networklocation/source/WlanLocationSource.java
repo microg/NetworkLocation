@@ -1,6 +1,6 @@
-package org.microg.netlocation.source;
+package org.microg.networklocation.source;
 
-import org.microg.netlocation.database.WlanMap;
+import org.microg.networklocation.database.WlanMap;
 
 import java.util.Collection;
 

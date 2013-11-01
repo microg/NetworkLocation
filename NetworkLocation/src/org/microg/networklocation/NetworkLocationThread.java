@@ -1,9 +1,9 @@
-package org.microg.netlocation;
+package org.microg.networklocation;
 
 import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
-import org.microg.netlocation.data.LocationData;
+import org.microg.networklocation.data.LocationData;
 
 public class NetworkLocationThread extends Thread {
 
