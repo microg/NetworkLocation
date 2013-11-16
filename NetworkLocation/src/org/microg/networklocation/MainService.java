@@ -76,7 +76,8 @@ public class MainService extends Service {
 		}
 		if (action.equalsIgnoreCase("com.google.android.location.NetworkLocationProvider") ||
 			action.equalsIgnoreCase("com.android.location.service.NetworkLocationProvider") ||
-			action.equalsIgnoreCase("com.android.location.service.v2.NetworkLocationProvider")) {
+			action.equalsIgnoreCase("com.android.location.service.v2.NetworkLocationProvider") ||
+			action.equalsIgnoreCase("com.android.location.service.v3.NetworkLocationProvider")) {
 			return nlprovider.getBinder();
 		} else if (action.equalsIgnoreCase("com.google.android.location.GeocodeProvider") ||
 				   action.equalsIgnoreCase("com.android.location.service.GeocodeProvider")) {

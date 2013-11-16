@@ -28,6 +28,7 @@
             android:exported="true"
             android:permission="android.permission.WRITE_SECURE_SETTINGS" >
             <intent-filter>
+                <action android:name="com.android.location.service.v3.NetworkLocationProvider" />
                 <action android:name="com.android.location.service.v2.NetworkLocationProvider" />
                 <action android:name="com.android.location.service.NetworkLocationProvider" />
                 <action android:name="com.android.location.service.GeocodeProvider" />
