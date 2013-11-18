@@ -14,9 +14,10 @@ import java.util.Date;
 
 public class AppleWlanLocationSource implements WlanLocationSource {
 
-	private static final String TAG = "AppleWlanLocationSource";
 	public static final float LATLON_WIRE = 1E8F;
+	private static final String TAG = "AppleWlanLocationSource";
 	private final ConnectivityManager connectivityManager;
+	private final LocationRetriever locationRetriever = new LocationRetriever();
 
 	public AppleWlanLocationSource(Context context) {
 		this((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
@@ -28,7 +29,7 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 
 	@Override
 	public boolean isSourceAvailable() {
-		return connectivityManager.getActiveNetworkInfo() != null &&
+		return (connectivityManager.getActiveNetworkInfo() != null) &&
 			   connectivityManager.getActiveNetworkInfo().isAvailable() &&
 			   connectivityManager.getActiveNetworkInfo().isConnected();
 	}
@@ -36,8 +37,7 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 	@Override
 	public void requestMacLocations(Collection<String> macs, Collection<String> missingMacs, WlanMap wlanMap) {
 		try {
-			final Response response =
-					LocationRetriever.retrieveLocations(macs);
+			Response response = locationRetriever.retrieveLocations(macs);
 			int newLocs = 0;
 			int reqLocs = 0;
 			for (Response.ResponseWLAN rw : response.wlan) {
