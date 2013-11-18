@@ -5,6 +5,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.util.Log;
 import org.microg.networklocation.applewifi.LocationRetriever;
+import org.microg.networklocation.applewifi.Response;
 import org.microg.networklocation.data.WlanLocationData;
 import org.microg.networklocation.database.WlanMap;
 
@@ -14,6 +15,7 @@ import java.util.Date;
 public class AppleWlanLocationSource implements WlanLocationSource {
 
 	private static final String TAG = "AppleWlanLocationSource";
+	public static final float LATLON_WIRE = 1E8F;
 	private final ConnectivityManager connectivityManager;
 
 	public AppleWlanLocationSource(Context context) {
@@ -34,18 +36,18 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 	@Override
 	public void requestMacLocations(Collection<String> macs, Collection<String> missingMacs, WlanMap wlanMap) {
 		try {
-			final org.microg.networklocation.applewifi.Location.Response response =
+			final Response response =
 					LocationRetriever.retrieveLocations(macs);
 			int newLocs = 0;
 			int reqLocs = 0;
-			for (org.microg.networklocation.applewifi.Location.ResponseWLAN rw : response.getWlanList()) {
-				String mac = WlanLocationData.niceMac(rw.getMac());
+			for (Response.ResponseWLAN rw : response.wlan) {
+				String mac = WlanLocationData.niceMac(rw.mac);
 				Location loc = new Location(WlanLocationData.IDENTIFIER);
-				loc.setLatitude(rw.getLocation().getLatitude() / 1E8F);
-				loc.setLongitude(rw.getLocation().getLongitude() / 1E8F);
-				loc.setAccuracy(rw.getLocation().getAccuracy());
-				if (rw.getLocation().getAltitude() != -500) {
-					loc.setAltitude(rw.getLocation().getAltitude());
+				loc.setLatitude(rw.location.latitude / LATLON_WIRE);
+				loc.setLongitude(rw.location.longitude / LATLON_WIRE);
+				loc.setAccuracy(rw.location.accuracy);
+				if (rw.location.altitude != -500) {
+					loc.setAltitude(rw.location.altitude);
 				}
 				loc.setTime(new Date().getTime());
 				if (!wlanMap.containsKey(mac)) {
@@ -62,7 +64,7 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 					}
 				}
 			}
-			Log.d(TAG, "requestMacLocations: " + response.getWlanCount() + " results, " + newLocs + " new, " + reqLocs +
+			Log.d(TAG, "requestMacLocations: " + response.wlan.size() + " results, " + newLocs + " new, " + reqLocs +
 					   " required");
 		} catch (final Exception e) {
 			Log.e(TAG, "requestMacLocations: " + macs, e);

@@ -1,5 +1,7 @@
 package org.microg.networklocation.applewifi;
 
+import com.squareup.wire.Wire;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,7 +10,9 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class LocationRetriever {
 	public static final byte[] firstBytes =
@@ -44,12 +48,12 @@ public class LocationRetriever {
 		return (HttpsURLConnection) url.openConnection();
 	}
 
-	private static Location.Request createRequest(final String... macs) {
-		final Location.Request builder = new Location.Request().setSource("com.apple.maps").setUnknown3(0).setUnknown4(0);
+	private static Request createRequest(final String... macs) {
+		List<Request.RequestWLAN> wlans = new ArrayList<Request.RequestWLAN>();
 		for (final String mac : macs) {
-			builder.addWlan(new Location.RequestWLAN().setMac(mac));
+			wlans.add(new Request.RequestWLAN.Builder().mac(mac).build());
 		}
-		return builder;
+		return new Request.Builder().source("com.apple.maps").unknown3(0).unknown4(0).wlan(wlans).build();
 	}
 
 	private static void prepareConnection(final HttpsURLConnection connection, final int length)
@@ -62,13 +66,13 @@ public class LocationRetriever {
 		connection.setRequestProperty("Content-Length", String.valueOf(length));
 	}
 
-	public static Location.Response retrieveLocations(final Collection<String> macs)
+	public static Response retrieveLocations(final Collection<String> macs)
 			throws MalformedURLException, ProtocolException, IOException {
 		return retrieveLocations(macs.toArray(new String[macs.size()]));
 	}
 
-	public static Location.Response retrieveLocations(final String... macs) throws IOException {
-		Location.Request request = createRequest(macs);
+	public static Response retrieveLocations(final String... macs) throws IOException {
+		Request request = createRequest(macs);
 		byte[] byteb = request.toByteArray();
 		byte[] bytes = combineBytes(firstBytes, byteb, (byte) byteb.length);
 		HttpsURLConnection connection = createConnection();
@@ -79,7 +83,7 @@ public class LocationRetriever {
 		out.close();
 		InputStream in = connection.getInputStream();
 		in.skip(10);
-		Location.Response response = Location.Response.parseFrom(readStreamToEnd(in));
+		Response response = new Wire().parseFrom(readStreamToEnd(in), Response.class);
 		in.close();
 		return response;
 	}
