@@ -15,6 +15,7 @@ import org.microg.networklocation.data.WlanLocationData;
 import org.microg.networklocation.database.CellMap;
 import org.microg.networklocation.database.DatabaseHelper;
 import org.microg.networklocation.database.WlanMap;
+import org.microg.networklocation.helper.Reflected;
 import org.microg.networklocation.provider.GeocodeProvider;
 import org.microg.networklocation.provider.NetworkLocationProvider;
 import org.microg.networklocation.provider.NetworkLocationProviderBase;
@@ -24,12 +25,11 @@ import org.microg.networklocation.source.DBFileCellLocationSource;
 import org.microg.networklocation.source.GoogleGeocodeDataSource;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class MainService extends Service {
 	public static final boolean DEBUG = true;
 	private static final String TAG = "NetworkLocationService";
+	private static Context context;
 	private LocationData data;
 	private GeocodeProvider geoprovider;
 	private CellMap gsmMap;
@@ -42,8 +42,6 @@ public class MainService extends Service {
 			Log.d(TAG, "new Service-Object constructed");
 		}
 	}
-
-	private static Context context;
 
 	public static Context getContext() {
 		return context;
@@ -59,6 +57,12 @@ public class MainService extends Service {
 
 	public boolean isActive() {
 		return nlprovider.isActive();
+	}
+
+	private boolean isAirplaneModeOn() {
+		return ((Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) ?
+				(Settings.System.getInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0)) :
+				(Reflected.androidProviderSettingsGlobalGetInt(getContentResolver(), "airplane_mode_on", 0))) != 0;
 	}
 
 	@Override
@@ -124,6 +128,12 @@ public class MainService extends Service {
 		geoprovider = new GeocodeProvider(this, new GoogleGeocodeDataSource());
 	}
 
+	@Override
+	public void onDestroy() {
+		geoprovider = null;
+		nlprovider = null;
+	}
+
 	public void updateProviderStateOnAirplaneMode() {
 		boolean airplane = isAirplaneModeOn();
 		boolean wifi = wifiManager.isWifiEnabled();
@@ -138,36 +148,5 @@ public class MainService extends Service {
 				Log.d(TAG, "AirplaneMode or wifi is enabled. make sure we're active!");
 			nlprovider.enable();
 		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private boolean isAirplaneModeOn() {
-		if (Build.VERSION.SDK_INT < 17) {
-			return Settings.System.getInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0) != 0;
-		} else {
-			return androidProviderSettingsGlobalGetInt(getContentResolver(), "airplane_mode_on", 0) != 0;
-		}
-	}
-
-	private int androidProviderSettingsGlobalGetInt(ContentResolver contentResolver, String name, int defaultValue) {
-		try {
-			Class clazz = Class.forName("android.provider.Settings$Global");
-			Method getInt = clazz.getDeclaredMethod("getInt", ContentResolver.class, String.class, int.class);
-			return (Integer) getInt.invoke(null, contentResolver, name, defaultValue);
-		} catch (ClassNotFoundException ignored) {
-			return defaultValue;
-		} catch (NoSuchMethodException ignored) {
-			return defaultValue;
-		} catch (InvocationTargetException ignored) {
-			return defaultValue;
-		} catch (IllegalAccessException ignored) {
-			return defaultValue;
-		}
-	}
-
-	@Override
-	public void onDestroy() {
-		geoprovider = null;
-		nlprovider = null;
 	}
 }

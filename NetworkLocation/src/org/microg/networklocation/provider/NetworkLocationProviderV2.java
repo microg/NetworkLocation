@@ -13,6 +13,7 @@ import com.android.location.provider.ProviderRequestUnbundled;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.LocationData;
 import org.microg.networklocation.data.LocationDataProvider;
+import org.microg.networklocation.helper.Reflected;
 
 @TargetApi(17)
 public class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkLocationProviderBase {
@@ -72,10 +73,10 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
-			final Bundle b = new Bundle();
-			b.putString("networkLocationType", location.getProvider());
-			location.setExtras(b);
-			location.makeComplete();
+			Bundle bundle = new Bundle();
+			bundle.putString(NETWORK_LOCATION_TYPE, location.getProvider());
+			location.setExtras(bundle);
+			Reflected.androidLocationLocationMakeComplete(location);
 			reportLocation(LocationDataProvider.Stub.renameSource(location, IDENTIFIER));
 		}
 	}
