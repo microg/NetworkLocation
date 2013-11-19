@@ -1,10 +1,7 @@
 package org.microg.networklocation;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.location.Location;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -27,6 +24,8 @@ import org.microg.networklocation.source.DBFileCellLocationSource;
 import org.microg.networklocation.source.GoogleGeocodeDataSource;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class MainService extends Service {
 	public static final boolean DEBUG = true;
@@ -146,7 +145,23 @@ public class MainService extends Service {
 		if (Build.VERSION.SDK_INT < 17) {
 			return Settings.System.getInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0) != 0;
 		} else {
-			return Settings.Global.getInt(getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+			return androidProviderSettingsGlobalGetInt(getContentResolver(), "airplane_mode_on", 0) != 0;
+		}
+	}
+
+	private int androidProviderSettingsGlobalGetInt(ContentResolver contentResolver, String name, int defaultValue) {
+		try {
+			Class clazz = Class.forName("android.provider.Settings$Global");
+			Method getInt = clazz.getDeclaredMethod("getInt", ContentResolver.class, String.class, int.class);
+			return (Integer) getInt.invoke(null, contentResolver, name, defaultValue);
+		} catch (ClassNotFoundException ignored) {
+			return defaultValue;
+		} catch (NoSuchMethodException ignored) {
+			return defaultValue;
+		} catch (InvocationTargetException ignored) {
+			return defaultValue;
+		} catch (IllegalAccessException ignored) {
+			return defaultValue;
 		}
 	}
 
