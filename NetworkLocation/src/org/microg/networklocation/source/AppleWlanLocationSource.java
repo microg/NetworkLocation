@@ -46,7 +46,7 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 				loc.setLatitude(rw.location.latitude / LATLON_WIRE);
 				loc.setLongitude(rw.location.longitude / LATLON_WIRE);
 				loc.setAccuracy(rw.location.accuracy);
-				if (rw.location.altitude != -500) {
+				if ((rw.location.altitude != null) && (rw.location.altitude > -500)) {
 					loc.setAltitude(rw.location.altitude);
 				}
 				loc.setTime(new Date().getTime());

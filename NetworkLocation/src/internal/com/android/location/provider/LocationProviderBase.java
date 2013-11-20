@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.location.provider;
+package internal.com.android.location.provider;
 
 import android.content.Context;
 import android.location.ILocationManager;
@@ -130,13 +130,13 @@ public abstract class LocationProviderBase {
 	}
 
 	/**
-	 * Set the {@link ProviderRequest} requirements for this provider.
+	 * Set the {@link com.android.internal.location.ProviderRequest} requirements for this provider.
 	 * <p>Each call to this method overrides all previous requests.
 	 * <p>This method might trigger the provider to start returning
 	 * locations, or to stop returning locations, depending on the
 	 * parameters in the request.
 	 */
-	public abstract void onSetRequest(ProviderRequestUnbundled request, WorkSource source);
+	public abstract void onSetRequest(ProviderRequestUnbundled request, android.os.WorkSource source);
 
 	/**
 	 * Used by the location provider to report new locations.
@@ -192,7 +192,7 @@ public abstract class LocationProviderBase {
 		}
 
 		@Override
-		public void setRequest(ProviderRequest request, WorkSource ws) {
+		public void setRequest(ProviderRequest request, android.os.WorkSource ws) {
 			onSetRequest(new ProviderRequestUnbundled(request), ws);
 		}
 	}

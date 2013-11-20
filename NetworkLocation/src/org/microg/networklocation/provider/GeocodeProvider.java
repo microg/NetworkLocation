@@ -9,7 +9,7 @@ import org.microg.networklocation.source.GeocodeDataSource;
 
 import java.util.List;
 
-public class GeocodeProvider extends com.android.location.provider.GeocodeProvider {
+public class GeocodeProvider extends internal.com.android.location.provider.GeocodeProvider {
 	private static final String TAG = "LocationGeocodeProvider";
 	private final GeocodeDataSource source;
 

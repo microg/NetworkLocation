@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.location.provider;
+package internal.com.android.location.provider;
 
 import android.content.Context;
 import android.net.NetworkInfo;

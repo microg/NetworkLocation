@@ -27,7 +27,7 @@ public class LocationRetriever {
 		byte[] bytes = new byte[first.length + second.length + 1];
 		System.arraycopy(first, 0, bytes, 0, first.length);
 		bytes[first.length] = divider;
-		System.arraycopy(second, first.length + 1, bytes, first.length + 1, second.length);
+		System.arraycopy(second, 0, bytes, first.length + 1, second.length);
 		return bytes;
 	}
 

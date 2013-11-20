@@ -24,7 +24,7 @@ import android.os.WorkSource;
 
 /**
  * A data object that contains quality of service parameters for requests
- * to the {@link LocationManager}.
+ * to the {@link android.location.LocationManager}.
  * <p/>
  * <p>LocationRequest objects are used to request a quality of service
  * for location updates from the Location Manager.
@@ -226,7 +226,7 @@ public final class LocationRequest implements Parcelable {
 	 * <p/>
 	 * <p>Default parameters are for a low power, slowly updated location.
 	 * It can then be adjusted as required by the applications before passing
-	 * to the {@link LocationManager}
+	 * to the {@link android.location.LocationManager}
 	 *
 	 * @return a new location request
 	 */

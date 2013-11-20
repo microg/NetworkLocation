@@ -29,7 +29,7 @@ public class NetworkInfo implements Parcelable {
 
 	/**
 	 * Coarse-grained network state. This is probably what most applications should
-	 * use, rather than {@link android.net.NetworkInfo.DetailedState DetailedState}.
+	 * use, rather than {@link NetworkInfo.DetailedState DetailedState}.
 	 * The mapping between the two is as follows:
 	 * <br/><br/>
 	 * <table>
@@ -52,7 +52,7 @@ public class NetworkInfo implements Parcelable {
 	/**
 	 * The fine-grained state of a network connection. This level of detail
 	 * is probably of interest to few applications. Most should use
-	 * {@link android.net.NetworkInfo.State State} instead.
+	 * {@link NetworkInfo.State State} instead.
 	 */
 	public enum DetailedState {
 		/** Ready to start data connection setup. */

@@ -38,7 +38,7 @@ public final class Reflected {
 	public static IBinder androidOsServiceManagerGetService(String service) {
 		try {
 			Class clazz = Class.forName("android.os.ServiceManager");
-			Method makeComplete = clazz.getDeclaredMethod("getService");
+			Method makeComplete = clazz.getDeclaredMethod("getService", String.class);
 			return (IBinder) makeComplete.invoke(null, service);
 		} catch (Exception e) {
 			Log.w("android.os.ServiceManager.getService", e);

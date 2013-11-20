@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.WorkSource;
 import android.util.Log;
-import com.android.location.provider.LocationProvider;
+import internal.com.android.location.provider.LocationProvider;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.LocationData;

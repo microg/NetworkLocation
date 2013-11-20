@@ -1,4 +1,4 @@
-package com.google.android.location;
+package internal.com.google.android.location.internal.server;
 
 import org.microg.networklocation.MainService;
 
