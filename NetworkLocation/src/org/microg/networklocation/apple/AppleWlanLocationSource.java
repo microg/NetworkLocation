@@ -1,13 +1,14 @@
-package org.microg.networklocation.source;
+package org.microg.networklocation.apple;
 
 import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.util.Log;
-import org.microg.networklocation.applewifi.LocationRetriever;
-import org.microg.networklocation.applewifi.Response;
+import org.microg.networklocation.apple.LocationRetriever;
+import org.microg.networklocation.apple.Response;
 import org.microg.networklocation.data.WlanLocationData;
 import org.microg.networklocation.database.WlanMap;
+import org.microg.networklocation.source.WlanLocationSource;
 
 import java.util.Collection;
 import java.util.Date;

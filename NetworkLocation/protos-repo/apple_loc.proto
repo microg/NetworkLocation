@@ -1,4 +1,4 @@
-option java_package = "org.microg.networklocation.applewifi";
+option java_package = "org.microg.networklocation.apple";
 
 message Response {
 	message ResponseWLAN {

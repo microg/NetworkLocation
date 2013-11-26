@@ -1,4 +1,4 @@
-package org.microg.networklocation.applewifi;
+package org.microg.networklocation.apple;
 
 import com.squareup.wire.Wire;
 

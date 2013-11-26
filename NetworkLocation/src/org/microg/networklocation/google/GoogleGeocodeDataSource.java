@@ -1,7 +1,8 @@
-package org.microg.networklocation.source;
+package org.microg.networklocation.google;
 
 import android.location.Address;
 import android.util.Log;
+import org.microg.networklocation.source.GeocodeDataSource;
 import org.xml.sax.*;
 
 import javax.xml.parsers.SAXParserFactory;

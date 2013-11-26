@@ -52,7 +52,7 @@ public class CellLocationData extends LocationDataProvider.Stub {
 		final ArrayList<Location> locations = new ArrayList<Location>();
 
 		if (cell != null) {
-			final Location loc = getLocation(operator, cell.getCid());
+			final Location loc = getLocation(operator, cell.getLac(), cell.getCid());
 			if (loc != null) {
 				locations.add(loc);
 			}
@@ -61,7 +61,7 @@ public class CellLocationData extends LocationDataProvider.Stub {
 		if (telephonyManager.getNeighboringCellInfo() != null) {
 			for (final NeighboringCellInfo neighbor : telephonyManager.getNeighboringCellInfo()) {
 				if (neighbor != null && neighbor.getCid() != -1) {
-					final Location loc = getLocation(operator, neighbor.getCid());
+					final Location loc = getLocation(operator, neighbor.getLac(), neighbor.getCid());
 					if (loc != null) {
 						loc.setAccuracy(loc.getAccuracy() * 3);
 						locations.add(loc);
@@ -94,7 +94,7 @@ public class CellLocationData extends LocationDataProvider.Stub {
 		return IDENTIFIER;
 	}
 
-	private Location getLocation(final int mcc, final int mnc, final int cid) {
+	private Location getLocation(int mcc, int mnc, int lac, int cid) {
 		if (mcc == 0 || mcc == -1 || mnc == 0 || mnc == -1 || cid == 0 || cid == -1) {
 			if (MainService.DEBUG)
 				Log.w(TAG, "gsm cell " + mcc + "/" + mnc + "/" + cid + " is invalid");
@@ -104,28 +104,28 @@ public class CellLocationData extends LocationDataProvider.Stub {
 		if (result == null) {
 			if (MainService.DEBUG)
 				Log.i(TAG, "gsm cell " + mcc + "/" + mnc + "/" + cid + " is not in database");
-			return readCellLocationFromDatabaseFile(mcc, mnc, cid);
+			return readCellLocationFromDatabaseFile(mcc, mnc, lac, cid);
 		}
 		return result;
 	}
 
-	private Location getLocation(final String operator, final int cid) {
+	private Location getLocation(String operator, int lac, int cid) {
 		if (operator == null || operator.length() < 3) {
 			if (MainService.DEBUG)
 				Log.w(TAG, "Not connected to any gsm cell - won't track location...");
 			return null;
 		}
-		return getLocation(operator.substring(0, 3), operator.substring(3), cid);
+		return getLocation(operator.substring(0, 3), operator.substring(3), lac, cid);
 	}
 
-	private Location getLocation(final String mcc, final String mnc, final int cid) {
-		return getLocation(Integer.parseInt(mcc), Integer.parseInt(mnc), cid);
+	private Location getLocation(String mcc, String mnc, int lac, int cid) {
+		return getLocation(Integer.parseInt(mcc), Integer.parseInt(mnc), lac, cid);
 	}
 
-	private Location readCellLocationFromDatabaseFile(final int mcc, final int mnc, final int cid) {
+	private Location readCellLocationFromDatabaseFile(int mcc, int mnc, int lac, int cid) {
 		if (!source.isSourceAvailable())
 			return null;
-		source.requestCellLocation(mcc, mnc, cid, gsmMap);
+		source.requestCellLocation(mcc, mnc, cid, lac, gsmMap);
 		return renameSource(gsmMap.get(mcc, mnc, cid));
 	}
 

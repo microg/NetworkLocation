@@ -5,19 +5,18 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import org.microg.networklocation.data.CellLocationData;
 import org.microg.networklocation.database.CellMap;
-import org.microg.networklocation.opencellid.SingleLocationRetriever;
 
-public class OpenCellIdLocationSource implements CellLocationSource {
-
-	private static final String TAG = "OpenCellIdLocationSource";
+public class OnlineCellLocationSource implements CellLocationSource {
 	private final ConnectivityManager connectivityManager;
+	private final OnlineCellLocationRetriever locationRetriever;
 
-	public OpenCellIdLocationSource(Context context) {
-		this((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+	protected OnlineCellLocationSource(Context context, OnlineCellLocationRetriever locationRetriever) {
+		this((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE), locationRetriever);
 	}
 
-	public OpenCellIdLocationSource(ConnectivityManager connectivityManager) {
+	protected OnlineCellLocationSource(ConnectivityManager connectivityManager, OnlineCellLocationRetriever locationRetriever) {
 		this.connectivityManager = connectivityManager;
+		this.locationRetriever = locationRetriever;
 	}
 
 	@Override
@@ -28,8 +27,8 @@ public class OpenCellIdLocationSource implements CellLocationSource {
 	}
 
 	@Override
-	public void requestCellLocation(int mcc, int mnc, int cid, CellMap cellMap) {
-		SingleLocationRetriever.Response response = SingleLocationRetriever.retrieveLocation(mcc, mnc, cid);
+	public void requestCellLocation(int mcc, int mnc, int cid, int lac, CellMap cellMap) {
+		OnlineCellLocationRetriever.Response response = locationRetriever.retrieveLocation(mcc, mnc, lac, cid);
 		if (response != null) {
 			Location location = new Location(CellLocationData.IDENTIFIER);
 			location.setLatitude(response.getLatitude());

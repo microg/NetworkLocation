@@ -21,7 +21,7 @@ public class DBFileCellLocationSource implements CellLocationSource {
 	}
 
 	@Override
-	public void requestCellLocation(final int mcc, final int mnc, final int cid, final CellMap cellMap) {
+	public void requestCellLocation(final int mcc, final int mnc, final int cid, int lac, final CellMap cellMap) {
 		if (dbFile.exists()) {
 			if (MainService.DEBUG)
 				Log.i(TAG, "checking " + dbFile.getAbsolutePath() + " for " + mcc + "/" + mnc + "/" + cid);
