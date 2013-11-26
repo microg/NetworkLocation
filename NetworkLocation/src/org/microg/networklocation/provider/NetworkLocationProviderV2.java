@@ -11,8 +11,8 @@ import internal.com.android.location.provider.LocationRequestUnbundled;
 import internal.com.android.location.provider.ProviderPropertiesUnbundled;
 import internal.com.android.location.provider.ProviderRequestUnbundled;
 import org.microg.networklocation.NetworkLocationThread;
+import org.microg.networklocation.data.DefaultLocationDataProvider;
 import org.microg.networklocation.data.LocationData;
-import org.microg.networklocation.data.LocationDataProvider;
 import org.microg.networklocation.helper.Reflected;
 
 @TargetApi(17)
@@ -77,7 +77,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 			bundle.putString(NETWORK_LOCATION_TYPE, location.getProvider());
 			location.setExtras(bundle);
 			Reflected.androidLocationLocationMakeComplete(location);
-			reportLocation(LocationDataProvider.Stub.renameSource(location, IDENTIFIER));
+			reportLocation(DefaultLocationDataProvider.renameSource(location, IDENTIFIER));
 		}
 	}
 

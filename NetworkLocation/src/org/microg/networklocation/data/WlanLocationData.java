@@ -12,7 +12,7 @@ import org.microg.networklocation.source.WlanLocationSource;
 
 import java.util.*;
 
-public class WlanLocationData extends LocationDataProvider.Stub {
+public class WlanLocationData extends DefaultLocationDataProvider {
 
 	public final static String IDENTIFIER = "wifi";
 	private final static String TAG = "WlanLocationData";

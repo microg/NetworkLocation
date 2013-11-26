@@ -10,8 +10,8 @@ import android.util.Log;
 import internal.com.android.location.provider.LocationProvider;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
+import org.microg.networklocation.data.DefaultLocationDataProvider;
 import org.microg.networklocation.data.LocationData;
-import org.microg.networklocation.data.LocationDataProvider;
 
 public class NetworkLocationProvider extends LocationProvider implements NetworkLocationProviderBase {
 
@@ -130,7 +130,7 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 			Bundle bundle = new Bundle();
 			bundle.putString(NETWORK_LOCATION_TYPE, location.getProvider());
 			location.setExtras(bundle);
-			reportLocation(LocationDataProvider.Stub.renameSource(location, IDENTIFIER));
+			reportLocation(DefaultLocationDataProvider.renameSource(location, IDENTIFIER));
 		}
 	}
 

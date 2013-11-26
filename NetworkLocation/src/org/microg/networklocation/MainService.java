@@ -21,6 +21,7 @@ import org.microg.networklocation.provider.NetworkLocationProvider;
 import org.microg.networklocation.provider.NetworkLocationProviderBase;
 import org.microg.networklocation.provider.NetworkLocationProviderV2;
 import org.microg.networklocation.apple.AppleWlanLocationSource;
+import org.microg.networklocation.source.CellLocationSource;
 import org.microg.networklocation.source.DBFileCellLocationSource;
 import org.microg.networklocation.google.GoogleGeocodeDataSource;
 

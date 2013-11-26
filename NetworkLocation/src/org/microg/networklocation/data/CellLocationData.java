@@ -14,7 +14,7 @@ import org.microg.networklocation.source.CellLocationSource;
 
 import java.util.ArrayList;
 
-public class CellLocationData extends LocationDataProvider.Stub {
+public class CellLocationData extends DefaultLocationDataProvider {
 
 	public static final String IDENTIFIER = "cell";
 	private static final String TAG = "CellLocationData";

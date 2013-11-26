@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LocationData extends LocationDataProvider.Stub implements LocationListener {
+public class LocationData extends DefaultLocationDataProvider implements LocationListener {
 
 	public static final String IDENTIFIER = "network";
 	private static final String IMPORTANT_PROVIDER = CellLocationData.IDENTIFIER;
