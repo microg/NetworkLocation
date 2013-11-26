@@ -10,7 +10,7 @@ public class LocationRetriever implements OnlineCellLocationRetriever {
 	}
 
 	@Override
-	public Response retrieveLocation(int mcc, int mnc, int lac, int cid) {
+	public Response retrieveCellLocation(int mcc, int mnc, int lac, int cid) {
 		//TODO: Implement
 		return null;
 	}

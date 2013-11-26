@@ -14,10 +14,22 @@ import java.util.Date;
 
 public class DBFileCellLocationSource implements CellLocationSource {
 	private static final String TAG = "DBFileCellLocationSource";
+	private static final String NAME = "Local File Database";
+	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
 	private final File dbFile;
 
 	public DBFileCellLocationSource(final File dbFile) {
 		this.dbFile = dbFile;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+	@Override
+	public String getDescription() {
+		return DESCRIPTION;
 	}
 
 	@Override

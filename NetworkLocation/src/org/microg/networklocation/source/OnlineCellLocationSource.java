@@ -6,7 +6,7 @@ import android.net.ConnectivityManager;
 import org.microg.networklocation.data.CellLocationData;
 import org.microg.networklocation.database.CellMap;
 
-public class OnlineCellLocationSource implements CellLocationSource {
+public abstract class OnlineCellLocationSource implements CellLocationSource {
 	private final ConnectivityManager connectivityManager;
 	private final OnlineCellLocationRetriever locationRetriever;
 
@@ -28,7 +28,7 @@ public class OnlineCellLocationSource implements CellLocationSource {
 
 	@Override
 	public void requestCellLocation(int mcc, int mnc, int cid, int lac, CellMap cellMap) {
-		OnlineCellLocationRetriever.Response response = locationRetriever.retrieveLocation(mcc, mnc, lac, cid);
+		OnlineCellLocationRetriever.Response response = locationRetriever.retrieveCellLocation(mcc, mnc, lac, cid);
 		if (response != null) {
 			Location location = new Location(CellLocationData.IDENTIFIER);
 			location.setLatitude(response.getLatitude());

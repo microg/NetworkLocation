@@ -1,7 +1,7 @@
 package org.microg.networklocation.source;
 
 public interface OnlineCellLocationRetriever {
-	Response retrieveLocation(int mcc, int mnc, int lac, int cid);
+	Response retrieveCellLocation(int mcc, int mnc, int lac, int cid);
 
 	class Response {
 		private double latitude;

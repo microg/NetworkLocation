@@ -60,7 +60,7 @@ public class CellLocationData extends LocationDataProvider.Stub {
 
 		if (telephonyManager.getNeighboringCellInfo() != null) {
 			for (final NeighboringCellInfo neighbor : telephonyManager.getNeighboringCellInfo()) {
-				if (neighbor != null && neighbor.getCid() != -1) {
+				if (neighbor != null && neighbor.getCid() != -1 && neighbor.getLac() != -1) {
 					final Location loc = getLocation(operator, neighbor.getLac(), neighbor.getCid());
 					if (loc != null) {
 						loc.setAccuracy(loc.getAccuracy() * 3);
