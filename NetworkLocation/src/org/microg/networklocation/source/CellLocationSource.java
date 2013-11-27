@@ -1,9 +1,6 @@
 package org.microg.networklocation.source;
 
-import org.microg.networklocation.database.CellMap;
+import org.microg.networklocation.v2.CellSpec;
 
-public interface CellLocationSource extends DataSource {
-	String getName();
-	String getDescription();
-	void requestCellLocation(int mcc, int mnc, int cid, int lac, CellMap cellMap);
+public interface CellLocationSource extends LocationSource<CellSpec> {
 }

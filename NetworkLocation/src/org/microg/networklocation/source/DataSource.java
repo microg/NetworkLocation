@@ -1,5 +1,7 @@
 package org.microg.networklocation.source;
 
 public interface DataSource {
-	public boolean isSourceAvailable();
+	String getName();
+	String getDescription();
+	boolean isSourceAvailable();
 }

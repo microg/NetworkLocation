@@ -1,10 +1,6 @@
 package org.microg.networklocation.source;
 
-import org.microg.networklocation.database.WlanMap;
+import org.microg.networklocation.v2.WlanSpec;
 
-import java.util.Collection;
-
-public interface WlanLocationSource extends DataSource {
-	public void requestMacLocations(final Collection<String> macs, final Collection<String> missingMacs,
-									WlanMap wlanMap);
+public interface WlanLocationSource extends LocationSource<WlanSpec> {
 }
