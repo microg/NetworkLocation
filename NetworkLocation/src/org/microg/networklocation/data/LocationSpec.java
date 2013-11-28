@@ -11,7 +11,7 @@ public class LocationSpec<T extends PropSpec> {
 	private double latitude = 0;
 	private double longitude = 0;
 	private double altitude = 0;
-	private boolean hasAccuracy = false;
+	private boolean hasAltitude = false;
 	private double accuracy = 0;
 
 	LocationSpec(T source, Location location) {
@@ -30,9 +30,6 @@ public class LocationSpec<T extends PropSpec> {
 		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
 			undefined = false;
 		}
-		if (accuracy != 0) {
-			hasAccuracy = true;
-		}
 	}
 
 	public LocationSpec(double latitude, double longitude, double accuracy) {
@@ -41,9 +38,6 @@ public class LocationSpec<T extends PropSpec> {
 		this.accuracy = accuracy;
 		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
 			undefined = false;
-		}
-		if (accuracy != 0) {
-			hasAccuracy = true;
 		}
 	}
 
@@ -58,8 +52,8 @@ public class LocationSpec<T extends PropSpec> {
 		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
 			undefined = false;
 		}
-		if (accuracy != 0) {
-			hasAccuracy = true;
+		if (altitude != 0) {
+			hasAltitude = true;
 		}
 	}
 
@@ -122,12 +116,12 @@ public class LocationSpec<T extends PropSpec> {
 	}
 
 	public int getBools() {
-		return boolToInt(hasAccuracy, 3) + boolToInt(undefined, 2) + boolToInt(remote, 1) +
+		return boolToInt(hasAltitude, 3) + boolToInt(undefined, 2) + boolToInt(remote, 1) +
 			   boolToInt(submitted);
 	}
 
 	private void setBools(int bools) {
-		hasAccuracy = intToBool(bools, 3);
+		hasAltitude = intToBool(bools, 3);
 		undefined = intToBool(bools, 2);
 		remote = intToBool(bools, 1);
 		submitted = intToBool(bools, 0);

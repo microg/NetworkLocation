@@ -47,19 +47,19 @@ public class DBFileCellLocationSource implements LocationSource<CellSpec> {
 			if (MainService.DEBUG) {
 				Log.i(TAG, "checking " + dbFile.getAbsolutePath() + " for " + spec);
 			}
-			final Cursor c = DatabaseHelper.checkCursor(
+			Cursor cursor = DatabaseHelper.checkCursor(
 					db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND lac=? AND cid=?",
 								new String[]{Integer.toString(spec.getMcc()), Integer.toString(spec.getMnc()),
 											 Integer.toString(spec.getLac()), Integer.toString(spec.getCid())}));
-			if (c != null) {
-				while (!c.isLast()) {
-					c.moveToNext();
-					locationSpecs.add(new LocationSpec<CellSpec>(spec, c.getDouble(
-							c.getColumnIndexOrThrow(DatabaseHelper.COL_LATITUDE)), c.getDouble(
-							c.getColumnIndexOrThrow(DatabaseHelper.COL_LONGITUDE)), c.getDouble(
-							c.getColumnIndexOrThrow(DatabaseHelper.COL_ACCURACY))));
+			if (cursor != null) {
+				while (!cursor.isLast()) {
+					cursor.moveToNext();
+					locationSpecs.add(new LocationSpec<CellSpec>(spec, cursor.getDouble(
+							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_LATITUDE)), cursor.getDouble(
+							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_LONGITUDE)), cursor.getDouble(
+							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_ACCURACY))));
 				}
-				c.close();
+				cursor.close();
 			}
 		}
 		db.close();

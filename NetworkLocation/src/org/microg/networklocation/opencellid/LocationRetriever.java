@@ -31,9 +31,9 @@ public class LocationRetriever implements OnlineCellLocationRetriever {
 		return bos.toByteArray();
 	}
 
-	public Response retrieveCellLocation(int mcc, int mnc, int lac, int cellid) {
+	public Response retrieveCellLocation(int mcc, int mnc, int lac, int cid) {
 		try {
-			URL url = new URL(SERVICE_URL + "&mcc=" + mcc + "&mnc=" + mnc + "&lac=" + lac + "&cellid=" + cellid);
+			URL url = new URL(SERVICE_URL + "&mcc=" + mcc + "&mnc=" + mnc + "&lac=" + lac + "&cellid=" + cid);
 			URLConnection urlConnection = url.openConnection();
 			urlConnection.setDoInput(true);
 			InputStream inputStream = urlConnection.getInputStream();

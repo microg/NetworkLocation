@@ -11,9 +11,13 @@ import java.util.*;
 public class LocationCalculator {
 	public static final int MAX_WIFI_RADIUS = 500;
 	private static final String TAG = "v2LocationCalculator";
-	private List<LocationSource<CellSpec>> cellLocationSources;
-	private List<LocationSource<WlanSpec>> wlanLocationSources;
-	private LocationDatabase locationDatabase;
+	private final LocationDatabase locationDatabase;
+	private final LocationRetriever locationRetriever;
+
+	public LocationCalculator(LocationDatabase locationDatabase, LocationRetriever locationRetriever) {
+		this.locationDatabase = locationDatabase;
+		this.locationRetriever = locationRetriever;
+	}
 
 	private static <T extends PropSpec> Collection<Collection<LocationSpec<T>>> divideInClasses(
 			Collection<LocationSpec<T>> locationSpecs, double accuracy) {
@@ -144,49 +148,12 @@ public class LocationCalculator {
 		for (T spec : specs) {
 			LocationSpec<T> locationSpec = locationDatabase.get(spec);
 			if (locationSpec == null) {
-				queueLocationRetrieval(spec);
+				locationRetriever.queueLocationRetrieval(spec);
 			} else {
 				locationSpecs.add(locationSpec);
 			}
 		}
 		return locationSpecs;
-	}
-
-	private <T extends PropSpec> void queueLocationRetrieval(T spec) {
-		Log.d(TAG, "TODO: Implement: queueLocationRetrieval(T)");
-	}
-
-	private void queueLocationRetrieval(CellSpec cellSpec) {
-		Log.d(TAG, "TODO: Implement: queueLocationRetrieval(CellSpec)");
-	}
-
-	private void queueLocationRetrieval(WlanSpec wlanSpec) {
-		Log.d(TAG, "TODO: Implement: queueLocationRetrieval(WlanSpec)");
-	}
-
-	private <T extends PropSpec> void retrieveLocation(Iterable<? extends LocationSource<T>> locationSources,
-													   T... specs) {
-		Collection<T> todo = new ArrayList<T>(Arrays.asList(specs));
-		for (LocationSource<T> locationSource : locationSources) {
-			for (LocationSpec<T> locationSpec : locationSource.retrieveLocation(todo)) {
-				locationDatabase.put(locationSpec);
-				todo.remove(locationSpec.getSource());
-			}
-			if (todo.isEmpty()) {
-				break;
-			}
-		}
-		for (T spec : todo) {
-			locationDatabase.put(new LocationSpec<T>(spec));
-		}
-	}
-
-	private void retrieveLocation(CellSpec... cellSpecs) {
-		retrieveLocation(cellLocationSources, cellSpecs);
-	}
-
-	private void retrieveLocation(WlanSpec... wlanSpecs) {
-		retrieveLocation(wlanLocationSources, wlanSpecs);
 	}
 
 	public static class CollectionSizeComparator implements Comparator<Collection<LocationSpec<WlanSpec>>> {
