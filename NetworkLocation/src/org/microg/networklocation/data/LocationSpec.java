@@ -5,11 +5,14 @@ import android.location.Location;
 public class LocationSpec<T extends PropSpec> {
 	private static final double EARTH_RADIUS = 6367;
 	private T source;
-	private boolean undefined = false;
-	private double latitude;
-	private double longitude;
-	private double altitude;
-	private double accuracy;
+	private boolean undefined = true;
+	private boolean remote = true;
+	private boolean submitted = false;
+	private double latitude = 0;
+	private double longitude = 0;
+	private double altitude = 0;
+	private boolean hasAccuracy = false;
+	private double accuracy = 0;
 
 	LocationSpec(T source, Location location) {
 		this.source = source;
@@ -24,12 +27,48 @@ public class LocationSpec<T extends PropSpec> {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.accuracy = accuracy;
+		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
+			undefined = false;
+		}
+		if (accuracy != 0) {
+			hasAccuracy = true;
+		}
 	}
 
 	public LocationSpec(double latitude, double longitude, double accuracy) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.accuracy = accuracy;
+		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
+			undefined = false;
+		}
+		if (accuracy != 0) {
+			hasAccuracy = true;
+		}
+	}
+
+	public LocationSpec(double latitude, double longitude, double altitude, double accuracy, boolean remote,
+						boolean submitted) {
+		this.remote = remote;
+		this.submitted = submitted;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+		this.accuracy = accuracy;
+		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
+			undefined = false;
+		}
+		if (accuracy != 0) {
+			hasAccuracy = true;
+		}
+	}
+
+	public LocationSpec(double latitude, double longitude, double altitude, double accuracy, int bools) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+		this.accuracy = accuracy;
+		setBools(bools);
 	}
 
 	LocationSpec(T source) {
@@ -37,8 +76,20 @@ public class LocationSpec<T extends PropSpec> {
 		undefined = true;
 	}
 
+	private static int boolToInt(boolean b, int s) {
+		return b ? (1 << s) : 0;
+	}
+
+	private static int boolToInt(boolean b) {
+		return boolToInt(b, 0);
+	}
+
 	private static double degToRad(double deg) {
 		return (deg * Math.PI) / 180;
+	}
+
+	private static boolean intToBool(int i, int s) {
+		return ((i >> s) & 1) == 1;
 	}
 
 	public <S extends PropSpec> double distanceBetween(LocationSpec<S> other) {
@@ -66,6 +117,22 @@ public class LocationSpec<T extends PropSpec> {
 		return accuracy;
 	}
 
+	public double getAltitude() {
+		return altitude;
+	}
+
+	public int getBools() {
+		return boolToInt(hasAccuracy, 3) + boolToInt(undefined, 2) + boolToInt(remote, 1) +
+			   boolToInt(submitted);
+	}
+
+	private void setBools(int bools) {
+		hasAccuracy = intToBool(bools, 3);
+		undefined = intToBool(bools, 2);
+		remote = intToBool(bools, 1);
+		submitted = intToBool(bools, 0);
+	}
+
 	public double getLatitude() {
 		return latitude;
 	}
@@ -80,5 +147,29 @@ public class LocationSpec<T extends PropSpec> {
 
 	public void setSource(T source) {
 		this.source = source;
+	}
+
+	public boolean isRemote() {
+		return remote;
+	}
+
+	public boolean isSubmitted() {
+		return submitted;
+	}
+
+	public boolean isUndefined() {
+		return undefined;
+	}
+
+	@Override
+	public String toString() {
+		return "LocationSpec{" +
+			   "source=" + source +
+			   ", latitude=" + latitude +
+			   ", longitude=" + longitude +
+			   ", altitude=" + altitude +
+			   ", accuracy=" + accuracy +
+			   ", bools=" + getBools() +
+			   '}';
 	}
 }

@@ -16,4 +16,11 @@ public class WlanSpec implements PropSpec {
 		System.arraycopy(mac.getBytes(), 0, bytes, 4, 6);
 		return bytes;
 	}
+
+	@Override
+	public String toString() {
+		return "WlanSpec{" +
+			   "mac=" + mac +
+			   '}';
+	}
 }
