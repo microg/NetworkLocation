@@ -26,6 +26,7 @@ public class CellSpec extends PropSpec {
 
 	/**
 	 * As described here: https://mozilla-ichnaea.readthedocs.org/en/latest/cell.html
+	 *
 	 * @return
 	 */
 	private int getAsu() {
@@ -76,11 +77,26 @@ public class CellSpec extends PropSpec {
 		}
 	}
 
+	public int getLac() {
+		return lac;
+	}
+
 	public int getMcc() {
 		return mcc;
 	}
 
 	public int getMnc() {
 		return mnc;
+	}
+
+	@Override
+	public String toString() {
+		return "CellSpec{" +
+			   "radio=" + radio +
+			   ", mcc=" + mcc +
+			   ", mnc=" + mnc +
+			   ", lac=" + lac +
+			   ", cid=" + cid +
+			   '}';
 	}
 }

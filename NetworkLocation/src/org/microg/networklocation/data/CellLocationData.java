@@ -125,7 +125,7 @@ public class CellLocationData extends DefaultLocationDataProvider {
 	private Location readCellLocationFromDatabaseFile(int mcc, int mnc, int lac, int cid) {
 		if (!source.isSourceAvailable())
 			return null;
-		source.requestCellLocation(mcc, mnc, cid, lac, gsmMap);
+		//source.requestCellLocation(mcc, mnc, cid, lac, gsmMap);
 		return renameSource(gsmMap.get(mcc, mnc, cid));
 	}
 

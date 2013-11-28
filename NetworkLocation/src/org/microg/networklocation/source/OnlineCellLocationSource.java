@@ -3,18 +3,17 @@ package org.microg.networklocation.source;
 import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
-import android.util.Log;
 import org.microg.networklocation.data.CellLocationData;
 import org.microg.networklocation.database.CellMap;
 import org.microg.networklocation.v2.CellSpec;
 import org.microg.networklocation.v2.LocationSpec;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public abstract class OnlineCellLocationSource implements CellLocationSource {
+public abstract class OnlineCellLocationSource extends CellLocationSource {
 	private static final String TAG = "OnlineCellLocationSource";
-
 	private final ConnectivityManager connectivityManager;
 	private final OnlineCellLocationRetriever locationRetriever;
 
@@ -22,7 +21,8 @@ public abstract class OnlineCellLocationSource implements CellLocationSource {
 		this((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE), locationRetriever);
 	}
 
-	protected OnlineCellLocationSource(ConnectivityManager connectivityManager, OnlineCellLocationRetriever locationRetriever) {
+	protected OnlineCellLocationSource(ConnectivityManager connectivityManager,
+									   OnlineCellLocationRetriever locationRetriever) {
 		this.connectivityManager = connectivityManager;
 		this.locationRetriever = locationRetriever;
 	}
@@ -46,13 +46,16 @@ public abstract class OnlineCellLocationSource implements CellLocationSource {
 	}
 
 	@Override
-	public LocationSpec[] retrieveLocation(CellSpec... specs) {
-		Log.d(TAG, "TODO: Implement: retrieveLocation(CellSpec...)");
-		return new LocationSpec[0]; //TODO: Implement
-	}
-
-	@Override
-	public List<LocationSpec> retrieveLocation(List<CellSpec> specs) {
-		return Arrays.asList(retrieveLocation(specs.toArray(new CellSpec[specs.size()])));
+	public Collection<LocationSpec<CellSpec>> retrieveLocation(Collection<CellSpec> cellSpecs) {
+		List<LocationSpec<CellSpec>> locationSpecs = new ArrayList<LocationSpec<CellSpec>>();
+		for (CellSpec cellSpec : cellSpecs) {
+			OnlineCellLocationRetriever.Response response = locationRetriever
+					.retrieveCellLocation(cellSpec.getMcc(), cellSpec.getMnc(), cellSpec.getLac(), cellSpec.getCid());
+			if (response != null) {
+				locationSpecs.add(new LocationSpec<CellSpec>(cellSpec, response.getLatitude(), response.getLongitude(),
+															 response.getAccuracy()));
+			}
+		}
+		return locationSpecs;
 	}
 }

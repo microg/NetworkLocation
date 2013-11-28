@@ -154,7 +154,7 @@ public class WlanLocationData extends DefaultLocationDataProvider {
 			missingMacs.addAll(macs);
 		}
 
-		source.requestMacLocations(macs, missingMacs, wlanMap);
+		//source.requestMacLocations(macs, missingMacs, wlanMap);
 	}
 
 	private void requestMissing(final Collection<String> wlans) {

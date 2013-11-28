@@ -19,6 +19,8 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource, ContentHandle
 	private static final String BASE_URL =
 			"http://maps.googleapis.com/maps/api/geocode/xml?latlng=%lat%,%lon%&sensor=false&region=%region%&language=%lang%";
 	private static final String TAG = "GoogleGeocodeDataSource";
+	private static final String NAME = "Google Maps Geocode API";
+	private static final String DESCRIPTION = "Use Google Maps to get address from location";
 
 	private Address addr = null;
 	private List<Address> addrs = null;
@@ -188,6 +190,16 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource, ContentHandle
 	@Override
 	public void startPrefixMapping(final String prefix, final String uri) throws SAXException {
 
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+	@Override
+	public String getDescription() {
+		return DESCRIPTION;
 	}
 
 	@Override

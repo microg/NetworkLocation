@@ -9,14 +9,19 @@ import org.microg.networklocation.apple.Response;
 import org.microg.networklocation.data.WlanLocationData;
 import org.microg.networklocation.database.WlanMap;
 import org.microg.networklocation.source.WlanLocationSource;
+import org.microg.networklocation.v2.LocationSpec;
+import org.microg.networklocation.v2.WlanSpec;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class AppleWlanLocationSource implements WlanLocationSource {
 
 	public static final float LATLON_WIRE = 1E8F;
 	private static final String TAG = "AppleWlanLocationSource";
+	private static final String NAME = "Apple Location Service";
+	private static final String DESCRIPTION = "Retrieve WLAN locations from Apple";
 	private final ConnectivityManager connectivityManager;
 	private final LocationRetriever locationRetriever = new LocationRetriever();
 
@@ -29,13 +34,22 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 	}
 
 	@Override
+	public String getName() {
+		return NAME;
+	}
+
+	@Override
+	public String getDescription() {
+		return DESCRIPTION;
+	}
+
+	@Override
 	public boolean isSourceAvailable() {
 		return (connectivityManager.getActiveNetworkInfo() != null) &&
 			   connectivityManager.getActiveNetworkInfo().isAvailable() &&
 			   connectivityManager.getActiveNetworkInfo().isConnected();
 	}
 
-	@Override
 	public void requestMacLocations(Collection<String> macs, Collection<String> missingMacs, WlanMap wlanMap) {
 		try {
 			Response response = locationRetriever.retrieveLocations(macs);
@@ -70,5 +84,10 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 		} catch (final Exception e) {
 			Log.e(TAG, "requestMacLocations: " + macs, e);
 		}
+	}
+
+	@Override
+	public Collection<LocationSpec<WlanSpec>> retrieveLocation(Collection<WlanSpec> specs) {
+		return null; //TODO: Implement
 	}
 }

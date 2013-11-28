@@ -2,17 +2,18 @@ package org.microg.networklocation.source;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
 import android.util.Log;
 import org.microg.networklocation.MainService;
-import org.microg.networklocation.data.CellLocationData;
-import org.microg.networklocation.database.CellMap;
 import org.microg.networklocation.database.DatabaseHelper;
+import org.microg.networklocation.v2.CellSpec;
+import org.microg.networklocation.v2.LocationSpec;
 
 import java.io.File;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-public class DBFileCellLocationSource implements CellLocationSource {
+public class DBFileCellLocationSource extends CellLocationSource {
 	private static final String TAG = "DBFileCellLocationSource";
 	private static final String NAME = "Local File Database";
 	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
@@ -23,46 +24,45 @@ public class DBFileCellLocationSource implements CellLocationSource {
 	}
 
 	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
 	public String getDescription() {
 		return DESCRIPTION;
 	}
 
 	@Override
-	public void requestCellLocation(final int mcc, final int mnc, final int cid, int lac, final CellMap cellMap) {
-		if (dbFile.exists()) {
-			if (MainService.DEBUG)
-				Log.i(TAG, "checking " + dbFile.getAbsolutePath() + " for " + mcc + "/" + mnc + "/" + cid);
-			final SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null,
-																  SQLiteDatabase.OPEN_READONLY +
-																  SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-			final Cursor c = DatabaseHelper.checkCursor(
-					db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND cellid=?",
-								new String[]{mcc + "", mnc + "", cid + ""}));
-			if (c != null) {
-				while (!c.isLast()) {
-					c.moveToNext();
-					final Location location = new Location(CellLocationData.IDENTIFIER);
-					location.setLatitude(c.getDouble(c.getColumnIndexOrThrow("lat")));
-					location.setLongitude(c.getDouble(c.getColumnIndexOrThrow("lon")));
-					location.setTime(new Date().getTime());
-					cellMap.put(mcc, mnc, cid, location);
-				}
-				c.close();
-			}
-			db.close();
-		} else {
-			if (MainService.DEBUG)
-				Log.w(TAG, "could not find input file at " + dbFile.getAbsolutePath());
-		}
+	public String getName() {
+		return NAME;
 	}
 
 	@Override
 	public boolean isSourceAvailable() {
 		return dbFile.exists() && dbFile.canRead();
+	}
+
+	@Override
+	public Collection<LocationSpec<CellSpec>> retrieveLocation(Collection<CellSpec> specs) {
+		List<LocationSpec<CellSpec>> locationSpecs = new ArrayList<LocationSpec<CellSpec>>();
+		SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY +
+																						SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+		for (CellSpec spec : specs) {
+			if (MainService.DEBUG) {
+				Log.i(TAG, "checking " + dbFile.getAbsolutePath() + " for " + spec);
+			}
+			final Cursor c = DatabaseHelper.checkCursor(
+					db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND lac=? AND cid=?",
+								new String[]{Integer.toString(spec.getMcc()), Integer.toString(spec.getMnc()),
+											 Integer.toString(spec.getLac()), Integer.toString(spec.getCid())}));
+			if (c != null) {
+				while (!c.isLast()) {
+					c.moveToNext();
+					locationSpecs.add(new LocationSpec<CellSpec>(spec, c.getDouble(
+							c.getColumnIndexOrThrow(DatabaseHelper.COL_LATITUDE)), c.getDouble(
+							c.getColumnIndexOrThrow(DatabaseHelper.COL_LONGITUDE)), c.getDouble(
+							c.getColumnIndexOrThrow(DatabaseHelper.COL_ACCURACY))));
+				}
+				c.close();
+			}
+		}
+		db.close();
+		return locationSpecs;
 	}
 }
