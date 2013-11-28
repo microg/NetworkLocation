@@ -4,17 +4,15 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import org.microg.networklocation.database.LocationDatabase;
-import org.microg.networklocation.source.CellLocationSource;
 import org.microg.networklocation.source.LocationSource;
-import org.microg.networklocation.source.WlanLocationSource;
 
 import java.util.*;
 
 public class LocationCalculator {
-	private static final String TAG = "v2LocationCalculator";
 	public static final int MAX_WIFI_RADIUS = 500;
-	private List<CellLocationSource> cellLocationSources;
-	private List<WlanLocationSource> wlanLocationSources;
+	private static final String TAG = "v2LocationCalculator";
+	private List<LocationSource<CellSpec>> cellLocationSources;
+	private List<LocationSource<WlanSpec>> wlanLocationSources;
 	private LocationDatabase locationDatabase;
 
 	private static <T extends PropSpec> Collection<Collection<LocationSpec<T>>> divideInClasses(
@@ -95,6 +93,15 @@ public class LocationCalculator {
 		return Collections.emptySet();
 	}
 
+	public Location getCurrentLocation() {
+		Location cellLocation = getCurrentCellLocation();
+		Location wlanLocation = getCurrentWlanLocation(cellLocation);
+		if (wlanLocation != null) {
+			return wlanLocation;
+		}
+		return cellLocation;
+	}
+
 	public Location getCurrentWlanLocation(Location cellLocation) {
 		Collection<LocationSpec<WlanSpec>> wlanLocationSpecs = getLocation(getCurrentWlans());
 
@@ -104,9 +111,8 @@ public class LocationCalculator {
 
 		Location location = null;
 		if (cellLocation == null) {
-			List<Collection<LocationSpec<WlanSpec>>> classes =
-					new ArrayList<Collection<LocationSpec<WlanSpec>>>(divideInClasses(wlanLocationSpecs,
-																					  MAX_WIFI_RADIUS));
+			List<Collection<LocationSpec<WlanSpec>>> classes = new ArrayList<Collection<LocationSpec<WlanSpec>>>(
+					divideInClasses(wlanLocationSpecs, MAX_WIFI_RADIUS));
 			Collections.sort(classes, CollectionSizeComparator.INSTANCE);
 			location = getAverageLocation(classes.get(0));
 		} else {
@@ -126,15 +132,6 @@ public class LocationCalculator {
 			location.setExtras(b);
 		}
 		return location;
-	}
-
-	public Location getCurrentLocation() {
-		Location cellLocation = getCurrentCellLocation();
-		Location wlanLocation = getCurrentWlanLocation(cellLocation);
-		if (wlanLocation != null) {
-			return wlanLocation;
-		}
-		return cellLocation;
 	}
 
 	private Collection<WlanSpec> getCurrentWlans() {

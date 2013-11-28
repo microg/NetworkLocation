@@ -4,16 +4,16 @@ import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.util.Log;
-import org.microg.networklocation.data.WlanLocationData;
-import org.microg.networklocation.database.WlanMap;
-import org.microg.networklocation.source.WlanLocationSource;
 import org.microg.networklocation.data.LocationSpec;
+import org.microg.networklocation.data.WlanLocationData;
 import org.microg.networklocation.data.WlanSpec;
+import org.microg.networklocation.database.WlanMap;
+import org.microg.networklocation.source.LocationSource;
 
 import java.util.Collection;
 import java.util.Date;
 
-public class AppleWlanLocationSource implements WlanLocationSource {
+public class AppleWlanLocationSource implements LocationSource<WlanSpec> {
 
 	public static final float LATLON_WIRE = 1E8F;
 	private static final String TAG = "AppleWlanLocationSource";
@@ -31,13 +31,13 @@ public class AppleWlanLocationSource implements WlanLocationSource {
 	}
 
 	@Override
-	public String getName() {
-		return NAME;
+	public String getDescription() {
+		return DESCRIPTION;
 	}
 
 	@Override
-	public String getDescription() {
-		return DESCRIPTION;
+	public String getName() {
+		return NAME;
 	}
 
 	@Override

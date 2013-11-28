@@ -8,7 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import org.microg.networklocation.database.WlanMap;
-import org.microg.networklocation.source.WlanLocationSource;
+import org.microg.networklocation.source.LocationSource;
 
 import java.util.*;
 
@@ -16,6 +16,21 @@ public class WlanLocationData extends DefaultLocationDataProvider {
 
 	public final static String IDENTIFIER = "wifi";
 	private final static String TAG = "WlanLocationData";
+	private final Context context;
+	private final LocationListener listener;
+	private final Stack<String> missingMacs;
+	private final LocationSource<WlanSpec> source;
+	private final WlanMap wlanMap;
+	private Thread retriever;
+
+	public WlanLocationData(final Context context, final WlanMap wlanMap, final LocationSource<WlanSpec> source,
+							final LocationListener listener) {
+		this.context = context;
+		this.wlanMap = wlanMap;
+		this.listener = listener;
+		this.source = source;
+		missingMacs = new Stack<String>();
+	}
 
 	public static Collection<String> getWLANs(final Context context) {
 		if (context == null) {
@@ -47,23 +62,6 @@ public class WlanLocationData extends DefaultLocationDataProvider {
 			}
 		}
 		return builder.toString();
-	}
-
-	private final Context context;
-
-	private final LocationListener listener;
-	private final Stack<String> missingMacs;
-	private Thread retriever;
-	private final WlanLocationSource source;
-	private final WlanMap wlanMap;
-
-	public WlanLocationData(final Context context, final WlanMap wlanMap, final WlanLocationSource source,
-							final LocationListener listener) {
-		this.context = context;
-		this.wlanMap = wlanMap;
-		this.listener = listener;
-		this.source = source;
-		missingMacs = new Stack<String>();
 	}
 
 	private void addToMissing(final Collection<String> wlans) {

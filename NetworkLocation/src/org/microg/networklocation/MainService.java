@@ -1,7 +1,10 @@
 package org.microg.networklocation;
 
 import android.app.Service;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -9,21 +12,20 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+import org.microg.networklocation.apple.AppleWlanLocationSource;
 import org.microg.networklocation.data.CellLocationData;
 import org.microg.networklocation.data.LocationData;
 import org.microg.networklocation.data.WlanLocationData;
 import org.microg.networklocation.database.CellMap;
 import org.microg.networklocation.database.DatabaseHelper;
 import org.microg.networklocation.database.WlanMap;
+import org.microg.networklocation.google.GoogleGeocodeDataSource;
 import org.microg.networklocation.helper.Reflected;
 import org.microg.networklocation.provider.GeocodeProvider;
 import org.microg.networklocation.provider.NetworkLocationProvider;
 import org.microg.networklocation.provider.NetworkLocationProviderBase;
 import org.microg.networklocation.provider.NetworkLocationProviderV2;
-import org.microg.networklocation.apple.AppleWlanLocationSource;
-import org.microg.networklocation.source.CellLocationSource;
 import org.microg.networklocation.source.DBFileCellLocationSource;
-import org.microg.networklocation.google.GoogleGeocodeDataSource;
 
 import java.io.File;
 

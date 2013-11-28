@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Locale;
 
 public interface GeocodeDataSource extends DataSource {
-	public void addAdressesToListForLocation(double lat, double lon, Locale locale, List<Address> addrs);
+	void addAdressesToListForLocation(double lat, double lon, Locale locale, List<Address> addrs);
 }

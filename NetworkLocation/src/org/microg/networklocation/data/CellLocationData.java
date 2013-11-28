@@ -10,7 +10,7 @@ import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.database.CellMap;
-import org.microg.networklocation.source.CellLocationSource;
+import org.microg.networklocation.source.LocationSource;
 
 import java.util.ArrayList;
 
@@ -21,10 +21,10 @@ public class CellLocationData extends DefaultLocationDataProvider {
 	private final Context context;
 	private final CellMap gsmMap;
 	private final LocationListener listener;
-	private final CellLocationSource source;
+	private final LocationSource<CellSpec> source;
 	private TelephonyManager telephonyManager;
 
-	public CellLocationData(final Context context, final CellMap gsmMap, final CellLocationSource source,
+	public CellLocationData(final Context context, final CellMap gsmMap, final LocationSource<CellSpec> source,
 							final LocationListener listener) {
 		this.context = context;
 		this.gsmMap = gsmMap;

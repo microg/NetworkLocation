@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class DBFileCellLocationSource extends CellLocationSource {
+public class DBFileCellLocationSource implements LocationSource<CellSpec> {
 	private static final String TAG = "DBFileCellLocationSource";
 	private static final String NAME = "Local File Database";
 	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
