@@ -1,6 +1,6 @@
 package org.microg.networklocation.source;
 
-import org.microg.networklocation.v2.CellSpec;
+import org.microg.networklocation.data.CellSpec;
 
 public abstract class CellLocationSource implements LocationSource<CellSpec> {
 }

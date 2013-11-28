@@ -5,8 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.database.DatabaseHelper;
-import org.microg.networklocation.v2.CellSpec;
-import org.microg.networklocation.v2.LocationSpec;
+import org.microg.networklocation.data.CellSpec;
+import org.microg.networklocation.data.LocationSpec;
 
 import java.io.File;
 import java.util.ArrayList;

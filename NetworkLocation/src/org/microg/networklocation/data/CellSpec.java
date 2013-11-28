@@ -1,8 +1,8 @@
-package org.microg.networklocation.v2;
+package org.microg.networklocation.data;
 
 import java.io.ByteArrayOutputStream;
 
-public class CellSpec extends PropSpec {
+public class CellSpec implements PropSpec {
 	private Radio radio;
 	private int mcc;
 	private int mnc;
@@ -63,7 +63,7 @@ public class CellSpec extends PropSpec {
 	}
 
 	@Override
-	byte[] getIdentBlob() {
+	public byte[] getIdentBlob() {
 		try {
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			bytes.write(radio.toString().getBytes());

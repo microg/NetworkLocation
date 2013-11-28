@@ -1,7 +1,7 @@
 package org.microg.networklocation.source;
 
-import org.microg.networklocation.v2.LocationSpec;
-import org.microg.networklocation.v2.PropSpec;
+import org.microg.networklocation.data.LocationSpec;
+import org.microg.networklocation.data.PropSpec;
 
 import java.util.Collection;
 

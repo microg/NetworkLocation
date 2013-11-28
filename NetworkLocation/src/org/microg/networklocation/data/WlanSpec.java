@@ -1,13 +1,13 @@
-package org.microg.networklocation.v2;
+package org.microg.networklocation.data;
 
-public class WlanSpec extends PropSpec {
+public class WlanSpec implements PropSpec {
 	private MacAddress mac;
 	private int channel;
 	private int frequency;
 	private int signal;
 
 	@Override
-	byte[] getIdentBlob() {
+	public byte[] getIdentBlob() {
 		byte[] bytes = new byte[10];
 		bytes[0] = 'w';
 		bytes[1] = 'i';

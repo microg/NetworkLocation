@@ -1,4 +1,4 @@
-package org.microg.networklocation.v2;
+package org.microg.networklocation.data;
 
 import android.location.Location;
 
@@ -21,6 +21,12 @@ public class LocationSpec<T extends PropSpec> {
 
 	public LocationSpec(T source, double latitude, double longitude, double accuracy) {
 		this.source = source;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.accuracy = accuracy;
+	}
+
+	public LocationSpec(double latitude, double longitude, double accuracy) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.accuracy = accuracy;

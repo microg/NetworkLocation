@@ -5,8 +5,8 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import org.microg.networklocation.data.CellLocationData;
 import org.microg.networklocation.database.CellMap;
-import org.microg.networklocation.v2.CellSpec;
-import org.microg.networklocation.v2.LocationSpec;
+import org.microg.networklocation.data.CellSpec;
+import org.microg.networklocation.data.LocationSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package org.microg.networklocation.v2;
+package org.microg.networklocation.data;
 
 class MacAddress {
 	public static final int HEX_RADIX = 16;

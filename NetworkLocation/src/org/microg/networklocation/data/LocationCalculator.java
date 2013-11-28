@@ -1,8 +1,9 @@
-package org.microg.networklocation.v2;
+package org.microg.networklocation.data;
 
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import org.microg.networklocation.database.LocationDatabase;
 import org.microg.networklocation.source.CellLocationSource;
 import org.microg.networklocation.source.LocationSource;
 import org.microg.networklocation.source.WlanLocationSource;

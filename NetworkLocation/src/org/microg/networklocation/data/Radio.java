@@ -1,4 +1,4 @@
-package org.microg.networklocation.v2;
+package org.microg.networklocation.data;
 
 enum Radio {
 	GSM, UMTS, CDMA, LTE;
