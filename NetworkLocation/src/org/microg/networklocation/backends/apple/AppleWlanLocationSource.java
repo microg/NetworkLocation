@@ -1,4 +1,4 @@
-package org.microg.networklocation.apple;
+package org.microg.networklocation.backends.apple;
 
 import android.content.Context;
 import android.location.Location;

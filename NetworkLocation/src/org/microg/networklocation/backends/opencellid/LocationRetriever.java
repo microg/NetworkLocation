@@ -1,4 +1,4 @@
-package org.microg.networklocation.opencellid;
+package org.microg.networklocation.backends.opencellid;
 
 import org.microg.networklocation.source.OnlineCellLocationRetriever;
 

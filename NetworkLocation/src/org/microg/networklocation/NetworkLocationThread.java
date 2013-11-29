@@ -3,15 +3,16 @@ package org.microg.networklocation;
 import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
+import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.data.LocationData;
 
 public class NetworkLocationThread extends Thread {
 
-	private final static String TAG = "NetworkLocationThread";
+	private static final String TAG = "NetworkLocationThread";
+	private LocationCalculator calculator;
 	private long autoTime;
 	private boolean autoUpdate;
 	private boolean forceUpdate;
-	private LocationData data;
 	private boolean enabled;
 	private Location lastLocation;
 	private long lastTime;
@@ -24,12 +25,17 @@ public class NetworkLocationThread extends Thread {
 		forceUpdate = true;
 	}
 
+	public NetworkLocationThread(LocationCalculator calculator) {
+		this();
+		this.calculator = calculator;
+	}
+
 	public NetworkLocationThread(NetworkLocationThread oldThread) {
 		this();
 		if (oldThread != null) {
 			lastLocation = oldThread.lastLocation;
 			lastTime = oldThread.lastTime;
-			data = oldThread.data;
+			calculator = oldThread.calculator;
 		}
 	}
 
@@ -49,7 +55,7 @@ public class NetworkLocationThread extends Thread {
 	}
 
 	public boolean isActive() {
-		return enabled && autoUpdate && autoTime < 60000;
+		return enabled && autoUpdate && (autoTime < 60000);
 	}
 
 	@Override
@@ -100,7 +106,7 @@ public class NetworkLocationThread extends Thread {
 					continue;
 				}
 			}
-			if ((autoUpdate || forceUpdate) && data != null && enabled) {
+			if ((autoUpdate || forceUpdate) && calculator != null && enabled) {
 				if (forceUpdate) {
 					if (MainService.DEBUG)
 						Log.d(TAG, "Update forced because of new incoming request");
@@ -109,7 +115,7 @@ public class NetworkLocationThread extends Thread {
 				if (MainService.DEBUG)
 					Log.d(TAG, "Now requesting \\o/");
 				lastTime = SystemClock.elapsedRealtime();
-				data.getCurrentLocation();
+				calculator.getCurrentLocation();
 			} else {
 				if (MainService.DEBUG)
 					Log.d(TAG, "we're not active (or not initialized yet) = do not track!");
@@ -128,8 +134,8 @@ public class NetworkLocationThread extends Thread {
 		}
 	}
 
-	public void setData(final LocationData data) {
-		this.data = data;
+	public void setCalculator(LocationCalculator calculator) {
+		this.calculator = calculator;
 	}
 
 	public void setLastLocation(final Location location) {

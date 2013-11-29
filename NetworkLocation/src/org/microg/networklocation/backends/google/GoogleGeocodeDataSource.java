@@ -1,4 +1,4 @@
-package org.microg.networklocation.google;
+package org.microg.networklocation.backends.google;
 
 import android.location.Address;
 import android.util.Log;

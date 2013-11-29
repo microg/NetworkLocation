@@ -1,25 +1,26 @@
-package org.microg.networklocation.source;
+package org.microg.networklocation.backends.file;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import org.microg.networklocation.MainService;
-import org.microg.networklocation.database.DatabaseHelper;
 import org.microg.networklocation.data.CellSpec;
 import org.microg.networklocation.data.LocationSpec;
+import org.microg.networklocation.database.DatabaseHelper;
+import org.microg.networklocation.source.LocationSource;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class DBFileCellLocationSource implements LocationSource<CellSpec> {
-	private static final String TAG = "DBFileCellLocationSource";
+public class OldFileCellLocationSource implements LocationSource<CellSpec> {
+	private static final String TAG = "OldFileCellLocationSource";
 	private static final String NAME = "Local File Database";
 	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
 	private final File dbFile;
 
-	public DBFileCellLocationSource(final File dbFile) {
+	public OldFileCellLocationSource(final File dbFile) {
 		this.dbFile = dbFile;
 	}
 
@@ -48,9 +49,9 @@ public class DBFileCellLocationSource implements LocationSource<CellSpec> {
 				Log.i(TAG, "checking " + dbFile.getAbsolutePath() + " for " + spec);
 			}
 			Cursor cursor = DatabaseHelper.checkCursor(
-					db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND lac=? AND cid=?",
+					db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND cid=?",
 								new String[]{Integer.toString(spec.getMcc()), Integer.toString(spec.getMnc()),
-											 Integer.toString(spec.getLac()), Integer.toString(spec.getCid())}));
+											 Integer.toString(spec.getCid())}));
 			if (cursor != null) {
 				while (!cursor.isLast()) {
 					cursor.moveToNext();

@@ -1,4 +1,4 @@
-package org.microg.networklocation.apple;
+package org.microg.networklocation.backends.apple;
 
 import com.squareup.wire.Wire;
 

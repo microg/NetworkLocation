@@ -11,7 +11,7 @@ import internal.com.android.location.provider.LocationProvider;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.DefaultLocationDataProvider;
-import org.microg.networklocation.data.LocationData;
+import org.microg.networklocation.data.LocationCalculator;
 
 public class NetworkLocationProvider extends LocationProvider implements NetworkLocationProviderBase {
 
@@ -34,9 +34,28 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 		this();
 	}
 
-	public NetworkLocationProvider(final LocationData data) {
+	public NetworkLocationProvider(LocationCalculator data) {
 		this();
-		background.setData(data);
+		background.setCalculator(data);
+	}
+
+	@Override
+	public synchronized void disable() {
+		background.disable();
+		enabledByService = false;
+	}
+
+	@Override
+	public synchronized void enable() {
+		enabledByService = true;
+		if (enabledBySetting)
+			enableBackground();
+	}
+
+	private void enableBackground() {
+		background.disable();
+		background = new NetworkLocationThread(background);
+		background.start();
 	}
 
 	@Override
@@ -63,25 +82,6 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 		enabledBySetting = true;
 		if (enabledByService)
 			enableBackground();
-	}
-
-	@Override
-	public synchronized void disable() {
-		background.disable();
-		enabledByService = false;
-	}
-
-	@Override
-	public synchronized void enable() {
-		enabledByService = true;
-		if (enabledBySetting)
-			enableBackground();
-	}
-
-	private void enableBackground() {
-		background.disable();
-		background = new NetworkLocationThread(background);
-		background.start();
 	}
 
 	@Override
@@ -217,8 +217,8 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 	}
 
 	@Override
-	public void setData(final LocationData data) {
-		background.setData(data);
+	public void setCalculator(LocationCalculator locationCalculator) {
+		background.setCalculator(locationCalculator);
 	}
 
 }

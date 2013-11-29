@@ -1,4 +1,4 @@
-package org.microg.networklocation.mozilla;
+package org.microg.networklocation.backends.mozilla;
 
 import org.microg.networklocation.source.OnlineCellLocationRetriever;
 

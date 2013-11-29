@@ -2,6 +2,7 @@ package org.microg.networklocation.provider;
 
 import android.location.LocationListener;
 import android.os.IBinder;
+import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.data.LocationData;
 
 public interface NetworkLocationProviderBase extends LocationListener {
@@ -11,7 +12,7 @@ public interface NetworkLocationProviderBase extends LocationListener {
 
 	public boolean isActive();
 
-	public void setData(LocationData data);
+	public void setCalculator(LocationCalculator locationCalculator);
 
 	public void disable();
 

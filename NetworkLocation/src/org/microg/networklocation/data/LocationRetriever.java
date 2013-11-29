@@ -5,14 +5,31 @@ import org.microg.networklocation.database.LocationDatabase;
 import org.microg.networklocation.source.LocationSource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class LocationRetriever {
+	private static final String TAG = "v2LocationRetriever";
+	private static final long WAIT_BETWEEN = 1000 * 60; //every minute
+	private final Thread loopThread = new Thread(new Runnable() {
+		@Override
+		public void run() {
+			retrieveLoop();
+		}
+	});
 	private LocationDatabase locationDatabase;
 	private List<LocationSource<CellSpec>> cellLocationSources = new ArrayList<LocationSource<CellSpec>>();
 	private List<LocationSource<WlanSpec>> wlanLocationSources = new ArrayList<LocationSource<WlanSpec>>();
+	private Deque<CellSpec> cellStack = new LinkedBlockingDeque<CellSpec>();
+	private Deque<WlanSpec> wlanStack = new LinkedBlockingDeque<WlanSpec>();
+	private long lastRetrieve = 0;
+
+
+	public LocationRetriever(LocationDatabase locationDatabase) {
+		this.locationDatabase = locationDatabase;
+	}
 
 	public List<LocationSource<CellSpec>> getCellLocationSources() {
 		return cellLocationSources;
@@ -30,18 +47,22 @@ public class LocationRetriever {
 		this.wlanLocationSources = new ArrayList<LocationSource<WlanSpec>>(wlanLocationSources);
 	}
 
-	private static final String TAG = "v2LocationRetriever";
-
-	public LocationRetriever(LocationDatabase locationDatabase) {
-		this.locationDatabase = locationDatabase;
-	}
-
 	public void queueLocationRetrieval(CellSpec cellSpec) {
-		Log.d(TAG, "TODO: Implement: queueLocationRetrieval(CellSpec)");
+		if (!cellStack.contains(cellSpec)) {
+			cellStack.push(cellSpec);
+		}
+		synchronized (loopThread) {
+			loopThread.notifyAll();
+		}
 	}
 
 	public void queueLocationRetrieval(WlanSpec wlanSpec) {
-		Log.d(TAG, "TODO: Implement: queueLocationRetrieval(WlanSpec)");
+		if (!wlanStack.contains(wlanSpec)) {
+			wlanStack.push(wlanSpec);
+		}
+		synchronized (loopThread) {
+			loopThread.notifyAll();
+		}
 	}
 
 	public <T extends PropSpec> void queueLocationRetrieval(T spec) {
@@ -56,9 +77,47 @@ public class LocationRetriever {
 		}
 	}
 
-	private <T extends PropSpec> void retrieveLocation(Iterable<? extends LocationSource<T>> locationSources,
-													   T... specs) {
-		Collection<T> todo = new ArrayList<T>(Arrays.asList(specs));
+	private void retrieveLocations(int iterations) {
+		Collection<Thread> threads = new ArrayList<Thread>();
+		while (iterations-- > 0) {
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					retrieveLocations(cellStack, 10, cellLocationSources);
+					retrieveLocations(wlanStack, 10, wlanLocationSources);
+				}
+			});
+			threads.add(t);
+			t.start();
+		}
+		try {
+			for (Thread thread : threads) {
+				thread.join();
+			}
+		} catch (InterruptedException e) {
+			Log.w(TAG, e);
+		}
+
+	}
+
+	private <T extends PropSpec> void retrieveLocations(Deque<T> stack, int num,
+														List<? extends LocationSource<T>> locationSources) {
+		if (!stack.isEmpty()) {
+			Collection<T> specs = new ArrayList<T>();
+			while (!stack.isEmpty() && (num-- > 0)) {
+				T pop = stack.pop();
+				if (locationDatabase.get(pop) == null) {
+					specs.add(pop);
+				} else {
+					++num;
+				}
+			}
+			retrieveLocations(locationSources, specs);
+		}
+	}
+
+	private <T extends PropSpec> void retrieveLocations(List<? extends LocationSource<T>> locationSources,
+														Collection<T> todo) {
 		for (LocationSource<T> locationSource : locationSources) {
 			for (LocationSpec<T> locationSpec : locationSource.retrieveLocation(todo)) {
 				locationDatabase.put(locationSpec);
@@ -71,13 +130,36 @@ public class LocationRetriever {
 		for (T spec : todo) {
 			locationDatabase.put(new LocationSpec<T>(spec));
 		}
+		todo.clear();
 	}
 
-	private void retrieveLocation(CellSpec... cellSpecs) {
-		retrieveLocation(cellLocationSources, cellSpecs);
+	private void retrieveLoop() {
+		while (!Thread.interrupted()) {
+			long time = System.currentTimeMillis();
+			if (lastRetrieve < (time - WAIT_BETWEEN)) {
+				retrieveLocations(10);
+				lastRetrieve = time;
+			}
+			synchronized (loopThread) {
+				try {
+					if (cellStack.isEmpty() && wlanStack.isEmpty()) {
+						loopThread.wait();
+					} else {
+						loopThread.wait((lastRetrieve + WAIT_BETWEEN) - time);
+					}
+				} catch (InterruptedException e) {
+					Log.w(TAG, e);
+					return;
+				}
+			}
+		}
 	}
 
-	private void retrieveLocation(WlanSpec... wlanSpecs) {
-		retrieveLocation(wlanLocationSources, wlanSpecs);
+	public void start() {
+		loopThread.start();
+	}
+
+	public void stop() {
+		loopThread.interrupt();
 	}
 }

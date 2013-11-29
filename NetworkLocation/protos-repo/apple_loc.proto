@@ -1,4 +1,4 @@
-option java_package = "org.microg.networklocation.apple";
+option java_package = "org.microg.networklocation.backends.apple";
 
 message Response {
 	message ResponseWLAN {

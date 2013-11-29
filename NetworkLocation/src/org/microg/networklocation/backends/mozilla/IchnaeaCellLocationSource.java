@@ -1,4 +1,4 @@
-package org.microg.networklocation.mozilla;
+package org.microg.networklocation.backends.mozilla;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -9,7 +9,7 @@ public class IchnaeaCellLocationSource extends OnlineCellLocationSource {
 	private static final String NAME = "Mozilla Location Service (Ichnaea)";
 	private static final String DESCRIPTION = "Retrieve cell locations from Mozilla while online";
 
-	protected IchnaeaCellLocationSource(Context context) {
+	public IchnaeaCellLocationSource(Context context) {
 		super(context, new LocationRetriever());
 	}
 

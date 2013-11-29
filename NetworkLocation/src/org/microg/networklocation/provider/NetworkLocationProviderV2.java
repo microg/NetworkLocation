@@ -12,7 +12,7 @@ import internal.com.android.location.provider.ProviderPropertiesUnbundled;
 import internal.com.android.location.provider.ProviderRequestUnbundled;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.DefaultLocationDataProvider;
-import org.microg.networklocation.data.LocationData;
+import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.helper.Reflected;
 
 @TargetApi(17)
@@ -35,6 +35,25 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 	}
 
 	@Override
+	public synchronized void disable() {
+		background.disable();
+		enabledByService = false;
+	}
+
+	@Override
+	public synchronized void enable() {
+		enabledByService = true;
+		if (enabledBySetting)
+			enableBackground();
+	}
+
+	private void enableBackground() {
+		background.disable();
+		background = new NetworkLocationThread(background);
+		background.start();
+	}
+
+	@Override
 	public boolean isActive() {
 		return background != null && background.isAlive() && background.isActive();
 	}
@@ -50,12 +69,6 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 		enabledBySetting = true;
 		if (enabledByService)
 			enableBackground();
-	}
-
-	private void enableBackground() {
-		background.disable();
-		background = new NetworkLocationThread(background);
-		background.start();
 	}
 
 	@Override
@@ -110,21 +123,8 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 	}
 
 	@Override
-	public void setData(final LocationData data) {
-		background.setData(data);
-	}
-
-	@Override
-	public synchronized void disable() {
-		background.disable();
-		enabledByService = false;
-	}
-
-	@Override
-	public synchronized void enable() {
-		enabledByService = true;
-		if (enabledBySetting)
-			enableBackground();
+	public void setCalculator(LocationCalculator locationCalculator) {
+		background.setCalculator(locationCalculator);
 	}
 
 }

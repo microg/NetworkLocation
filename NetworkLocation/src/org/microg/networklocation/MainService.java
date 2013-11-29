@@ -12,33 +12,40 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
-import org.microg.networklocation.apple.AppleWlanLocationSource;
-import org.microg.networklocation.data.CellLocationData;
-import org.microg.networklocation.data.LocationData;
-import org.microg.networklocation.data.WlanLocationData;
-import org.microg.networklocation.database.CellMap;
-import org.microg.networklocation.database.DatabaseHelper;
-import org.microg.networklocation.database.WlanMap;
-import org.microg.networklocation.google.GoogleGeocodeDataSource;
+import org.microg.networklocation.backends.apple.AppleWlanLocationSource;
+import org.microg.networklocation.backends.mozilla.IchnaeaCellLocationSource;
+import org.microg.networklocation.backends.opencellid.OpenCellIdLocationSource;
+import org.microg.networklocation.data.*;
+import org.microg.networklocation.database.LocationDatabase;
+import org.microg.networklocation.backends.google.GoogleGeocodeDataSource;
 import org.microg.networklocation.helper.Reflected;
 import org.microg.networklocation.provider.GeocodeProvider;
 import org.microg.networklocation.provider.NetworkLocationProvider;
 import org.microg.networklocation.provider.NetworkLocationProviderBase;
 import org.microg.networklocation.provider.NetworkLocationProviderV2;
-import org.microg.networklocation.source.DBFileCellLocationSource;
+import org.microg.networklocation.backends.file.OldFileCellLocationSource;
+import org.microg.networklocation.source.LocationSource;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainService extends Service {
 	public static final boolean DEBUG = true;
 	private static final String TAG = "NetworkLocationService";
 	private static Context context;
-	private LocationData data;
+	private LocationCalculator locationCalculator;
+	private LocationDatabase locationDatabase;
+	private LocationRetriever locationRetriever;
 	private GeocodeProvider geoprovider;
-	private CellMap gsmMap;
 	private NetworkLocationProviderBase nlprovider;
-	private WlanMap wlanMap;
 	private WifiManager wifiManager;
+	private BroadcastReceiver airplaneModeReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			updateProviderStateOnAirplaneMode();
+		}
+	};
 
 	public MainService() {
 		if (DEBUG) {
@@ -51,11 +58,7 @@ public class MainService extends Service {
 	}
 
 	public Location getCurrentLocation() {
-		return data.getCurrentLocation();
-	}
-
-	public Location getRealLocation() {
-		return data.getRealLocation();
+		return locationCalculator.getCurrentLocation();
 	}
 
 	public boolean isActive() {
@@ -76,7 +79,7 @@ public class MainService extends Service {
 		if (intent == null) {
 			return null;
 		}
-		final String action = intent.getAction();
+		String action = intent.getAction();
 		if (action == null) {
 			return null;
 		}
@@ -103,52 +106,65 @@ public class MainService extends Service {
 			Log.d(TAG, "Creating Service");
 		}
 		wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-		wlanMap = new WlanMap(DatabaseHelper.getInstance(this));
-		gsmMap = new CellMap(DatabaseHelper.getInstance(this));
-		if (Build.VERSION.SDK_INT < 17) {
+		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
 			nlprovider = new NetworkLocationProvider();
 		} else {
 			nlprovider = new NetworkLocationProviderV2();
 		}
-		data = new LocationData(nlprovider, this);
-		File file = new File(Environment.getExternalStorageDirectory(), ".nogapps/cells.db");
-		if (file.exists()) {
-			data.addProvider(new CellLocationData(this, gsmMap, new DBFileCellLocationSource(file), data));
-		} else if (DEBUG) {
-			Log.d(TAG, "No cells.db found, ignoring CellLocation");
-			Log.d(TAG, "If you want to add CellLocation support, download a cells.db to " + file.getAbsolutePath() +
-					   " and reboot your phone");
-		}
-		data.addProvider(new WlanLocationData(this, wlanMap, new AppleWlanLocationSource(this), data));
-		nlprovider.setData(data);
-		registerReceiver(new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				updateProviderStateOnAirplaneMode();
-			}
-		}, new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED));
-		updateProviderStateOnAirplaneMode();
+		locationDatabase = new LocationDatabase(context);
+		locationRetriever = new LocationRetriever(locationDatabase);
+		locationCalculator = new LocationCalculator(locationDatabase, locationRetriever);
+		nlprovider.setCalculator(locationCalculator);
+
+		List<LocationSource<WlanSpec>> wlanSources = new ArrayList<LocationSource<WlanSpec>>();
+		wlanSources.add(new AppleWlanLocationSource(context));
+		locationRetriever.setWlanLocationSources(wlanSources);
+
+		List<LocationSource<CellSpec>> cellSources = new ArrayList<LocationSource<CellSpec>>();
+		cellSources.add(new OldFileCellLocationSource(new File(Environment.getExternalStorageDirectory(), ".nogapps/cells.db")));
+		cellSources.add(new OpenCellIdLocationSource(context));
+		cellSources.add(new IchnaeaCellLocationSource(context));
+		locationRetriever.setCellLocationSources(cellSources);
+
+		locationRetriever.start();
+
 		geoprovider = new GeocodeProvider(this, new GoogleGeocodeDataSource());
+
+		registerReceiver(airplaneModeReceiver, new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED));
+		updateProviderStateOnAirplaneMode();
 	}
 
 	@Override
 	public void onDestroy() {
+		if (DEBUG) {
+			Log.d(TAG, "Destroying service");
+		}
+		unregisterReceiver(airplaneModeReceiver);
 		geoprovider = null;
+		nlprovider.disable();
+		locationCalculator = null;
+		locationRetriever.stop();
+		locationRetriever = null;
+		locationDatabase = null;
 		nlprovider = null;
+		wifiManager = null;
 	}
 
 	public void updateProviderStateOnAirplaneMode() {
 		boolean airplane = isAirplaneModeOn();
 		boolean wifi = wifiManager.isWifiEnabled();
-		if (DEBUG)
+		if (DEBUG) {
 			Log.d(TAG, "airplane:" + airplane + " | wifi:" + wifi);
+		}
 		if (airplane && !wifi) {
-			if (DEBUG)
+			if (DEBUG) {
 				Log.d(TAG, "AirplaneMode is enabled and wifi is off, so no way to get location for us");
+			}
 			nlprovider.disable();
 		} else {
-			if (DEBUG)
+			if (DEBUG) {
 				Log.d(TAG, "AirplaneMode or wifi is enabled. make sure we're active!");
+			}
 			nlprovider.enable();
 		}
 	}

@@ -1,4 +1,4 @@
-package org.microg.networklocation.opencellid;
+package org.microg.networklocation.backends.opencellid;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -9,11 +9,11 @@ public class OpenCellIdLocationSource extends OnlineCellLocationSource {
 	private static final String NAME = "opencellid.org";
 	private static final String DESCRIPTION = "Retrieve cell locations from opencellid.org when online";
 
-	protected OpenCellIdLocationSource(Context context) {
+	public OpenCellIdLocationSource(Context context) {
 		super(context, new LocationRetriever());
 	}
 
-	protected OpenCellIdLocationSource(ConnectivityManager connectivityManager) {
+	public OpenCellIdLocationSource(ConnectivityManager connectivityManager) {
 		super(connectivityManager, new LocationRetriever());
 	}
 
