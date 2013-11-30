@@ -10,7 +10,7 @@ import java.util.*;
 
 public class LocationCalculator {
 	public static final int MAX_WIFI_RADIUS = 500;
-	private static final String TAG = "v2LocationCalculator";
+	private static final String TAG = "LocationCalculator";
 	private final LocationDatabase locationDatabase;
 	private final LocationRetriever locationRetriever;
 	private final CellSpecRetriever cellSpecRetriever;
@@ -78,7 +78,7 @@ public class LocationCalculator {
 		Location location = new Location("network");
 		location.setAccuracy((float) (accSum / locationSpecs.size()));
 		location.setLatitude(latSum / locationSpecs.size());
-		location.setLongitude(latSum / locationSpecs.size());
+		location.setLongitude(lonSum / locationSpecs.size());
 		return location;
 	}
 

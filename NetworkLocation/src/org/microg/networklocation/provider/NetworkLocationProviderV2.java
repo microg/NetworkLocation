@@ -6,10 +6,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.WorkSource;
+import android.util.Log;
 import internal.com.android.location.provider.LocationProviderBase;
 import internal.com.android.location.provider.LocationRequestUnbundled;
 import internal.com.android.location.provider.ProviderPropertiesUnbundled;
 import internal.com.android.location.provider.ProviderRequestUnbundled;
+import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.helper.Reflected;
@@ -35,6 +37,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 
 	@Override
 	public synchronized void disable() {
+		background.setLocationListener(null);
 		background.disable();
 		enabledByService = false;
 	}
@@ -49,6 +52,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 	private void enableBackground() {
 		background.disable();
 		background = new NetworkLocationThread(background);
+		background.setLocationListener(this);
 		background.start();
 	}
 
@@ -85,10 +89,10 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
-			Bundle bundle = new Bundle();
-			bundle.putString(NETWORK_LOCATION_TYPE, location.getProvider());
-			location.setExtras(bundle);
 			Reflected.androidLocationLocationMakeComplete(location);
+			if (MainService.DEBUG) {
+				Log.d(TAG, "Reporting: " + location);
+			}
 			reportLocation(location);
 		}
 	}
@@ -114,6 +118,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 		if (autoTime < 5000) {
 			autoTime = 5000;
 		}
+		background.setLocationListener(this);
 		background.setAuto(autoUpdate, autoTime);
 	}
 

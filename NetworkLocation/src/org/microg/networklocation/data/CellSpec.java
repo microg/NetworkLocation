@@ -3,11 +3,11 @@ package org.microg.networklocation.data;
 import java.io.ByteArrayOutputStream;
 
 public class CellSpec implements PropSpec {
-	private Radio radio;
-	private int mcc;
-	private int mnc;
-	private int lac;
-	private int cid;
+	private final Radio radio;
+	private final int mcc;
+	private final int mnc;
+	private final int lac;
+	private final int cid;
 	private int signal;
 	private int ta;
 	private int psc;
@@ -110,5 +110,45 @@ public class CellSpec implements PropSpec {
 			   ", lac=" + lac +
 			   ", cid=" + cid +
 			   '}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		CellSpec cellSpec = (CellSpec) o;
+
+		if (cid != cellSpec.cid) {
+			return false;
+		}
+		if (lac != cellSpec.lac) {
+			return false;
+		}
+		if (mcc != cellSpec.mcc) {
+			return false;
+		}
+		if (mnc != cellSpec.mnc) {
+			return false;
+		}
+		if (radio != cellSpec.radio) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = radio.hashCode();
+		result = 31 * result + mcc;
+		result = 31 * result + mnc;
+		result = 31 * result + lac;
+		result = 31 * result + cid;
+		return result;
 	}
 }

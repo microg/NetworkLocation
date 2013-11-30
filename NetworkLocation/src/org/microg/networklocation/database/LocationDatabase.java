@@ -67,7 +67,6 @@ public class LocationDatabase {
 	}
 
 	private <T extends PropSpec> void insert(byte[] identBlob, LocationSpec<T> locationSpec) {
-		Log.d(TAG, "TODO: Implement: insert(byte[], LocationSpec)");
 		SQLiteStatement statement = openHelper.getWritableDatabase().compileStatement(INSERT_INTO);
 		statement.bindBlob(1, identBlob);
 		statement.bindDouble(2, locationSpec.getLatitude());
@@ -75,7 +74,11 @@ public class LocationDatabase {
 		statement.bindDouble(4, locationSpec.getAltitude());
 		statement.bindDouble(5, locationSpec.getAccuracy());
 		statement.bindLong(6, locationSpec.getBools());
-		statement.executeInsert();
+		try {
+			statement.executeInsert();
+		} catch (Exception e) {
+			Log.w(TAG, e);
+		}
 	}
 
 	private class OpenHelper extends SQLiteOpenHelper {

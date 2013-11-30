@@ -1,6 +1,7 @@
 package org.microg.networklocation;
 
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.SystemClock;
 import android.util.Log;
 import org.microg.networklocation.data.LocationCalculator;
@@ -14,6 +15,7 @@ public class NetworkLocationThread extends Thread {
 	private boolean forceUpdate;
 	private boolean enabled;
 	private Location lastLocation;
+	private LocationListener locationListener;
 	private long lastTime;
 
 	public NetworkLocationThread() {
@@ -111,10 +113,12 @@ public class NetworkLocationThread extends Thread {
 						Log.d(TAG, "Update forced because of new incoming request");
 					forceUpdate = false;
 				}
-				if (MainService.DEBUG)
-					Log.d(TAG, "Now requesting \\o/");
 				lastTime = SystemClock.elapsedRealtime();
-				calculator.getCurrentLocation();
+				if (locationListener != null) {
+					if (MainService.DEBUG)
+						Log.d(TAG, "Now requesting \\o/");
+					locationListener.onLocationChanged(calculator.getCurrentLocation());
+				}
 			} else {
 				if (MainService.DEBUG)
 					Log.d(TAG, "we're not active (or not initialized yet) = do not track!");
@@ -139,5 +143,9 @@ public class NetworkLocationThread extends Thread {
 
 	public void setLastLocation(final Location location) {
 		lastLocation = location;
+	}
+
+	public void setLocationListener(LocationListener locationListener) {
+		this.locationListener = locationListener;
 	}
 }

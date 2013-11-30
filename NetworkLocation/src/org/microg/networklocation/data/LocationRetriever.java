@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class LocationRetriever {
-	private static final String TAG = "v2LocationRetriever";
-	private static final long WAIT_BETWEEN = 1000 * 60; //every minute
+	private static final String TAG = "LocationRetriever";
+	private static final long WAIT_BETWEEN = 1000 * 30; //every half minute
 	private final Thread loopThread = new Thread(new Runnable() {
 		@Override
 		public void run() {
@@ -51,6 +51,9 @@ public class LocationRetriever {
 	public void queueLocationRetrieval(CellSpec cellSpec) {
 		if (!cellStack.contains(cellSpec)) {
 			cellStack.push(cellSpec);
+			if (MainService.DEBUG) {
+				Log.d(TAG, "queued " + cellSpec + " for retrieval");
+			}
 		}
 		synchronized (loopThread) {
 			loopThread.notifyAll();
@@ -60,6 +63,9 @@ public class LocationRetriever {
 	public void queueLocationRetrieval(WlanSpec wlanSpec) {
 		if (!wlanStack.contains(wlanSpec)) {
 			wlanStack.push(wlanSpec);
+			if (MainService.DEBUG) {
+				Log.d(TAG, "queued " + wlanSpec + " for retrieval");
+			}
 		}
 		synchronized (loopThread) {
 			loopThread.notifyAll();
@@ -78,13 +84,24 @@ public class LocationRetriever {
 		}
 	}
 
-	private void retrieveLocations(int iterations) {
+	private void retrieveLocations(int threadCount) {
+
+		if (MainService.DEBUG) {
+			Log.d(TAG, "retrieving with " + threadCount + " threads");
+		}
 		Collection<Thread> threads = new ArrayList<Thread>();
-		while (iterations-- > 0) {
+		while (threadCount-- > 0) {
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					retrieveLocations(cellStack, 10, cellLocationSources);
+				}
+			});
+			threads.add(t);
+			t.start();
+			t = new Thread(new Runnable() {
+				@Override
+				public void run() {
 					retrieveLocations(wlanStack, 10, wlanLocationSources);
 				}
 			});
@@ -121,6 +138,9 @@ public class LocationRetriever {
 														Collection<T> todo) {
 		for (LocationSource<T> locationSource : locationSources) {
 			if (locationSource.isSourceAvailable()) {
+				if (MainService.DEBUG) {
+					Log.d(TAG, "Retrieving " + todo.size() + " locations from " + locationSource);
+				}
 				for (LocationSpec<T> locationSpec : locationSource.retrieveLocation(todo)) {
 					locationDatabase.put(locationSpec);
 					todo.remove(locationSpec.getSource());
@@ -129,7 +149,7 @@ public class LocationRetriever {
 					break;
 				}
 			} else if (MainService.DEBUG) {
-				Log.d(TAG, locationSource.getName()+" is currently not available");
+				Log.d(TAG, locationSource.getName() + " is currently not available");
 			}
 		}
 		for (T spec : todo) {

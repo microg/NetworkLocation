@@ -126,9 +126,9 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
-			Bundle bundle = new Bundle();
-			bundle.putString(NETWORK_LOCATION_TYPE, location.getProvider());
-			location.setExtras(bundle);
+			if (MainService.DEBUG) {
+				Log.d(TAG, "Reporting: " + location);
+			}
 			reportLocation(location);
 		}
 	}
