@@ -118,7 +118,6 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 		if (autoTime < 5000) {
 			autoTime = 5000;
 		}
-		background.setLocationListener(this);
 		background.setAuto(autoUpdate, autoTime);
 	}
 

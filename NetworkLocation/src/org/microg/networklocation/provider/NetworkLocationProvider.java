@@ -40,6 +40,7 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 
 	@Override
 	public synchronized void disable() {
+		background.setLocationListener(null);
 		background.disable();
 		enabledByService = false;
 	}
@@ -54,6 +55,7 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 	private void enableBackground() {
 		background.disable();
 		background = new NetworkLocationThread(background);
+		background.setLocationListener(this);
 		background.start();
 	}
 
