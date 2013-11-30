@@ -24,6 +24,14 @@ public class CellSpec implements PropSpec {
 		return data;
 	}
 
+	public CellSpec(Radio radio, int mcc, int mnc, int lac, int cid) {
+		this.radio = radio;
+		this.mcc = mcc;
+		this.mnc = mnc;
+		this.lac = lac;
+		this.cid = cid;
+	}
+
 	/**
 	 * As described here: https://mozilla-ichnaea.readthedocs.org/en/latest/cell.html
 	 *
@@ -87,6 +95,10 @@ public class CellSpec implements PropSpec {
 
 	public int getMnc() {
 		return mnc;
+	}
+
+	public void setPsc(int psc) {
+		this.psc = psc;
 	}
 
 	@Override

@@ -36,7 +36,6 @@ public class MainService extends Service {
 	private static final String TAG = "NetworkLocationService";
 	private static Context context;
 	private LocationCalculator locationCalculator;
-	private LocationDatabase locationDatabase;
 	private LocationRetriever locationRetriever;
 	private GeocodeProvider geoprovider;
 	private NetworkLocationProviderBase nlprovider;
@@ -112,9 +111,12 @@ public class MainService extends Service {
 		} else {
 			nlprovider = new NetworkLocationProviderV2();
 		}
-		locationDatabase = new LocationDatabase(context);
+		WlanSpecRetriever wlanSpecRetriever = new WlanSpecRetriever(wifiManager);
+		CellSpecRetriever cellSpecRetriever = new CellSpecRetriever(context);
+		LocationDatabase locationDatabase = new LocationDatabase(context);
 		locationRetriever = new LocationRetriever(locationDatabase);
-		locationCalculator = new LocationCalculator(locationDatabase, locationRetriever);
+		locationCalculator = new LocationCalculator(locationDatabase, locationRetriever, cellSpecRetriever,
+													wlanSpecRetriever);
 		nlprovider.setCalculator(locationCalculator);
 
 		List<LocationSource<WlanSpec>> wlanSources = new ArrayList<LocationSource<WlanSpec>>();
@@ -147,7 +149,6 @@ public class MainService extends Service {
 		locationCalculator = null;
 		locationRetriever.stop();
 		locationRetriever = null;
-		locationDatabase = null;
 		nlprovider = null;
 		wifiManager = null;
 	}

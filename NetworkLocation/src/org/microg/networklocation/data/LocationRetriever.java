@@ -129,7 +129,7 @@ public class LocationRetriever {
 					break;
 				}
 			} else if (MainService.DEBUG) {
-				Log.d(TAG, locationSource.getName()+" is currently not available");	
+				Log.d(TAG, locationSource.getName()+" is currently not available");
 			}
 		}
 		for (T spec : todo) {

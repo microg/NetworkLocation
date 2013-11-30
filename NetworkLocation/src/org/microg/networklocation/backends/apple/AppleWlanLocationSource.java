@@ -1,17 +1,18 @@
 package org.microg.networklocation.backends.apple;
 
 import android.content.Context;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.util.Log;
+import org.microg.networklocation.MainService;
 import org.microg.networklocation.data.LocationSpec;
-import org.microg.networklocation.data.WlanLocationData;
+import org.microg.networklocation.data.MacAddress;
 import org.microg.networklocation.data.WlanSpec;
-import org.microg.networklocation.database.WlanMap;
 import org.microg.networklocation.source.LocationSource;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.util.Locale;
 
 public class AppleWlanLocationSource implements LocationSource<WlanSpec> {
 
@@ -28,6 +29,22 @@ public class AppleWlanLocationSource implements LocationSource<WlanSpec> {
 
 	public AppleWlanLocationSource(ConnectivityManager connectivityManager) {
 		this.connectivityManager = connectivityManager;
+	}
+
+	public static String niceMac(String mac) {
+		mac = mac.toLowerCase(Locale.getDefault());
+		final StringBuilder builder = new StringBuilder();
+		final String[] arr = mac.split(":");
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i].length() == 1) {
+				builder.append("0");
+			}
+			builder.append(arr[i]);
+			if (i < arr.length - 1) {
+				builder.append(":");
+			}
+		}
+		return builder.toString();
 	}
 
 	@Override
@@ -47,44 +64,48 @@ public class AppleWlanLocationSource implements LocationSource<WlanSpec> {
 			   connectivityManager.getActiveNetworkInfo().isConnected();
 	}
 
-	public void requestMacLocations(Collection<String> macs, Collection<String> missingMacs, WlanMap wlanMap) {
+	@Override
+	public Collection<LocationSpec<WlanSpec>> retrieveLocation(Collection<WlanSpec> specs) {
+		Collection<LocationSpec<WlanSpec>> locationSpecs = new ArrayList<LocationSpec<WlanSpec>>();
+		Collection<String> macs = new ArrayList<String>();
+		for (WlanSpec spec : specs) {
+			macs.add(niceMac(spec.getMac().toString()));
+		}
+
 		try {
 			Response response = locationRetriever.retrieveLocations(macs);
-			int newLocs = 0;
-			int reqLocs = 0;
-			for (Response.ResponseWLAN rw : response.wlan) {
-				String mac = WlanLocationData.niceMac(rw.mac);
-				Location loc = new Location(WlanLocationData.IDENTIFIER);
-				loc.setLatitude(rw.location.latitude / LATLON_WIRE);
-				loc.setLongitude(rw.location.longitude / LATLON_WIRE);
-				loc.setAccuracy(rw.location.accuracy);
-				if ((rw.location.altitude != null) && (rw.location.altitude > -500)) {
-					loc.setAltitude(rw.location.altitude);
-				}
-				loc.setTime(new Date().getTime());
-				if (!wlanMap.containsKey(mac)) {
-					newLocs++;
-				}
-				wlanMap.put(mac, loc);
-				if (macs.contains(mac)) {
-					macs.remove(mac);
-				}
-				synchronized (missingMacs) {
-					if (missingMacs.contains(mac)) {
-						reqLocs++;
-						missingMacs.remove(mac);
+			int locsGet = 0;
+			for (Response.ResponseWLAN responseWLAN : response.wlan) {
+				try {
+					WlanSpec wlanSpec = new WlanSpec(MacAddress.parse(responseWLAN.mac), responseWLAN.channel);
+					if ((responseWLAN.location.altitude != null) && (responseWLAN.location.altitude > -500)) {
+						locationSpecs
+								.add(new LocationSpec<WlanSpec>(wlanSpec, responseWLAN.location.latitude / LATLON_WIRE,
+																responseWLAN.location.longitude / LATLON_WIRE,
+																responseWLAN.location.accuracy,
+																responseWLAN.location.altitude));
+					} else {
+						locationSpecs
+								.add(new LocationSpec<WlanSpec>(wlanSpec, responseWLAN.location.latitude / LATLON_WIRE,
+																responseWLAN.location.longitude / LATLON_WIRE,
+																responseWLAN.location.accuracy));
+					}
+					locsGet++;
+				} catch (Exception e) {
+					if (MainService.DEBUG) {
+						Log.w(TAG, e);
 					}
 				}
 			}
-			Log.d(TAG, "requestMacLocations: " + response.wlan.size() + " results, " + newLocs + " new, " + reqLocs +
-					   " required");
-		} catch (final Exception e) {
-			Log.e(TAG, "requestMacLocations: " + macs, e);
-		}
-	}
+			if (MainService.DEBUG) {
+				Log.d(TAG, "got " + locsGet + " usable locations from server");
+			}
 
-	@Override
-	public Collection<LocationSpec<WlanSpec>> retrieveLocation(Collection<WlanSpec> specs) {
-		return null; //TODO: Implement
+		} catch (IOException e) {
+			if (MainService.DEBUG) {
+				Log.w(TAG, e);
+			}
+		}
+		return locationSpecs;
 	}
 }

@@ -6,6 +6,21 @@ public class WlanSpec implements PropSpec {
 	private int frequency;
 	private int signal;
 
+	public WlanSpec(MacAddress mac) {
+		this.mac = mac;
+	}
+
+	public WlanSpec(MacAddress mac, int frequency, int signal) {
+		this.mac = mac;
+		this.frequency = frequency;
+		this.signal = signal;
+	}
+
+	public WlanSpec(MacAddress mac, int channel) {
+		this.mac = mac;
+		this.channel = channel;
+	}
+
 	@Override
 	public byte[] getIdentBlob() {
 		byte[] bytes = new byte[10];
@@ -15,6 +30,10 @@ public class WlanSpec implements PropSpec {
 		bytes[3] = 'i';
 		System.arraycopy(mac.getBytes(), 0, bytes, 4, 6);
 		return bytes;
+	}
+
+	public MacAddress getMac() {
+		return mac;
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
 import org.microg.networklocation.data.LocationCalculator;
-import org.microg.networklocation.data.LocationData;
 
 public class NetworkLocationThread extends Thread {
 

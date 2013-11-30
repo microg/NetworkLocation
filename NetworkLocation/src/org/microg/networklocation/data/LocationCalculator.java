@@ -13,10 +13,15 @@ public class LocationCalculator {
 	private static final String TAG = "v2LocationCalculator";
 	private final LocationDatabase locationDatabase;
 	private final LocationRetriever locationRetriever;
+	private final CellSpecRetriever cellSpecRetriever;
+	private final WlanSpecRetriever wlanSpecRetriever;
 
-	public LocationCalculator(LocationDatabase locationDatabase, LocationRetriever locationRetriever) {
+	public LocationCalculator(LocationDatabase locationDatabase, LocationRetriever locationRetriever,
+							  CellSpecRetriever cellSpecRetriever, WlanSpecRetriever wlanSpecRetriever) {
 		this.locationDatabase = locationDatabase;
 		this.locationRetriever = locationRetriever;
+		this.cellSpecRetriever = cellSpecRetriever;
+		this.wlanSpecRetriever = wlanSpecRetriever;
 	}
 
 	private static <T extends PropSpec> Collection<Collection<LocationSpec<T>>> divideInClasses(
@@ -64,10 +69,10 @@ public class LocationCalculator {
 	private <T extends PropSpec> Location getAverageLocation(Collection<LocationSpec<T>> locationSpecs) {
 		// TODO: This is a stupid way to do this, we could do better by using the signal strength and triangulation
 		double latSum = 0, lonSum = 0, accSum = 0;
-		for (LocationSpec<T> cellLocationSpec : locationSpecs) {
-			latSum += cellLocationSpec.getLatitude();
-			lonSum += cellLocationSpec.getLongitude();
-			accSum += cellLocationSpec.getAccuracy();
+		for (LocationSpec<T> locationSpec : locationSpecs) {
+			latSum += locationSpec.getLatitude();
+			lonSum += locationSpec.getLongitude();
+			accSum += locationSpec.getAccuracy();
 		}
 
 		Location location = new Location("network");
@@ -93,8 +98,7 @@ public class LocationCalculator {
 	}
 
 	private Collection<CellSpec> getCurrentCells() {
-		Log.d(TAG, "TODO: Implement: getCurrentCells()");
-		return Collections.emptySet();
+		return cellSpecRetriever.retrieveCellSpecs();
 	}
 
 	public Location getCurrentLocation() {
@@ -139,8 +143,7 @@ public class LocationCalculator {
 	}
 
 	private Collection<WlanSpec> getCurrentWlans() {
-		Log.d(TAG, "TODO: Implement: getCurrentWlans()");
-		return Collections.emptySet();
+		return wlanSpecRetriever.retrieveWlanSpecs();
 	}
 
 	private <T extends PropSpec> Collection<LocationSpec<T>> getLocation(Collection<T> specs) {
