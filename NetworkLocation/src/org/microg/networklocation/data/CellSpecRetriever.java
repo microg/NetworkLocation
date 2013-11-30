@@ -83,10 +83,9 @@ public class CellSpecRetriever {
 			return cellSpecs;
 		}
 		CellLocation.requestLocationUpdate();
-		String mccString = telephonyManager.getNetworkCountryIso();
-		int mcc = Integer.parseInt(mccString);
 		String mncString = telephonyManager.getNetworkOperator();
-		int mnc = Integer.parseInt(mncString.substring(mccString.length()));
+		int mcc = Integer.parseInt(mncString.substring(0,3));
+		int mnc = Integer.parseInt(mncString.substring(3));
 
 		addCellSpecFromCellLocation(cellSpecs, mcc, mnc, telephonyManager.getCellLocation());
 		addCellSpecsFromNeighboringCellInfo(cellSpecs, mcc, mnc, telephonyManager.getNeighboringCellInfo());
