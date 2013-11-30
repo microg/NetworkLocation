@@ -3,11 +3,14 @@ package org.microg.networklocation.data;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.util.Log;
+import org.microg.networklocation.MainService;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class WlanSpecRetriever {
+	private static final String TAG = "WlanSpecRetriever";
 	private final WifiManager wifiManager;
 
 	public WlanSpecRetriever(WifiManager wifiManager) {
@@ -32,6 +35,9 @@ public class WlanSpecRetriever {
 			int frequency = scanResult.frequency;
 			int level = scanResult.level;
 			wlanSpecs.add(new WlanSpec(macAddress, frequency, level));
+		}
+		if (MainService.DEBUG) {
+			Log.d(TAG, "Found "+wlanSpecs.size()+" WLANs");
 		}
 		return wlanSpecs;
 	}

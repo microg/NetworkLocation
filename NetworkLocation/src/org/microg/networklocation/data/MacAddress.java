@@ -23,12 +23,12 @@ public class MacAddress {
 		byte[] bytes = new byte[6];
 		if (s.length() == 12) {
 			for (int i = 0; i < 6; ++i) {
-				bytes[i] = Byte.parseByte(s.substring(i * 2, (i + 1) * 2), HEX_RADIX);
+				bytes[i] = (byte) Integer.parseInt(s.substring(i * 2, (i + 1) * 2), HEX_RADIX);
 			}
 			return new MacAddress(bytes);
 		} else if (s.length() == 17) {
 			for (int i = 0; i < 6; ++i) {
-				bytes[i] = Byte.parseByte(s.substring(i * 3, (i * 3) + 2), HEX_RADIX);
+				bytes[i] = (byte) Integer.parseInt(s.substring(i * 3, (i * 3) + 2), HEX_RADIX);
 			}
 			return new MacAddress(bytes);
 		} else {

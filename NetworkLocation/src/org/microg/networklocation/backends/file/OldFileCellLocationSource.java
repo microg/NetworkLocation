@@ -6,7 +6,6 @@ import android.util.Log;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.data.CellSpec;
 import org.microg.networklocation.data.LocationSpec;
-import org.microg.networklocation.database.DatabaseHelper;
 import org.microg.networklocation.source.LocationSource;
 
 import java.io.File;
@@ -18,6 +17,8 @@ public class OldFileCellLocationSource implements LocationSource<CellSpec> {
 	private static final String TAG = "OldFileCellLocationSource";
 	private static final String NAME = "Local File Database (cells.db)";
 	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
+	private static final String COL_LATITUDE = "lat";
+	private static final String COL_LONGITUDE = "lon";
 	private final File dbFile;
 
 	public OldFileCellLocationSource(final File dbFile) {
@@ -48,17 +49,15 @@ public class OldFileCellLocationSource implements LocationSource<CellSpec> {
 			if (MainService.DEBUG) {
 				Log.i(TAG, "checking " + dbFile.getAbsolutePath() + " for " + spec);
 			}
-			Cursor cursor = DatabaseHelper.checkCursor(
-					db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND cid=?",
-								new String[]{Integer.toString(spec.getMcc()), Integer.toString(spec.getMnc()),
-											 Integer.toString(spec.getCid())}));
+			Cursor cursor = db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND cellid=?",
+										new String[]{Integer.toString(spec.getMcc()), Integer.toString(spec.getMnc()),
+													 Integer.toString(spec.getCid())});
 			if (cursor != null) {
 				while (!cursor.isLast()) {
 					cursor.moveToNext();
 					locationSpecs.add(new LocationSpec<CellSpec>(spec, cursor.getDouble(
-							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_LATITUDE)), cursor.getDouble(
-							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_LONGITUDE)), cursor.getDouble(
-							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_ACCURACY))));
+							cursor.getColumnIndexOrThrow(COL_LATITUDE)), cursor.getDouble(
+							cursor.getColumnIndexOrThrow(COL_LONGITUDE)), 5000));
 				}
 				cursor.close();
 			}

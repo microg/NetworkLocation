@@ -142,7 +142,7 @@ public class LocationRetriever {
 		while (!Thread.interrupted()) {
 			long time = System.currentTimeMillis();
 			if (lastRetrieve < (time - WAIT_BETWEEN)) {
-				retrieveLocations(10);
+				retrieveLocations(1);
 				lastRetrieve = time;
 			}
 			synchronized (loopThread) {

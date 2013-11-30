@@ -94,6 +94,11 @@ public class CellSpecRetriever {
 			Log.d(TAG, "Android SDK > 16 features are not used yet (but would be good here!)");
 		}
 
+
+		if (MainService.DEBUG) {
+			Log.d(TAG, "Found "+cellSpecs.size()+" Cells");
+		}
+
 		return cellSpecs;
 	}
 

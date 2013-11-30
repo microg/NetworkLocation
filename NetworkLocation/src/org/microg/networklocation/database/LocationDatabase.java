@@ -32,7 +32,9 @@ public class LocationDatabase {
 
 	public <T extends PropSpec> LocationSpec<T> get(T propSpec) {
 		LocationSpec<T> locationSpec = get(propSpec.getIdentBlob());
-		locationSpec.setSource(propSpec);
+		if (locationSpec != null) {
+			locationSpec.setSource(propSpec);
+		}
 		return locationSpec;
 	}
 
@@ -41,7 +43,7 @@ public class LocationDatabase {
 			@Override
 			public Cursor newCursor(SQLiteDatabase database, SQLiteCursorDriver sqLiteCursorDriver, String s,
 									SQLiteQuery sqLiteQuery) {
-				sqLiteQuery.bindBlob(0, identBlob);
+				sqLiteQuery.bindBlob(1, identBlob);
 				return new SQLiteCursor(sqLiteCursorDriver, s, sqLiteQuery);
 			}
 		}, false, TABLE_LOCATION, DEFAULT_QUERY_SELECT, COL_IDENT + "=?", null, null, null, null, null);
@@ -67,12 +69,12 @@ public class LocationDatabase {
 	private <T extends PropSpec> void insert(byte[] identBlob, LocationSpec<T> locationSpec) {
 		Log.d(TAG, "TODO: Implement: insert(byte[], LocationSpec)");
 		SQLiteStatement statement = openHelper.getWritableDatabase().compileStatement(INSERT_INTO);
-		statement.bindBlob(0, identBlob);
-		statement.bindDouble(1, locationSpec.getLatitude());
-		statement.bindDouble(2, locationSpec.getLongitude());
-		statement.bindDouble(3, locationSpec.getAltitude());
-		statement.bindDouble(4, locationSpec.getAccuracy());
-		statement.bindLong(5, locationSpec.getBools());
+		statement.bindBlob(1, identBlob);
+		statement.bindDouble(2, locationSpec.getLatitude());
+		statement.bindDouble(3, locationSpec.getLongitude());
+		statement.bindDouble(4, locationSpec.getAltitude());
+		statement.bindDouble(5, locationSpec.getAccuracy());
+		statement.bindLong(6, locationSpec.getBools());
 		statement.executeInsert();
 	}
 
