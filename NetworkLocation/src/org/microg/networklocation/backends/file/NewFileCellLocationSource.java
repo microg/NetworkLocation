@@ -14,13 +14,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class OldFileCellLocationSource implements LocationSource<CellSpec> {
-	private static final String TAG = "OldFileCellLocationSource";
-	private static final String NAME = "Local File Database (cells.db)";
+public class NewFileCellLocationSource implements LocationSource<CellSpec> {
+	private static final String TAG = "NewFileCellLocationSource";
+	private static final String NAME = "Local File Database (lacells.db)";
 	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
+	private static final String COL_LATITUDE = "latitude";
+	private static final String COL_LONGITUDE = "longitude";
+	private static final String COL_ALTITUDE = "altitude";
+	private static final String COL_ACCURACY = "accuracy";
 	private final File dbFile;
 
-	public OldFileCellLocationSource(final File dbFile) {
+	public NewFileCellLocationSource(final File dbFile) {
 		this.dbFile = dbFile;
 	}
 
@@ -49,16 +53,17 @@ public class OldFileCellLocationSource implements LocationSource<CellSpec> {
 				Log.i(TAG, "checking " + dbFile.getAbsolutePath() + " for " + spec);
 			}
 			Cursor cursor = DatabaseHelper.checkCursor(
-					db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND cid=?",
+					db.rawQuery("SELECT * FROM cells WHERE mcc=? AND mnc=? AND lac=? AND cid=?",
 								new String[]{Integer.toString(spec.getMcc()), Integer.toString(spec.getMnc()),
-											 Integer.toString(spec.getCid())}));
+											 Integer.toString(spec.getLac()), Integer.toString(spec.getCid())}));
 			if (cursor != null) {
 				while (!cursor.isLast()) {
 					cursor.moveToNext();
 					locationSpecs.add(new LocationSpec<CellSpec>(spec, cursor.getDouble(
-							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_LATITUDE)), cursor.getDouble(
-							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_LONGITUDE)), cursor.getDouble(
-							cursor.getColumnIndexOrThrow(DatabaseHelper.COL_ACCURACY))));
+							cursor.getColumnIndexOrThrow(COL_LATITUDE)), cursor.getDouble(
+							cursor.getColumnIndexOrThrow(COL_LONGITUDE)), cursor.getDouble(
+							cursor.getColumnIndexOrThrow(COL_ALTITUDE)), cursor.getDouble(
+							cursor.getColumnIndexOrThrow(COL_ACCURACY))));
 				}
 				cursor.close();
 			}

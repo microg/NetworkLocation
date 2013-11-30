@@ -1,6 +1,7 @@
 package org.microg.networklocation.data;
 
 import android.util.Log;
+import org.microg.networklocation.MainService;
 import org.microg.networklocation.database.LocationDatabase;
 import org.microg.networklocation.source.LocationSource;
 
@@ -119,12 +120,16 @@ public class LocationRetriever {
 	private <T extends PropSpec> void retrieveLocations(List<? extends LocationSource<T>> locationSources,
 														Collection<T> todo) {
 		for (LocationSource<T> locationSource : locationSources) {
-			for (LocationSpec<T> locationSpec : locationSource.retrieveLocation(todo)) {
-				locationDatabase.put(locationSpec);
-				todo.remove(locationSpec.getSource());
-			}
-			if (todo.isEmpty()) {
-				break;
+			if (locationSource.isSourceAvailable()) {
+				for (LocationSpec<T> locationSpec : locationSource.retrieveLocation(todo)) {
+					locationDatabase.put(locationSpec);
+					todo.remove(locationSpec.getSource());
+				}
+				if (todo.isEmpty()) {
+					break;
+				}
+			} else if (MainService.DEBUG) {
+				Log.d(TAG, locationSource.getName()+" is currently not available");	
 			}
 		}
 		for (T spec : todo) {

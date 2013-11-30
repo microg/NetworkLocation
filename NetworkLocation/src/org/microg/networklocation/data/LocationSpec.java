@@ -32,6 +32,20 @@ public class LocationSpec<T extends PropSpec> {
 		}
 	}
 
+	public LocationSpec(T source, double latitude, double longitude, double accuracy, double altitude) {
+		this.source = source;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.accuracy = accuracy;
+		this.altitude = altitude;
+		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
+			undefined = false;
+		}
+		if (altitude != 0) {
+			hasAltitude = true;
+		}
+	}
+
 	public LocationSpec(double latitude, double longitude, double accuracy) {
 		this.latitude = latitude;
 		this.longitude = longitude;

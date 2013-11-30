@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import org.microg.networklocation.backends.apple.AppleWlanLocationSource;
+import org.microg.networklocation.backends.file.NewFileCellLocationSource;
 import org.microg.networklocation.backends.mozilla.IchnaeaCellLocationSource;
 import org.microg.networklocation.backends.opencellid.OpenCellIdLocationSource;
 import org.microg.networklocation.data.*;
@@ -121,6 +122,7 @@ public class MainService extends Service {
 		locationRetriever.setWlanLocationSources(wlanSources);
 
 		List<LocationSource<CellSpec>> cellSources = new ArrayList<LocationSource<CellSpec>>();
+		cellSources.add(new NewFileCellLocationSource(new File(Environment.getExternalStorageDirectory(), ".nogapps/lacells.db")));
 		cellSources.add(new OldFileCellLocationSource(new File(Environment.getExternalStorageDirectory(), ".nogapps/cells.db")));
 		cellSources.add(new OpenCellIdLocationSource(context));
 		cellSources.add(new IchnaeaCellLocationSource(context));
