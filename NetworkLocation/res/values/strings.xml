@@ -4,15 +4,5 @@
     <string name="app_label">Network Location</string>
     <string name="warning_title">Warning!</string>
     <string name="warning_message">"This may send sensitive location data to Apple! For more information and full instructions, please consult the μg Project Website"</string>
-    <string name="loc_coords">50.000000, 7.000000</string>
-    <string name="you_label">You:</string>
-    <string name="lat_label">Lat:</string>
-    <string name="lon_label">Lon:</string>
-    <string name="gsm_cell_label">GSM Cell:</string>
-    <string name="mcc_label">MCC:</string>
-    <string name="mnc_label">MNC:</string>
-    <string name="cid_label">CID:</string>
-    <string name="wlans_label">WLANs:</string>
-    <string name="mac_label">MAC:</string>
 
 </resources>
