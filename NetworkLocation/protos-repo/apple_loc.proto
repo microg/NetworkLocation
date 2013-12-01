@@ -1,8 +1,8 @@
 option java_package = "org.microg.networklocation.backends.apple";
 
 message Response {
-	message ResponseWLAN {
-		message WLANLocation {
+	message ResponseWifi {
+		message WifiLocation {
 			optional int64 latitude = 1;
 			optional int64 longitude = 2;
 			optional int32 accuracy = 3;
@@ -13,17 +13,17 @@ message Response {
 			optional int32 unknown12 = 12; // 30..4000 ?
 		}
 		optional string mac = 1;
-		optional WLANLocation location = 2;
+		optional WifiLocation location = 2;
 		optional int32 channel = 21;
 	}
-	repeated ResponseWLAN wlan = 2;
+	repeated ResponseWifi wifis = 2;
 }
 
 message Request {
-	message RequestWLAN {
+	message RequestWifi {
 		optional string mac = 1;
 	}
-	repeated RequestWLAN wlan = 2;
+	repeated RequestWifi wifis = 2;
 	optional int32 unknown3 = 3;
 	optional int32 unknown4 = 4;
 	optional string source = 5;

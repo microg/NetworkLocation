@@ -2,9 +2,7 @@ package org.microg.networklocation.data;
 
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import org.microg.networklocation.database.LocationDatabase;
-import org.microg.networklocation.source.LocationSource;
 
 import java.util.*;
 
@@ -14,14 +12,14 @@ public class LocationCalculator {
 	private final LocationDatabase locationDatabase;
 	private final LocationRetriever locationRetriever;
 	private final CellSpecRetriever cellSpecRetriever;
-	private final WlanSpecRetriever wlanSpecRetriever;
+	private final WifiSpecRetriever wifiSpecRetriever;
 
 	public LocationCalculator(LocationDatabase locationDatabase, LocationRetriever locationRetriever,
-							  CellSpecRetriever cellSpecRetriever, WlanSpecRetriever wlanSpecRetriever) {
+							  CellSpecRetriever cellSpecRetriever, WifiSpecRetriever wifiSpecRetriever) {
 		this.locationDatabase = locationDatabase;
 		this.locationRetriever = locationRetriever;
 		this.cellSpecRetriever = cellSpecRetriever;
-		this.wlanSpecRetriever = wlanSpecRetriever;
+		this.wifiSpecRetriever = wifiSpecRetriever;
 	}
 
 	private static <T extends PropSpec> Collection<Collection<LocationSpec<T>>> divideInClasses(
@@ -103,31 +101,31 @@ public class LocationCalculator {
 
 	public Location getCurrentLocation() {
 		Location cellLocation = getCurrentCellLocation();
-		Location wlanLocation = getCurrentWlanLocation(cellLocation);
-		if (wlanLocation != null) {
-			return wlanLocation;
+		Location wifiLocation = getCurrentWifiLocation(cellLocation);
+		if (wifiLocation != null) {
+			return wifiLocation;
 		}
 		return cellLocation;
 	}
 
-	public Location getCurrentWlanLocation(Location cellLocation) {
-		Collection<LocationSpec<WlanSpec>> wlanLocationSpecs = getLocation(getCurrentWlans());
+	public Location getCurrentWifiLocation(Location cellLocation) {
+		Collection<LocationSpec<WifiSpec>> wifiLocationSpecs = getLocation(getCurrentWifis());
 
-		if (wlanLocationSpecs.size() < 2) {
+		if (wifiLocationSpecs.size() < 2) {
 			return null;
 		}
 
 		Location location = null;
 		if (cellLocation == null) {
-			List<Collection<LocationSpec<WlanSpec>>> classes = new ArrayList<Collection<LocationSpec<WlanSpec>>>(
-					divideInClasses(wlanLocationSpecs, MAX_WIFI_RADIUS));
+			List<Collection<LocationSpec<WifiSpec>>> classes = new ArrayList<Collection<LocationSpec<WifiSpec>>>(
+					divideInClasses(wifiLocationSpecs, MAX_WIFI_RADIUS));
 			Collections.sort(classes, CollectionSizeComparator.INSTANCE);
 			location = getAverageLocation(classes.get(0));
 		} else {
-			List<Collection<LocationSpec<WlanSpec>>> classes = new ArrayList<Collection<LocationSpec<WlanSpec>>>(
-					divideInClasses(wlanLocationSpecs, cellLocation.getAccuracy()));
+			List<Collection<LocationSpec<WifiSpec>>> classes = new ArrayList<Collection<LocationSpec<WifiSpec>>>(
+					divideInClasses(wifiLocationSpecs, cellLocation.getAccuracy()));
 			Collections.sort(classes, CollectionSizeComparator.INSTANCE);
-			for (Collection<LocationSpec<WlanSpec>> locClass : classes) {
+			for (Collection<LocationSpec<WifiSpec>> locClass : classes) {
 				if (locationCompatibleWithClass(cellLocation, locClass)) {
 					location = getAverageLocation(locClass);
 					break;
@@ -142,8 +140,8 @@ public class LocationCalculator {
 		return location;
 	}
 
-	private Collection<WlanSpec> getCurrentWlans() {
-		return wlanSpecRetriever.retrieveWlanSpecs();
+	private Collection<WifiSpec> getCurrentWifis() {
+		return wifiSpecRetriever.retrieveWifiSpecs();
 	}
 
 	private <T extends PropSpec> Collection<LocationSpec<T>> getLocation(Collection<T> specs) {
@@ -159,11 +157,11 @@ public class LocationCalculator {
 		return locationSpecs;
 	}
 
-	public static class CollectionSizeComparator implements Comparator<Collection<LocationSpec<WlanSpec>>> {
+	public static class CollectionSizeComparator implements Comparator<Collection<LocationSpec<WifiSpec>>> {
 		public static CollectionSizeComparator INSTANCE = new CollectionSizeComparator();
 
 		@Override
-		public int compare(Collection<LocationSpec<WlanSpec>> left, Collection<LocationSpec<WlanSpec>> right) {
+		public int compare(Collection<LocationSpec<WifiSpec>> left, Collection<LocationSpec<WifiSpec>> right) {
 			return (left.size() < right.size()) ? -1 : ((left.size() > right.size()) ? 1 : 0);
 		}
 	}

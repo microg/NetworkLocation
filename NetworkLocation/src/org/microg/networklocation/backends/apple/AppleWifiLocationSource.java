@@ -6,7 +6,7 @@ import android.util.Log;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.data.LocationSpec;
 import org.microg.networklocation.data.MacAddress;
-import org.microg.networklocation.data.WlanSpec;
+import org.microg.networklocation.data.WifiSpec;
 import org.microg.networklocation.source.LocationSource;
 
 import java.io.IOException;
@@ -14,20 +14,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
-public class AppleWlanLocationSource implements LocationSource<WlanSpec> {
+public class AppleWifiLocationSource implements LocationSource<WifiSpec> {
 
 	public static final float LATLON_WIRE = 1E8F;
-	private static final String TAG = "AppleWlanLocationSource";
+	private static final String TAG = "AppleWifiLocationSource";
 	private static final String NAME = "Apple Location Service";
-	private static final String DESCRIPTION = "Retrieve WLAN locations from Apple";
+	private static final String DESCRIPTION = "Retrieve Wifi locations from Apple";
 	private final ConnectivityManager connectivityManager;
 	private final LocationRetriever locationRetriever = new LocationRetriever();
 
-	public AppleWlanLocationSource(Context context) {
+	public AppleWifiLocationSource(Context context) {
 		this((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
 	}
 
-	public AppleWlanLocationSource(ConnectivityManager connectivityManager) {
+	public AppleWifiLocationSource(ConnectivityManager connectivityManager) {
 		this.connectivityManager = connectivityManager;
 	}
 
@@ -65,30 +65,30 @@ public class AppleWlanLocationSource implements LocationSource<WlanSpec> {
 	}
 
 	@Override
-	public Collection<LocationSpec<WlanSpec>> retrieveLocation(Collection<WlanSpec> specs) {
-		Collection<LocationSpec<WlanSpec>> locationSpecs = new ArrayList<LocationSpec<WlanSpec>>();
+	public Collection<LocationSpec<WifiSpec>> retrieveLocation(Collection<WifiSpec> specs) {
+		Collection<LocationSpec<WifiSpec>> locationSpecs = new ArrayList<LocationSpec<WifiSpec>>();
 		Collection<String> macs = new ArrayList<String>();
-		for (WlanSpec spec : specs) {
+		for (WifiSpec spec : specs) {
 			macs.add(niceMac(spec.getMac().toString()));
 		}
 
 		try {
 			Response response = locationRetriever.retrieveLocations(macs);
 			int locsGet = 0;
-			for (Response.ResponseWLAN responseWLAN : response.wlan) {
+			for (Response.ResponseWifi responseWifi : response.wifis) {
 				try {
-					WlanSpec wlanSpec = new WlanSpec(MacAddress.parse(responseWLAN.mac), responseWLAN.channel);
-					if ((responseWLAN.location.altitude != null) && (responseWLAN.location.altitude > -500)) {
+					WifiSpec wifiSpec = new WifiSpec(MacAddress.parse(responseWifi.mac), responseWifi.channel);
+					if ((responseWifi.location.altitude != null) && (responseWifi.location.altitude > -500)) {
 						locationSpecs
-								.add(new LocationSpec<WlanSpec>(wlanSpec, responseWLAN.location.latitude / LATLON_WIRE,
-																responseWLAN.location.longitude / LATLON_WIRE,
-																responseWLAN.location.accuracy,
-																responseWLAN.location.altitude));
+								.add(new LocationSpec<WifiSpec>(wifiSpec, responseWifi.location.latitude / LATLON_WIRE,
+																responseWifi.location.longitude / LATLON_WIRE,
+																responseWifi.location.accuracy,
+																responseWifi.location.altitude));
 					} else {
 						locationSpecs
-								.add(new LocationSpec<WlanSpec>(wlanSpec, responseWLAN.location.latitude / LATLON_WIRE,
-																responseWLAN.location.longitude / LATLON_WIRE,
-																responseWLAN.location.accuracy));
+								.add(new LocationSpec<WifiSpec>(wifiSpec, responseWifi.location.latitude / LATLON_WIRE,
+																responseWifi.location.longitude / LATLON_WIRE,
+																responseWifi.location.accuracy));
 					}
 					locsGet++;
 				} catch (Exception e) {

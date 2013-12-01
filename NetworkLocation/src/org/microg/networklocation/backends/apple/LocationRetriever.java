@@ -44,11 +44,11 @@ public class LocationRetriever {
 	}
 
 	private static Request createRequest(String... macs) {
-		List<Request.RequestWLAN> wlans = new ArrayList<Request.RequestWLAN>();
+		List<Request.RequestWifi> wifis = new ArrayList<Request.RequestWifi>();
 		for (final String mac : macs) {
-			wlans.add(new Request.RequestWLAN.Builder().mac(mac).build());
+			wifis.add(new Request.RequestWifi.Builder().mac(mac).build());
 		}
-		return new Request.Builder().source("com.apple.maps").unknown3(0).unknown4(0).wlan(wlans).build();
+		return new Request.Builder().source("com.apple.maps").unknown3(0).unknown4(0).wifis(wifis).build();
 	}
 
 	private static void prepareConnection(HttpsURLConnection connection, int length) throws ProtocolException {

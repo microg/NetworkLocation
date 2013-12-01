@@ -1,22 +1,22 @@
 package org.microg.networklocation.data;
 
-public class WlanSpec implements PropSpec {
+public class WifiSpec implements PropSpec {
 	private final MacAddress mac;
 	private int channel;
 	private int frequency;
 	private int signal;
 
-	public WlanSpec(MacAddress mac) {
+	public WifiSpec(MacAddress mac) {
 		this.mac = mac;
 	}
 
-	public WlanSpec(MacAddress mac, int frequency, int signal) {
+	public WifiSpec(MacAddress mac, int frequency, int signal) {
 		this.mac = mac;
 		this.frequency = frequency;
 		this.signal = signal;
 	}
 
-	public WlanSpec(MacAddress mac, int channel) {
+	public WifiSpec(MacAddress mac, int channel) {
 		this.mac = mac;
 		this.channel = channel;
 	}
@@ -40,7 +40,7 @@ public class WlanSpec implements PropSpec {
 
 	@Override
 	public String toString() {
-		return "WlanSpec{" +
+		return "WifiSpec{" +
 			   "mac=" + mac +
 			   '}';
 	}
@@ -54,9 +54,9 @@ public class WlanSpec implements PropSpec {
 			return false;
 		}
 
-		WlanSpec wlanSpec = (WlanSpec) o;
+		WifiSpec wifiSpec = (WifiSpec) o;
 
-		if (mac != null ? !mac.equals(wlanSpec.mac) : wlanSpec.mac != null) {
+		if (mac != null ? !mac.equals(wifiSpec.mac) : wifiSpec.mac != null) {
 			return false;
 		}
 

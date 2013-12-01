@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
-import org.microg.networklocation.backends.apple.AppleWlanLocationSource;
+import org.microg.networklocation.backends.apple.AppleWifiLocationSource;
 import org.microg.networklocation.backends.file.NewFileCellLocationSource;
 import org.microg.networklocation.backends.mozilla.IchnaeaCellLocationSource;
 import org.microg.networklocation.backends.opencellid.OpenCellIdLocationSource;
@@ -111,17 +111,17 @@ public class MainService extends Service {
 		} else {
 			nlprovider = new NetworkLocationProviderV2();
 		}
-		WlanSpecRetriever wlanSpecRetriever = new WlanSpecRetriever(wifiManager);
+		WifiSpecRetriever wifiSpecRetriever = new WifiSpecRetriever(wifiManager);
 		CellSpecRetriever cellSpecRetriever = new CellSpecRetriever(context);
 		LocationDatabase locationDatabase = new LocationDatabase(context);
 		locationRetriever = new LocationRetriever(locationDatabase);
 		locationCalculator = new LocationCalculator(locationDatabase, locationRetriever, cellSpecRetriever,
-													wlanSpecRetriever);
+													wifiSpecRetriever);
 		nlprovider.setCalculator(locationCalculator);
 
-		List<LocationSource<WlanSpec>> wlanSources = new ArrayList<LocationSource<WlanSpec>>();
-		wlanSources.add(new AppleWlanLocationSource(context));
-		locationRetriever.setWlanLocationSources(wlanSources);
+		List<LocationSource<WifiSpec>> wifiSources = new ArrayList<LocationSource<WifiSpec>>();
+		wifiSources.add(new AppleWifiLocationSource(context));
+		locationRetriever.setWifiLocationSources(wifiSources);
 
 		List<LocationSource<CellSpec>> cellSources = new ArrayList<LocationSource<CellSpec>>();
 		cellSources.add(new NewFileCellLocationSource(new File(Environment.getExternalStorageDirectory(), ".nogapps/lacells.db")));

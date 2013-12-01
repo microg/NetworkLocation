@@ -14,32 +14,32 @@ import static com.squareup.wire.Message.Label.REPEATED;
 
 public final class Response extends Message {
 
-  public static final List<ResponseWLAN> DEFAULT_WLAN = Collections.emptyList();
+  public static final List<ResponseWifi> DEFAULT_WIFIS = Collections.emptyList();
 
   @ProtoField(tag = 2, label = REPEATED)
-  public final List<ResponseWLAN> wlan;
+  public final List<ResponseWifi> wifis;
 
   private Response(Builder builder) {
     super(builder);
-    this.wlan = immutableCopyOf(builder.wlan);
+    this.wifis = immutableCopyOf(builder.wifis);
   }
 
   @Override
   public boolean equals(Object other) {
     if (other == this) return true;
     if (!(other instanceof Response)) return false;
-    return equals(wlan, ((Response) other).wlan);
+    return equals(wifis, ((Response) other).wifis);
   }
 
   @Override
   public int hashCode() {
     int result = hashCode;
-    return result != 0 ? result : (hashCode = wlan != null ? wlan.hashCode() : 1);
+    return result != 0 ? result : (hashCode = wifis != null ? wifis.hashCode() : 1);
   }
 
   public static final class Builder extends Message.Builder<Response> {
 
-    public List<ResponseWLAN> wlan;
+    public List<ResponseWifi> wifis;
 
     public Builder() {
     }
@@ -47,11 +47,11 @@ public final class Response extends Message {
     public Builder(Response message) {
       super(message);
       if (message == null) return;
-      this.wlan = copyOf(message.wlan);
+      this.wifis = copyOf(message.wifis);
     }
 
-    public Builder wlan(List<ResponseWLAN> wlan) {
-      this.wlan = wlan;
+    public Builder wifis(List<ResponseWifi> wifis) {
+      this.wifis = wifis;
       return this;
     }
 
@@ -61,7 +61,7 @@ public final class Response extends Message {
     }
   }
 
-  public static final class ResponseWLAN extends Message {
+  public static final class ResponseWifi extends Message {
 
     public static final String DEFAULT_MAC = "";
     public static final Integer DEFAULT_CHANNEL = 0;
@@ -70,12 +70,12 @@ public final class Response extends Message {
     public final String mac;
 
     @ProtoField(tag = 2)
-    public final ResponseWLAN.WLANLocation location;
+    public final ResponseWifi.WifiLocation location;
 
     @ProtoField(tag = 21, type = INT32)
     public final Integer channel;
 
-    private ResponseWLAN(Builder builder) {
+    private ResponseWifi(Builder builder) {
       super(builder);
       this.mac = builder.mac;
       this.location = builder.location;
@@ -85,8 +85,8 @@ public final class Response extends Message {
     @Override
     public boolean equals(Object other) {
       if (other == this) return true;
-      if (!(other instanceof ResponseWLAN)) return false;
-      ResponseWLAN o = (ResponseWLAN) other;
+      if (!(other instanceof ResponseWifi)) return false;
+      ResponseWifi o = (ResponseWifi) other;
       return equals(mac, o.mac)
           && equals(location, o.location)
           && equals(channel, o.channel);
@@ -104,16 +104,16 @@ public final class Response extends Message {
       return result;
     }
 
-    public static final class Builder extends Message.Builder<ResponseWLAN> {
+    public static final class Builder extends Message.Builder<ResponseWifi> {
 
       public String mac;
-      public ResponseWLAN.WLANLocation location;
+      public ResponseWifi.WifiLocation location;
       public Integer channel;
 
       public Builder() {
       }
 
-      public Builder(ResponseWLAN message) {
+      public Builder(ResponseWifi message) {
         super(message);
         if (message == null) return;
         this.mac = message.mac;
@@ -126,7 +126,7 @@ public final class Response extends Message {
         return this;
       }
 
-      public Builder location(ResponseWLAN.WLANLocation location) {
+      public Builder location(ResponseWifi.WifiLocation location) {
         this.location = location;
         return this;
       }
@@ -137,12 +137,12 @@ public final class Response extends Message {
       }
 
       @Override
-      public ResponseWLAN build() {
-        return new ResponseWLAN(this);
+      public ResponseWifi build() {
+        return new ResponseWifi(this);
       }
     }
 
-    public static final class WLANLocation extends Message {
+    public static final class WifiLocation extends Message {
 
       public static final Long DEFAULT_LATITUDE = 0L;
       public static final Long DEFAULT_LONGITUDE = 0L;
@@ -189,7 +189,7 @@ public final class Response extends Message {
       @ProtoField(tag = 12, type = INT32)
       public final Integer unknown12;
 
-      private WLANLocation(Builder builder) {
+      private WifiLocation(Builder builder) {
         super(builder);
         this.latitude = builder.latitude;
         this.longitude = builder.longitude;
@@ -204,8 +204,8 @@ public final class Response extends Message {
       @Override
       public boolean equals(Object other) {
         if (other == this) return true;
-        if (!(other instanceof WLANLocation)) return false;
-        WLANLocation o = (WLANLocation) other;
+        if (!(other instanceof WifiLocation)) return false;
+        WifiLocation o = (WifiLocation) other;
         return equals(latitude, o.latitude)
             && equals(longitude, o.longitude)
             && equals(accuracy, o.accuracy)
@@ -233,7 +233,7 @@ public final class Response extends Message {
         return result;
       }
 
-      public static final class Builder extends Message.Builder<WLANLocation> {
+      public static final class Builder extends Message.Builder<WifiLocation> {
 
         public Long latitude;
         public Long longitude;
@@ -247,7 +247,7 @@ public final class Response extends Message {
         public Builder() {
         }
 
-        public Builder(WLANLocation message) {
+        public Builder(WifiLocation message) {
           super(message);
           if (message == null) return;
           this.latitude = message.latitude;
@@ -313,8 +313,8 @@ public final class Response extends Message {
         }
 
         @Override
-        public WLANLocation build() {
-          return new WLANLocation(this);
+        public WifiLocation build() {
+          return new WifiLocation(this);
         }
       }
     }

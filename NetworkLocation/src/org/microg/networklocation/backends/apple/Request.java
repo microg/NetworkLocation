@@ -13,13 +13,13 @@ import static com.squareup.wire.Message.Label.REPEATED;
 
 public final class Request extends Message {
 
-  public static final List<RequestWLAN> DEFAULT_WLAN = Collections.emptyList();
+  public static final List<RequestWifi> DEFAULT_WIFIS = Collections.emptyList();
   public static final Integer DEFAULT_UNKNOWN3 = 0;
   public static final Integer DEFAULT_UNKNOWN4 = 0;
   public static final String DEFAULT_SOURCE = "";
 
   @ProtoField(tag = 2, label = REPEATED)
-  public final List<RequestWLAN> wlan;
+  public final List<RequestWifi> wifis;
 
   @ProtoField(tag = 3, type = INT32)
   public final Integer unknown3;
@@ -32,7 +32,7 @@ public final class Request extends Message {
 
   private Request(Builder builder) {
     super(builder);
-    this.wlan = immutableCopyOf(builder.wlan);
+    this.wifis = immutableCopyOf(builder.wifis);
     this.unknown3 = builder.unknown3;
     this.unknown4 = builder.unknown4;
     this.source = builder.source;
@@ -43,7 +43,7 @@ public final class Request extends Message {
     if (other == this) return true;
     if (!(other instanceof Request)) return false;
     Request o = (Request) other;
-    return equals(wlan, o.wlan)
+    return equals(wifis, o.wifis)
         && equals(unknown3, o.unknown3)
         && equals(unknown4, o.unknown4)
         && equals(source, o.source);
@@ -53,7 +53,7 @@ public final class Request extends Message {
   public int hashCode() {
     int result = hashCode;
     if (result == 0) {
-      result = wlan != null ? wlan.hashCode() : 1;
+      result = wifis != null ? wifis.hashCode() : 1;
       result = result * 37 + (unknown3 != null ? unknown3.hashCode() : 0);
       result = result * 37 + (unknown4 != null ? unknown4.hashCode() : 0);
       result = result * 37 + (source != null ? source.hashCode() : 0);
@@ -64,7 +64,7 @@ public final class Request extends Message {
 
   public static final class Builder extends Message.Builder<Request> {
 
-    public List<RequestWLAN> wlan;
+    public List<RequestWifi> wifis;
     public Integer unknown3;
     public Integer unknown4;
     public String source;
@@ -75,14 +75,14 @@ public final class Request extends Message {
     public Builder(Request message) {
       super(message);
       if (message == null) return;
-      this.wlan = copyOf(message.wlan);
+      this.wifis = copyOf(message.wifis);
       this.unknown3 = message.unknown3;
       this.unknown4 = message.unknown4;
       this.source = message.source;
     }
 
-    public Builder wlan(List<RequestWLAN> wlan) {
-      this.wlan = wlan;
+    public Builder wifis(List<RequestWifi> wifis) {
+      this.wifis = wifis;
       return this;
     }
 
@@ -107,14 +107,14 @@ public final class Request extends Message {
     }
   }
 
-  public static final class RequestWLAN extends Message {
+  public static final class RequestWifi extends Message {
 
     public static final String DEFAULT_MAC = "";
 
     @ProtoField(tag = 1, type = STRING)
     public final String mac;
 
-    private RequestWLAN(Builder builder) {
+    private RequestWifi(Builder builder) {
       super(builder);
       this.mac = builder.mac;
     }
@@ -122,8 +122,8 @@ public final class Request extends Message {
     @Override
     public boolean equals(Object other) {
       if (other == this) return true;
-      if (!(other instanceof RequestWLAN)) return false;
-      return equals(mac, ((RequestWLAN) other).mac);
+      if (!(other instanceof RequestWifi)) return false;
+      return equals(mac, ((RequestWifi) other).mac);
     }
 
     @Override
@@ -132,14 +132,14 @@ public final class Request extends Message {
       return result != 0 ? result : (hashCode = mac != null ? mac.hashCode() : 0);
     }
 
-    public static final class Builder extends Message.Builder<RequestWLAN> {
+    public static final class Builder extends Message.Builder<RequestWifi> {
 
       public String mac;
 
       public Builder() {
       }
 
-      public Builder(RequestWLAN message) {
+      public Builder(RequestWifi message) {
         super(message);
         if (message == null) return;
         this.mac = message.mac;
@@ -151,8 +151,8 @@ public final class Request extends Message {
       }
 
       @Override
-      public RequestWLAN build() {
-        return new RequestWLAN(this);
+      public RequestWifi build() {
+        return new RequestWifi(this);
       }
     }
   }

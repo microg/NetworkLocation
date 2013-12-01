@@ -22,9 +22,9 @@ public class LocationRetriever {
 	});
 	private LocationDatabase locationDatabase;
 	private List<LocationSource<CellSpec>> cellLocationSources = new ArrayList<LocationSource<CellSpec>>();
-	private List<LocationSource<WlanSpec>> wlanLocationSources = new ArrayList<LocationSource<WlanSpec>>();
+	private List<LocationSource<WifiSpec>> wifiLocationSources = new ArrayList<LocationSource<WifiSpec>>();
 	private Deque<CellSpec> cellStack = new LinkedBlockingDeque<CellSpec>();
-	private Deque<WlanSpec> wlanStack = new LinkedBlockingDeque<WlanSpec>();
+	private Deque<WifiSpec> wifiStack = new LinkedBlockingDeque<WifiSpec>();
 	private long lastRetrieve = 0;
 
 
@@ -40,12 +40,12 @@ public class LocationRetriever {
 		this.cellLocationSources = new ArrayList<LocationSource<CellSpec>>(cellLocationSources);
 	}
 
-	public List<LocationSource<WlanSpec>> getWlanLocationSources() {
-		return wlanLocationSources;
+	public List<LocationSource<WifiSpec>> getWifiLocationSources() {
+		return wifiLocationSources;
 	}
 
-	public void setWlanLocationSources(List<LocationSource<WlanSpec>> wlanLocationSources) {
-		this.wlanLocationSources = new ArrayList<LocationSource<WlanSpec>>(wlanLocationSources);
+	public void setWifiLocationSources(List<LocationSource<WifiSpec>> wifiLocationSources) {
+		this.wifiLocationSources = new ArrayList<LocationSource<WifiSpec>>(wifiLocationSources);
 	}
 
 	public void queueLocationRetrieval(CellSpec cellSpec) {
@@ -60,11 +60,11 @@ public class LocationRetriever {
 		}
 	}
 
-	public void queueLocationRetrieval(WlanSpec wlanSpec) {
-		if (!wlanStack.contains(wlanSpec)) {
-			wlanStack.push(wlanSpec);
+	public void queueLocationRetrieval(WifiSpec wifiSpec) {
+		if (!wifiStack.contains(wifiSpec)) {
+			wifiStack.push(wifiSpec);
 			if (MainService.DEBUG) {
-				Log.d(TAG, "queued " + wlanSpec + " for retrieval");
+				Log.d(TAG, "queued " + wifiSpec + " for retrieval");
 			}
 		}
 		synchronized (loopThread) {
@@ -76,9 +76,9 @@ public class LocationRetriever {
 		if (spec instanceof CellSpec) {
 			CellSpec cellSpec = (CellSpec) spec;
 			queueLocationRetrieval(cellSpec);
-		} else if (spec instanceof WlanSpec) {
-			WlanSpec wlanSpec = (WlanSpec) spec;
-			queueLocationRetrieval(wlanSpec);
+		} else if (spec instanceof WifiSpec) {
+			WifiSpec wifiSpec = (WifiSpec) spec;
+			queueLocationRetrieval(wifiSpec);
 		} else {
 			throw new IllegalArgumentException("spec must be Cell or Wifi spec");
 		}
@@ -102,7 +102,7 @@ public class LocationRetriever {
 			t = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					retrieveLocations(wlanStack, 10, wlanLocationSources);
+					retrieveLocations(wifiStack, 10, wifiLocationSources);
 				}
 			});
 			threads.add(t);
@@ -167,7 +167,7 @@ public class LocationRetriever {
 			}
 			synchronized (loopThread) {
 				try {
-					if (cellStack.isEmpty() && wlanStack.isEmpty()) {
+					if (cellStack.isEmpty() && wifiStack.isEmpty()) {
 						loopThread.wait();
 					} else {
 						loopThread.wait((lastRetrieve + WAIT_BETWEEN) - time);
