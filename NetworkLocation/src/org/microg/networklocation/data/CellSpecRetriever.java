@@ -84,6 +84,8 @@ public class CellSpecRetriever {
 		}
 		CellLocation.requestLocationUpdate();
 		String mncString = telephonyManager.getNetworkOperator();
+		if ((mncString == null) || (mncString.length() < 3))
+			return cellSpecs;
 		int mcc = Integer.parseInt(mncString.substring(0,3));
 		int mnc = Integer.parseInt(mncString.substring(3));
 
