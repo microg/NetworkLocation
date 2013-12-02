@@ -114,7 +114,7 @@ public class LocationSpec<T extends PropSpec> {
 		double cordLength =
 				Math.pow(Math.sin(dLat / 2), 2) + (Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dLon / 2), 2));
 		double centralAngle = 2 * Math.atan2(Math.sqrt(cordLength), Math.sqrt(1 - cordLength));
-		return EARTH_RADIUS * centralAngle * 1000;
+		return EARTH_RADIUS * centralAngle;
 	}
 
 	public double distanceTo(Location location) {
