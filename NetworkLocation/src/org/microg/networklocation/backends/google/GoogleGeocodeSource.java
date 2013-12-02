@@ -2,7 +2,7 @@ package org.microg.networklocation.backends.google;
 
 import android.location.Address;
 import android.util.Log;
-import org.microg.networklocation.source.GeocodeDataSource;
+import org.microg.networklocation.source.GeocodeSource;
 import org.xml.sax.*;
 
 import javax.xml.parsers.SAXParserFactory;
@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class GoogleGeocodeDataSource implements GeocodeDataSource, ContentHandler {
+public class GoogleGeocodeSource implements GeocodeSource, ContentHandler {
 
 	private static final String BASE_URL =
 			"http://maps.googleapis.com/maps/api/geocode/xml?latlng=%lat%,%lon%&sensor=false&region=%region%&language=%lang%";
-	private static final String TAG = "GoogleGeocodeDataSource";
+	private static final String TAG = "GoogleGeocodeSource";
 	private static final String NAME = "Google Maps Geocode API";
 	private static final String DESCRIPTION = "Use Google Maps to get address from location";
 
@@ -33,7 +33,6 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource, ContentHandle
 	private final Object lock = new Object();
 	private ArrayList<String> parsingState = null;
 
-	@Override
 	public void addAdressesToListForLocation(final double lat, final double lon, final Locale locale,
 											 final List<Address> addrs) {
 		final String urlString =
@@ -149,6 +148,13 @@ public class GoogleGeocodeDataSource implements GeocodeDataSource, ContentHandle
 	@Override
 	public void endPrefixMapping(final String prefix) throws SAXException {
 
+	}
+
+	@Override
+	public List<Address> getFromLocation(double lat, double lon, Locale locale) {
+		List<Address> list = new ArrayList<Address>();
+		addAdressesToListForLocation(lat, lon, locale, list);
+		return list;
 	}
 
 	@Override

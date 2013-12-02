@@ -16,15 +16,17 @@ import org.microg.networklocation.backends.apple.AppleWifiLocationSource;
 import org.microg.networklocation.backends.file.NewFileCellLocationSource;
 import org.microg.networklocation.backends.mozilla.IchnaeaCellLocationSource;
 import org.microg.networklocation.backends.opencellid.OpenCellIdLocationSource;
+import org.microg.networklocation.backends.openstreetmap.NominatimGeocodeSource;
 import org.microg.networklocation.data.*;
 import org.microg.networklocation.database.LocationDatabase;
-import org.microg.networklocation.backends.google.GoogleGeocodeDataSource;
+import org.microg.networklocation.backends.google.GoogleGeocodeSource;
 import org.microg.networklocation.helper.Reflected;
 import org.microg.networklocation.provider.GeocodeProvider;
 import org.microg.networklocation.provider.NetworkLocationProvider;
 import org.microg.networklocation.provider.NetworkLocationProviderBase;
 import org.microg.networklocation.provider.NetworkLocationProviderV2;
 import org.microg.networklocation.backends.file.OldFileCellLocationSource;
+import org.microg.networklocation.source.GeocodeSource;
 import org.microg.networklocation.source.LocationSource;
 
 import java.io.File;
@@ -135,7 +137,9 @@ public class MainService extends Service {
 
 		locationRetriever.start();
 
-		geoprovider = new GeocodeProvider(this, new GoogleGeocodeDataSource());
+		List<GeocodeSource> geocodeSources = new ArrayList<GeocodeSource>();
+		geocodeSources.add(new NominatimGeocodeSource(context));
+		geoprovider = new GeocodeProvider(geocodeSources);
 
 		registerReceiver(airplaneModeReceiver, new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED));
 		updateProviderStateOnAirplaneMode();

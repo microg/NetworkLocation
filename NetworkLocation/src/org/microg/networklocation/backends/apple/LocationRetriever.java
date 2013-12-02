@@ -1,6 +1,7 @@
 package org.microg.networklocation.backends.apple;
 
 import com.squareup.wire.Wire;
+import org.microg.networklocation.helper.IOHelper;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
@@ -60,22 +61,6 @@ public class LocationRetriever {
 		connection.setRequestProperty(HTTP_FIELD_CONTENT_LENGTH, String.valueOf(length));
 	}
 
-	private static byte[] readStreamToEnd(InputStream is) throws IOException {
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		if (is != null) {
-			final byte[] buff = new byte[1024];
-			while (true) {
-				final int nb = is.read(buff);
-				if (nb < 0) {
-					break;
-				}
-				bos.write(buff, 0, nb);
-			}
-			is.close();
-		}
-		return bos.toByteArray();
-	}
-
 	public Response retrieveLocations(String... macs) throws IOException {
 		Request request = createRequest(macs);
 		byte[] byteb = request.toByteArray();
@@ -88,7 +73,7 @@ public class LocationRetriever {
 		out.close();
 		InputStream in = connection.getInputStream();
 		in.skip(10);
-		Response response = wire.parseFrom(readStreamToEnd(in), Response.class);
+		Response response = wire.parseFrom(IOHelper.readStreamToEnd(in), Response.class);
 		in.close();
 		return response;
 	}
