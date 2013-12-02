@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class LocationRetriever {
 	private static final String TAG = "LocationRetriever";
-	private static final long WAIT_BETWEEN = 1000 * 30; //every half minute
+	private static final long WAIT_BETWEEN = 1000 * 10; //every 10 seconds
 	private final Thread loopThread = new Thread(new Runnable() {
 		@Override
 		public void run() {
@@ -85,7 +85,9 @@ public class LocationRetriever {
 	}
 
 	private void retrieveLocations(int threadCount) {
-
+		if (cellStack.isEmpty() && wifiStack.isEmpty()) {
+			return;
+		}
 		if (MainService.DEBUG) {
 			Log.d(TAG, "retrieving with " + threadCount + " threads");
 		}
@@ -141,12 +143,16 @@ public class LocationRetriever {
 				if (MainService.DEBUG) {
 					Log.d(TAG, "Retrieving " + todo.size() + " locations from " + locationSource);
 				}
-				for (LocationSpec<T> locationSpec : locationSource.retrieveLocation(todo)) {
-					locationDatabase.put(locationSpec);
-					todo.remove(locationSpec.getSource());
-				}
-				if (todo.isEmpty()) {
-					break;
+				try {
+					for (LocationSpec<T> locationSpec : locationSource.retrieveLocation(todo)) {
+						locationDatabase.put(locationSpec);
+						todo.remove(locationSpec.getSource());
+					}
+					if (todo.isEmpty()) {
+						break;
+					}
+				} catch (Throwable t) {
+					Log.d(TAG, locationSource + " caused problem!", t);
 				}
 			} else if (MainService.DEBUG) {
 				Log.d(TAG, locationSource.getName() + " is currently not available");

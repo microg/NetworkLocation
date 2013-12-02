@@ -74,6 +74,10 @@ public class AppleWifiLocationSource implements LocationSource<WifiSpec> {
 
 		try {
 			Response response = locationRetriever.retrieveLocations(macs);
+			if ((response == null) || (response.wifis == null) || response.wifis.isEmpty()) {
+				Log.d(TAG, "Got nothing usable from Apple's servers!");
+				return locationSpecs;
+			}
 			int locsGet = 0;
 			for (Response.ResponseWifi responseWifi : response.wifis) {
 				try {
