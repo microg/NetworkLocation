@@ -88,7 +88,7 @@ public class LocationCalculator {
 	public Location getCurrentCellLocation() {
 		Collection<LocationSpec<CellSpec>> cellLocationSpecs = getLocation(getCurrentCells());
 
-		if (cellLocationSpecs.isEmpty()) {
+		if ((cellLocationSpecs == null) || cellLocationSpecs.isEmpty()) {
 			return null;
 		}
 		Location location = getAverageLocation(cellLocationSpecs);
@@ -161,8 +161,7 @@ public class LocationCalculator {
 			LocationSpec<T> locationSpec = locationDatabase.get(spec);
 			if (locationSpec == null) {
 				locationRetriever.queueLocationRetrieval(spec);
-			} else if (!locationSpec.isUndefined() || ((locationSpec.getLatitude() == 0) &&
-													   (locationSpec.getLongitude() == 0))){
+			} else if (!locationSpec.isUndefined()){
 				locationSpecs.add(locationSpec);
 			}
 		}
