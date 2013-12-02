@@ -32,7 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainService extends Service {
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG;
+	static {
+		DEBUG = Log.isLoggable("nlp", Log.DEBUG);
+	}
 	private static final String TAG = "NetworkLocationService";
 	private static Context context;
 	private LocationCalculator locationCalculator;
