@@ -2,6 +2,8 @@ package org.microg.networklocation.data;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import org.microg.networklocation.MainService;
 import org.microg.networklocation.database.LocationDatabase;
 
 import java.util.*;
@@ -57,6 +59,9 @@ public class LocationCalculator {
 	private static <T extends PropSpec> boolean locationCompatibleWithClass(Location location,
 																			Collection<LocationSpec<T>> locClass) {
 		for (LocationSpec<T> spec : locClass) {
+			if (MainService.DEBUG) {
+				Log.d(TAG, "location: " + location + ", spec: " + spec + " => dist:" + spec.distanceTo(location) + "m");
+			}
 			if ((spec.distanceTo(location) - location.getAccuracy() - spec.getAccuracy()) < 0) {
 				return true;
 			}
@@ -126,7 +131,13 @@ public class LocationCalculator {
 					divideInClasses(wifiLocationSpecs, cellLocation.getAccuracy()));
 			Collections.sort(classes, CollectionSizeComparator.INSTANCE);
 			for (Collection<LocationSpec<WifiSpec>> locClass : classes) {
+				if (MainService.DEBUG) {
+					Log.d(TAG, "Test location class with "+locClass.size()+" entries");
+				}
 				if (locationCompatibleWithClass(cellLocation, locClass)) {
+					if (MainService.DEBUG) {
+						Log.d(TAG, "Location class matches, using its average");
+					}
 					location = getAverageLocation(locClass);
 					break;
 				}
