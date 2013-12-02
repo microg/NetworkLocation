@@ -55,14 +55,15 @@ public class NewFileCellLocationSource implements LocationSource<CellSpec> {
 										new String[]{Integer.toString(spec.getMcc()), Integer.toString(spec.getMnc()),
 													 Integer.toString(spec.getLac()), Integer.toString(spec.getCid())});
 			if (cursor != null) {
-				cursor.moveToNext();
-				while (!cursor.isLast()) {
-					cursor.moveToNext();
-					locationSpecs.add(new LocationSpec<CellSpec>(spec, cursor.getDouble(
-							cursor.getColumnIndexOrThrow(COL_LATITUDE)), cursor.getDouble(
-							cursor.getColumnIndexOrThrow(COL_LONGITUDE)), cursor.getDouble(
-							cursor.getColumnIndexOrThrow(COL_ALTITUDE)), cursor.getDouble(
-							cursor.getColumnIndexOrThrow(COL_ACCURACY))));
+				if (cursor.getCount() > 0) {
+					while (!cursor.isLast()) {
+						cursor.moveToNext();
+						locationSpecs.add(new LocationSpec<CellSpec>(spec, cursor.getDouble(
+								cursor.getColumnIndexOrThrow(COL_LATITUDE)), cursor.getDouble(
+								cursor.getColumnIndexOrThrow(COL_LONGITUDE)), cursor.getDouble(
+								cursor.getColumnIndexOrThrow(COL_ALTITUDE)), cursor.getDouble(
+								cursor.getColumnIndexOrThrow(COL_ACCURACY))));
+					}
 				}
 				cursor.close();
 			}

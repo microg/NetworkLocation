@@ -53,12 +53,13 @@ public class OldFileCellLocationSource implements LocationSource<CellSpec> {
 										new String[]{Integer.toString(spec.getMcc()), Integer.toString(spec.getMnc()),
 													 Integer.toString(spec.getCid())});
 			if (cursor != null) {
-				cursor.moveToNext();
-				while (!cursor.isLast()) {
-					cursor.moveToNext();
-					locationSpecs.add(new LocationSpec<CellSpec>(spec, cursor.getDouble(
-							cursor.getColumnIndexOrThrow(COL_LATITUDE)), cursor.getDouble(
-							cursor.getColumnIndexOrThrow(COL_LONGITUDE)), 5000));
+				if (cursor.getCount() > 0) {
+					while (!cursor.isLast()) {
+						cursor.moveToNext();
+						locationSpecs.add(new LocationSpec<CellSpec>(spec, cursor.getDouble(
+								cursor.getColumnIndexOrThrow(COL_LATITUDE)), cursor.getDouble(
+								cursor.getColumnIndexOrThrow(COL_LONGITUDE)), 5000));
+					}
 				}
 				cursor.close();
 			}
