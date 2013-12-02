@@ -150,7 +150,8 @@ public class LocationCalculator {
 			LocationSpec<T> locationSpec = locationDatabase.get(spec);
 			if (locationSpec == null) {
 				locationRetriever.queueLocationRetrieval(spec);
-			} else {
+			} else if (!locationSpec.isUndefined() || ((locationSpec.getLatitude() == 0) &&
+													   (locationSpec.getLongitude() == 0))){
 				locationSpecs.add(locationSpec);
 			}
 		}
