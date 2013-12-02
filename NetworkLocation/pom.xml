@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.microg.networklocation</groupId>
     <artifactId>NetworkLocation</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <packaging>apk</packaging>
     <name>NetworkLocation</name>
 
