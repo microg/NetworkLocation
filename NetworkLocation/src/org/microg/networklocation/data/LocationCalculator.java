@@ -46,7 +46,7 @@ public class LocationCalculator {
 																			Collection<LocationSpec<T>> locClass,
 																			double accuracy) {
 		for (LocationSpec<T> spec : locClass) {
-			if ((locationSpec.distanceBetween(spec) - locationSpec.getAccuracy() - spec.getAccuracy() -
+			if ((locationSpec.distanceTo(spec) - locationSpec.getAccuracy() - spec.getAccuracy() -
 				 accuracy) < 0) {
 				return true;
 			}
@@ -57,7 +57,7 @@ public class LocationCalculator {
 	private static <T extends PropSpec> boolean locationCompatibleWithClass(Location location,
 																			Collection<LocationSpec<T>> locClass) {
 		for (LocationSpec<T> spec : locClass) {
-			if ((spec.distanceBetween(location) - location.getAccuracy() - spec.getAccuracy()) < 0) {
+			if ((spec.distanceTo(location) - location.getAccuracy() - spec.getAccuracy()) < 0) {
 				return true;
 			}
 		}
