@@ -111,7 +111,7 @@ public class LocationCalculator {
 	public Location getCurrentWifiLocation(Location cellLocation) {
 		Collection<LocationSpec<WifiSpec>> wifiLocationSpecs = getLocation(getCurrentWifis());
 
-		if (wifiLocationSpecs.size() < 2) {
+		if (wifiLocationSpecs.isEmpty() || ((cellLocation == null) && (wifiLocationSpecs.size() < 2))) {
 			return null;
 		}
 
