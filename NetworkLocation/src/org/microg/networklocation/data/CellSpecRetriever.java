@@ -42,9 +42,10 @@ public class CellSpecRetriever {
 			}
 		} else if (cellLocation instanceof CdmaCellLocation) {
 			CdmaCellLocation cdmaCellLocation = (CdmaCellLocation) cellLocation;
-			if (MainService.DEBUG) {
-				Log.d(TAG, "CDMA is currently not supported for SDK <= 16");
-			}
+			int sid = cdmaCellLocation.getSystemId(); // as mnc
+			int nid = cdmaCellLocation.getNetworkId(); // as lac
+			int bid = cdmaCellLocation.getBaseStationId(); // as cid
+			cellSpecs.add(new CellSpec(Radio.CDMA, mcc, sid, nid, bid));
 		} else {
 			if (MainService.DEBUG) {
 				Log.d(TAG, "Not connected to network or using LTE, which is not supported for SDK <= 16");
