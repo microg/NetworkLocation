@@ -2,12 +2,12 @@ package org.microg.networklocation.backends.mapquest;
 
 import android.content.Context;
 import android.location.Address;
-import android.net.ConnectivityManager;
 import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.microg.networklocation.helper.Networking;
 import org.microg.networklocation.source.GeocodeSource;
+import org.microg.networklocation.source.OnlineDataSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class NominatimGeocodeSource implements GeocodeSource {
+public class NominatimGeocodeSource extends OnlineDataSource implements GeocodeSource {
 	private static final String TAG = "NominatimGeocodeSource";
 	private static final String NAME = "MapQuest Nominatim Service";
 	private static final String DESCRIPTION = "Reverse geocode using the online service by MapQuest.";
@@ -38,12 +38,11 @@ public class NominatimGeocodeSource implements GeocodeSource {
 	private static final String WIRE_ADMINAREA = "state";
 	private static final String WIRE_COUNTRYNAME = "country";
 	private static final String WIRE_COUNTRYCODE = "country_code";
-	private final ConnectivityManager connectivityManager;
 	private final Context context;
 
 	public NominatimGeocodeSource(Context context) {
+		super(context);
 		this.context = context;
-		connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 
 	@Override
@@ -82,13 +81,6 @@ public class NominatimGeocodeSource implements GeocodeSource {
 	@Override
 	public String getName() {
 		return NAME;
-	}
-
-	@Override
-	public boolean isSourceAvailable() {
-		return (connectivityManager.getActiveNetworkInfo() != null) &&
-			   connectivityManager.getActiveNetworkInfo().isAvailable() &&
-			   connectivityManager.getActiveNetworkInfo().isConnected();
 	}
 
 	private Address parseResponse(Locale locale, JSONObject result) throws JSONException {

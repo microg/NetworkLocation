@@ -1,35 +1,30 @@
 package org.microg.networklocation.backends.apple;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.util.Log;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.data.LocationSpec;
 import org.microg.networklocation.data.MacAddress;
 import org.microg.networklocation.data.WifiSpec;
 import org.microg.networklocation.source.LocationSource;
+import org.microg.networklocation.source.OnlineDataSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
-public class AppleWifiLocationSource implements LocationSource<WifiSpec> {
+public class AppleWifiLocationSource extends OnlineDataSource implements LocationSource<WifiSpec> {
 
 	public static final float LATLON_WIRE = 1E8F;
 	private static final String TAG = "AppleWifiLocationSource";
 	private static final String NAME = "Apple Location Service";
 	private static final String DESCRIPTION = "Retrieve Wifi locations from Apple";
 	private static final String COPYRIGHT = "© Apple\nLicense: proprietary or unknown";
-	private final ConnectivityManager connectivityManager;
 	private final LocationRetriever locationRetriever = new LocationRetriever();
 
 	public AppleWifiLocationSource(Context context) {
-		this((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-	}
-
-	public AppleWifiLocationSource(ConnectivityManager connectivityManager) {
-		this.connectivityManager = connectivityManager;
+		super(context);
 	}
 
 	public static String niceMac(String mac) {
@@ -49,25 +44,18 @@ public class AppleWifiLocationSource implements LocationSource<WifiSpec> {
 	}
 
 	@Override
-	public String getDescription() {
-		return DESCRIPTION;
-	}
-
-	@Override
 	public String getCopyright() {
 		return COPYRIGHT;
 	}
 
 	@Override
-	public String getName() {
-		return NAME;
+	public String getDescription() {
+		return DESCRIPTION;
 	}
 
 	@Override
-	public boolean isSourceAvailable() {
-		return (connectivityManager.getActiveNetworkInfo() != null) &&
-			   connectivityManager.getActiveNetworkInfo().isAvailable() &&
-			   connectivityManager.getActiveNetworkInfo().isConnected();
+	public String getName() {
+		return NAME;
 	}
 
 	@Override
