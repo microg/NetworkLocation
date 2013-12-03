@@ -11,6 +11,7 @@ import org.microg.networklocation.source.GeocodeSource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class NominatimGeocodeSource implements GeocodeSource {
 	private static final String WIRE_COUNTRYNAME = "country";
 	private static final String WIRE_COUNTRYCODE = "country_code";
 	private final ConnectivityManager connectivityManager;
+	private static final String USER_AGENT_FIELD = "User-Agent";
+	private static final String USER_AGENT = "Android NetworkLocation GeocodeProvider (see https://github.com/microg/NetworkLocation)";
 
 	public NominatimGeocodeSource(ConnectivityManager connectivityManager) {
 		this.connectivityManager = connectivityManager;
@@ -55,7 +58,8 @@ public class NominatimGeocodeSource implements GeocodeSource {
 	public List<Address> getFromLocation(double lat, double lon, Locale locale) {
 		String url = String.format(REVERSE_GEOCODE_URL, locale.getLanguage(), lat, lon);
 		try {
-			URLConnection connection = new URL(url).openConnection();
+			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setRequestProperty(USER_AGENT_FIELD, USER_AGENT);
 			connection.setDoInput(true);
 			InputStream inputStream = connection.getInputStream();
 			JSONObject result = new JSONObject(new String(IOHelper.readStreamToEnd(inputStream)));
