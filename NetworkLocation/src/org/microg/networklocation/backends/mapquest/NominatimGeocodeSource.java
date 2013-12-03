@@ -6,7 +6,7 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.microg.networklocation.helper.IOHelper;
+import org.microg.networklocation.helper.Networking;
 import org.microg.networklocation.source.GeocodeSource;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class NominatimGeocodeSource implements GeocodeSource {
 	private static final String NAME = "MapQuest Nominatim Service";
 	private static final String DESCRIPTION = "Reverse geocode using the online service by MapQuest.";
 	private static final String COPYRIGHT =
-			"Nominatim Search Courtesy of MapQuest \n" + "Map data © OpenStreetMap contributors";
+			"Map data © OpenStreetMap contributors\nLicense: ODbL 1.0\nNominatim Search Courtesy of MapQuest";
 	private static final String REVERSE_GEOCODE_URL =
 			"http://open.mapquestapi.com/nominatim/v1/reverse?format=json&accept-language=%s&lat=%f&lon=%f";
 	private static final String WIRE_LATITUDE = "lat";
@@ -38,17 +38,17 @@ public class NominatimGeocodeSource implements GeocodeSource {
 	private static final String WIRE_ADMINAREA = "state";
 	private static final String WIRE_COUNTRYNAME = "country";
 	private static final String WIRE_COUNTRYCODE = "country_code";
-	private static final String USER_AGENT_FIELD = "User-Agent";
-	private static final String USER_AGENT =
-			"Android NetworkLocation GeocodeProvider (see https://github.com/microg/NetworkLocation)";
 	private final ConnectivityManager connectivityManager;
-
-	public NominatimGeocodeSource(ConnectivityManager connectivityManager) {
-		this.connectivityManager = connectivityManager;
-	}
+	private final Context context;
 
 	public NominatimGeocodeSource(Context context) {
-		this((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+		this.context = context;
+		connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	}
+
+	@Override
+	public String getCopyright() {
+		return COPYRIGHT;
 	}
 
 	@Override
@@ -61,10 +61,10 @@ public class NominatimGeocodeSource implements GeocodeSource {
 		String url = String.format(REVERSE_GEOCODE_URL, locale.getLanguage(), lat, lon);
 		try {
 			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-			connection.setRequestProperty(USER_AGENT_FIELD, USER_AGENT);
+			Networking.setUserAgentOnConnection(connection, context);
 			connection.setDoInput(true);
 			InputStream inputStream = connection.getInputStream();
-			JSONObject result = new JSONObject(new String(IOHelper.readStreamToEnd(inputStream)));
+			JSONObject result = new JSONObject(new String(Networking.readStreamToEnd(inputStream)));
 			Address address = parseResponse(locale, result);
 			if (address != null) {
 				List<Address> addresses = new ArrayList<Address>();

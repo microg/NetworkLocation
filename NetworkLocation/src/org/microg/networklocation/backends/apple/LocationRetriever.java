@@ -1,10 +1,9 @@
 package org.microg.networklocation.backends.apple;
 
 import com.squareup.wire.Wire;
-import org.microg.networklocation.helper.IOHelper;
+import org.microg.networklocation.helper.Networking;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -73,7 +72,7 @@ public class LocationRetriever {
 		out.close();
 		InputStream in = connection.getInputStream();
 		in.skip(10);
-		Response response = wire.parseFrom(IOHelper.readStreamToEnd(in), Response.class);
+		Response response = wire.parseFrom(Networking.readStreamToEnd(in), Response.class);
 		in.close();
 		return response;
 	}

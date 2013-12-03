@@ -6,8 +6,9 @@ import org.microg.networklocation.source.OnlineCellLocationRetriever;
 import org.microg.networklocation.source.OnlineCellLocationSource;
 
 public class IchnaeaCellLocationSource extends OnlineCellLocationSource {
-	private static final String NAME = "Mozilla Location Service (Ichnaea)";
+	private static final String NAME = "Mozilla Location Service";
 	private static final String DESCRIPTION = "Retrieve cell locations from Mozilla while online";
+	private static final String COPYRIGHT = "© Mozilla\nLicense: unknown";
 
 	public IchnaeaCellLocationSource(Context context) {
 		super(context, new LocationRetriever());
@@ -21,6 +22,11 @@ public class IchnaeaCellLocationSource extends OnlineCellLocationSource {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+
+	@Override
+	public String getCopyright() {
+		return COPYRIGHT;
 	}
 
 	@Override

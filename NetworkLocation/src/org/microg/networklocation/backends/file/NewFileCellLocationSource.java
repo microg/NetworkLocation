@@ -17,6 +17,7 @@ public class NewFileCellLocationSource implements LocationSource<CellSpec> {
 	private static final String TAG = "NewFileCellLocationSource";
 	private static final String NAME = "Local File Database (lacells.db)";
 	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
+	private static final String COPYRIGHT = "© unknown\nLicense: unknown";
 	private static final String COL_LATITUDE = "latitude";
 	private static final String COL_LONGITUDE = "longitude";
 	private static final String COL_ALTITUDE = "altitude";
@@ -30,6 +31,11 @@ public class NewFileCellLocationSource implements LocationSource<CellSpec> {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+
+	@Override
+	public String getCopyright() {
+		return COPYRIGHT;
 	}
 
 	@Override

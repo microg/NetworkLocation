@@ -20,6 +20,7 @@ public class AppleWifiLocationSource implements LocationSource<WifiSpec> {
 	private static final String TAG = "AppleWifiLocationSource";
 	private static final String NAME = "Apple Location Service";
 	private static final String DESCRIPTION = "Retrieve Wifi locations from Apple";
+	private static final String COPYRIGHT = "© Apple\nLicense: proprietary or unknown";
 	private final ConnectivityManager connectivityManager;
 	private final LocationRetriever locationRetriever = new LocationRetriever();
 
@@ -50,6 +51,11 @@ public class AppleWifiLocationSource implements LocationSource<WifiSpec> {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+
+	@Override
+	public String getCopyright() {
+		return COPYRIGHT;
 	}
 
 	@Override

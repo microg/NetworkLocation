@@ -8,6 +8,7 @@ public class OpenCellIdLocationSource extends OnlineCellLocationSource {
 
 	private static final String NAME = "opencellid.org";
 	private static final String DESCRIPTION = "Retrieve cell locations from opencellid.org when online";
+	private static final String COPYRIGHT = "© OpenCellID.org\nLicense: CC BY-SA 3.0";
 
 	public OpenCellIdLocationSource(Context context) {
 		super(context, new LocationRetriever());
@@ -20,6 +21,11 @@ public class OpenCellIdLocationSource extends OnlineCellLocationSource {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+
+	@Override
+	public String getCopyright() {
+		return COPYRIGHT;
 	}
 
 	@Override

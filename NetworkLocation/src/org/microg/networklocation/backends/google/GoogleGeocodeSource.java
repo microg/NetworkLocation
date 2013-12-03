@@ -21,6 +21,7 @@ public class GoogleGeocodeSource implements GeocodeSource, ContentHandler {
 	private static final String TAG = "GoogleGeocodeSource";
 	private static final String NAME = "Google Maps Geocode API";
 	private static final String DESCRIPTION = "Use Google Maps to get address from location";
+	private static final String COPYRIGHT = "© Google";
 
 	private Address addr = null;
 	private List<Address> addrs = null;
@@ -206,6 +207,11 @@ public class GoogleGeocodeSource implements GeocodeSource, ContentHandler {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+
+	@Override
+	public String getCopyright() {
+		return COPYRIGHT;
 	}
 
 	@Override

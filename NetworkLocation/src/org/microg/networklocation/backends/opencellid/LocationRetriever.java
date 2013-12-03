@@ -1,6 +1,6 @@
 package org.microg.networklocation.backends.opencellid;
 
-import org.microg.networklocation.helper.IOHelper;
+import org.microg.networklocation.helper.Networking;
 import org.microg.networklocation.source.OnlineCellLocationRetriever;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class LocationRetriever implements OnlineCellLocationRetriever {
 			URLConnection urlConnection = url.openConnection();
 			urlConnection.setDoInput(true);
 			InputStream inputStream = urlConnection.getInputStream();
-			String result = new String(IOHelper.readStreamToEnd(inputStream));
+			String result = new String(Networking.readStreamToEnd(inputStream));
 			String[] split = result.split(",");
 			return new Response(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Float.parseFloat(split[2]));
 		} catch (IOException e) {

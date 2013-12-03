@@ -17,12 +17,18 @@ public class OldFileCellLocationSource implements LocationSource<CellSpec> {
 	private static final String TAG = "OldFileCellLocationSource";
 	private static final String NAME = "Local File Database (cells.db)";
 	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
+	private static final String COPYRIGHT = "© unknown\nLicense: unknown";
 	private static final String COL_LATITUDE = "lat";
 	private static final String COL_LONGITUDE = "lon";
 	private final File dbFile;
 
 	public OldFileCellLocationSource(final File dbFile) {
 		this.dbFile = dbFile;
+	}
+
+	@Override
+	public String getCopyright() {
+		return COPYRIGHT;
 	}
 
 	@Override
