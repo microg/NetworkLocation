@@ -1,4 +1,4 @@
-package org.microg.networklocation.provider;
+package org.microg.networklocation.versioned;
 
 import android.location.Criteria;
 import android.location.Location;
@@ -11,6 +11,7 @@ import internal.com.android.location.provider.LocationProvider;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.LocationCalculator;
+import org.microg.networklocation.provider.NetworkLocationProviderBase;
 
 public class NetworkLocationProvider extends LocationProvider implements NetworkLocationProviderBase {
 

@@ -21,12 +21,14 @@ import org.microg.networklocation.data.*;
 import org.microg.networklocation.database.LocationDatabase;
 import org.microg.networklocation.helper.Reflected;
 import org.microg.networklocation.provider.GeocodeProvider;
-import org.microg.networklocation.provider.NetworkLocationProvider;
+import org.microg.networklocation.versioned.NetworkLocationProvider;
 import org.microg.networklocation.provider.NetworkLocationProviderBase;
-import org.microg.networklocation.provider.NetworkLocationProviderV2;
+import org.microg.networklocation.versioned.NetworkLocationProviderV2;
 import org.microg.networklocation.backends.file.OldFileCellLocationSource;
 import org.microg.networklocation.source.GeocodeSource;
 import org.microg.networklocation.source.LocationSource;
+import org.microg.networklocation.versioned.CellSpecRetriever;
+import org.microg.networklocation.versioned.WifiSpecRetriever;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package org.microg.networklocation.data;
 
-enum Radio {
+public enum Radio {
 	GSM, UMTS, CDMA, LTE;
 	private static final String UNKNOWN_RADIO_TYPE = "Unknown radio type!";
 

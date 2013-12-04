@@ -1,10 +1,12 @@
-package org.microg.networklocation.data;
+package org.microg.networklocation.versioned;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import org.microg.networklocation.MainService;
+import org.microg.networklocation.data.MacAddress;
+import org.microg.networklocation.data.WifiSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;

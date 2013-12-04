@@ -1,4 +1,4 @@
-package org.microg.networklocation.data;
+package org.microg.networklocation.versioned;
 
 import android.content.Context;
 import android.os.Build;
@@ -9,6 +9,8 @@ import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import org.microg.networklocation.MainService;
+import org.microg.networklocation.data.CellSpec;
+import org.microg.networklocation.data.Radio;
 
 import java.util.ArrayList;
 import java.util.Collection;

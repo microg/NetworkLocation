@@ -1,4 +1,4 @@
-package org.microg.networklocation.provider;
+package org.microg.networklocation.versioned;
 
 import android.annotation.TargetApi;
 import android.location.Criteria;
@@ -15,6 +15,7 @@ import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.helper.Reflected;
+import org.microg.networklocation.provider.NetworkLocationProviderBase;
 
 @TargetApi(17)
 public class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkLocationProviderBase {
