@@ -4,6 +4,7 @@ import android.location.Address;
 import android.location.GeocoderParams;
 import android.util.Log;
 import org.microg.networklocation.MainService;
+import org.microg.networklocation.database.GeocodeDatabase;
 import org.microg.networklocation.source.GeocodeSource;
 
 import java.util.ArrayList;
@@ -12,14 +13,20 @@ import java.util.List;
 public class GeocodeProvider extends internal.com.android.location.provider.GeocodeProvider {
 	private static final String TAG = "LocationGeocodeProvider";
 	private static final String UNKNOWN_RESULT_ERROR = "unknown";
+	private GeocodeDatabase geocodeDatabase;
 	private List<GeocodeSource> sources;
 
 	@Override
 	public String onGetFromLocation(double latitude, double longitude, int maxResults, GeocoderParams params,
 									List<Address> addrs) {
+		List<Address> addresses = geocodeDatabase.get(latitude, longitude);
+		if ((addresses != null) && !addresses.isEmpty()) {
+			// database hit
+			addrs.addAll(addresses);
+			return null;
+		}
 		for (GeocodeSource source : sources) {
 			if (source.isSourceAvailable()) {
-				List<Address> addresses = null;
 				try {
 					addresses =
 							source.getFromLocation(latitude, longitude, params.getClientPackage(), params.getLocale());
@@ -27,6 +34,7 @@ public class GeocodeProvider extends internal.com.android.location.provider.Geoc
 					Log.w(TAG, source.getName() + " throws exception!", t);
 				}
 				if ((addresses != null) && !addresses.isEmpty()) {
+					geocodeDatabase.put(latitude, longitude, addresses);
 					addrs.addAll(addresses);
 					if (MainService.DEBUG) {
 						Log.d(TAG, latitude + "/" + longitude + " reverse geolocated to:" + addrs.get(0));
@@ -45,16 +53,23 @@ public class GeocodeProvider extends internal.com.android.location.provider.Geoc
 	public String onGetFromLocationName(String locationName, double lowerLeftLatitude, double lowerLeftLongitude,
 										double upperRightLatitude, double upperRightLongitude, int maxResults,
 										GeocoderParams params, List<Address> addrs) {
+		List<Address> addresses = geocodeDatabase.get(locationName);
+		if ((addresses != null) && !addresses.isEmpty()) {
+			// database hit
+			addrs.addAll(addresses);
+			return null;
+		}
 		for (GeocodeSource source : sources) {
 			if (source.isSourceAvailable()) {
-				List<Address> addresses = null;
 				try {
-					addresses =
-							source.getFromLocationName(locationName, lowerLeftLatitude, lowerLeftLongitude, upperRightLatitude, upperRightLongitude, params.getClientPackage(), params.getLocale());
+					addresses = source.getFromLocationName(locationName, lowerLeftLatitude, lowerLeftLongitude,
+														   upperRightLatitude, upperRightLongitude,
+														   params.getClientPackage(), params.getLocale());
 				} catch (Throwable t) {
 					Log.w(TAG, source.getName() + " throws exception!", t);
 				}
 				if ((addresses != null) && !addresses.isEmpty()) {
+					geocodeDatabase.put(locationName, addresses);
 					addrs.addAll(addresses);
 					if (MainService.DEBUG) {
 						Log.d(TAG, locationName + " forward geolocated to:" + addrs.get(0));

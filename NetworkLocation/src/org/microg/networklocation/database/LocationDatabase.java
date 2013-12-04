@@ -8,7 +8,7 @@ import org.microg.networklocation.data.LocationSpec;
 import org.microg.networklocation.data.PropSpec;
 
 public class LocationDatabase {
-	private static final String TAG = "v2LocationDatabase";
+	private static final String TAG = "LocationDatabase";
 	private static final String FILE_NAME = "v2loc.db";
 	private static final int DB_VERSION = 1;
 	private static final String COL_IDENT = "ident";
@@ -21,7 +21,9 @@ public class LocationDatabase {
 	private static final String CREATE_TABLE =
 			"CREATE TABLE " + TABLE_LOCATION + "(" + COL_IDENT + " BLOB PRIMARY KEY, " + COL_LATITUDE + " REAL, " +
 			COL_LONGITUDE + " REAL, " + COL_ALTITUDE + " REAL, " + COL_ACCURACY + " REAL, " + COL_BOOLS + " INTEGER)";
-	private static final String INSERT_INTO = "INSERT INTO "+TABLE_LOCATION+"("+COL_IDENT+","+COL_LATITUDE+","+COL_LONGITUDE+","+COL_ALTITUDE+","+COL_ACCURACY+","+COL_BOOLS+") VALUES(?,?,?,?,?,?)";
+	private static final String INSERT_INTO =
+			"INSERT INTO " + TABLE_LOCATION + "(" + COL_IDENT + "," + COL_LATITUDE + "," + COL_LONGITUDE + "," +
+			COL_ALTITUDE + "," + COL_ACCURACY + "," + COL_BOOLS + ") VALUES(?,?,?,?,?,?)";
 	private static final String[] DEFAULT_QUERY_SELECT =
 			{COL_LATITUDE, COL_LONGITUDE, COL_ALTITUDE, COL_ACCURACY, COL_BOOLS};
 	private OpenHelper openHelper;
@@ -61,11 +63,6 @@ public class LocationDatabase {
 		return new LocationSpec<T>(latitude, longitude, altitude, accuracy, bools);
 	}
 
-	public <T extends PropSpec> void put(LocationSpec<T> locationSpec) {
-		// TODO update if exists!
-		insert(locationSpec.getSource().getIdentBlob(), locationSpec);
-	}
-
 	private <T extends PropSpec> void insert(byte[] identBlob, LocationSpec<T> locationSpec) {
 		SQLiteStatement statement = openHelper.getWritableDatabase().compileStatement(INSERT_INTO);
 		statement.bindBlob(1, identBlob);
@@ -79,6 +76,11 @@ public class LocationDatabase {
 		} catch (Exception e) {
 			Log.w(TAG, e);
 		}
+	}
+
+	public <T extends PropSpec> void put(LocationSpec<T> locationSpec) {
+		// TODO update if exists!
+		insert(locationSpec.getSource().getIdentBlob(), locationSpec);
 	}
 
 	private class OpenHelper extends SQLiteOpenHelper {
