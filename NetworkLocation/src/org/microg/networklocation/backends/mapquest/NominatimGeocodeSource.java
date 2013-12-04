@@ -56,8 +56,8 @@ public class NominatimGeocodeSource extends OnlineDataSource implements GeocodeS
 	}
 
 	@Override
-	public List<Address> getFromLocation(double lat, double lon, Locale locale) {
-		String url = String.format(REVERSE_GEOCODE_URL, locale.getLanguage(), lat, lon);
+	public List<Address> getFromLocation(double latitude, double longitude, String sourcePackage, Locale locale) {
+		String url = String.format(REVERSE_GEOCODE_URL, locale.getLanguage(), latitude, longitude);
 		try {
 			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 			Networking.setUserAgentOnConnection(connection, context);
@@ -76,6 +76,13 @@ public class NominatimGeocodeSource extends OnlineDataSource implements GeocodeS
 			Log.w(TAG, e);
 		}
 		return null;
+	}
+
+	@Override
+	public List<Address> getFromLocationName(String locationName, double lowerLeftLatitude, double lowerLeftLongitude,
+											 double upperRightLatitude, double upperRightLongitude,
+											 String sourcePackage, Locale locale) {
+		return null; //TODO: Implement
 	}
 
 	@Override

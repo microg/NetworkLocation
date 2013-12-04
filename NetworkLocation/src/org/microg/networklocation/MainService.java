@@ -115,7 +115,8 @@ public class MainService extends Service {
 		} else {
 			nlprovider = new NetworkLocationProviderV2();
 		}
-		WifiSpecRetriever wifiSpecRetriever = new WifiSpecRetriever(wifiManager);
+		geoprovider = new GeocodeProvider();
+		WifiSpecRetriever wifiSpecRetriever = new WifiSpecRetriever(context);
 		CellSpecRetriever cellSpecRetriever = new CellSpecRetriever(context);
 		LocationDatabase locationDatabase = new LocationDatabase(context);
 		locationRetriever = new LocationRetriever(locationDatabase);
@@ -138,7 +139,7 @@ public class MainService extends Service {
 
 		List<GeocodeSource> geocodeSources = new ArrayList<GeocodeSource>();
 		geocodeSources.add(new NominatimGeocodeSource(context));
-		geoprovider = new GeocodeProvider(geocodeSources);
+		geoprovider.setSources(geocodeSources);
 
 		registerReceiver(airplaneModeReceiver, new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED));
 		updateProviderStateOnAirplaneMode();

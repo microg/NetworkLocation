@@ -14,6 +14,8 @@ public class IchnaeaCellLocationSource extends OnlineDataSource implements Locat
 	private static final String DESCRIPTION = "Retrieve cell locations from Mozilla while online";
 	private static final String COPYRIGHT = "© Mozilla\nLicense: unknown";
 
+	private static final String SEARCH_URL = "https://location.services.mozilla.com/v1/search";
+
 	public IchnaeaCellLocationSource(Context context) {
 		super(context);
 	}
