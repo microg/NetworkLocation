@@ -1,6 +1,8 @@
 package org.microg.networklocation.database;
 
 import android.location.Address;
+import android.util.Log;
+import org.microg.networklocation.MainService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Map;
  * This provides basic caching capabilities until the real database is ready.
  */
 public class GeocodeDatabase {
+	private static final String TAG = "GeocodeDatabase";
 	private Map<Long, List<Address>> intDb = new HashMap<Long, List<Address>>();
 	private Map<String, List<Address>> stringDb = new HashMap<String, List<Address>>();
 
@@ -22,18 +25,44 @@ public class GeocodeDatabase {
 	}
 
 	public List<Address> get(String locationName) {
-		return stringDb.get(locationName);
+		try {
+			return stringDb.get(locationName);
+		} catch (Throwable t) {
+			if (MainService.DEBUG) {
+				Log.w(TAG, t);
+			}
+			return null;
+		}
 	}
 
 	public List<Address> get(double latitude, double longitude) {
-		return intDb.get(dbIdent(latitude, longitude));
+		try {
+			return intDb.get(dbIdent(latitude, longitude));
+		} catch (Throwable t) {
+			if (MainService.DEBUG) {
+				Log.w(TAG, t);
+			}
+			return null;
+		}
 	}
 
 	public void put(double latitude, double longitude, List<Address> addresses) {
-		intDb.put(dbIdent(latitude, longitude), addresses);
+		try {
+			intDb.put(dbIdent(latitude, longitude), addresses);
+		} catch (Throwable t) {
+			if (MainService.DEBUG) {
+				Log.w(TAG, t);
+			}
+		}
 	}
 
 	public void put(String locationName, List<Address> addresses) {
-		stringDb.put(locationName, addresses);
+		try {
+			stringDb.put(locationName, addresses);
+		} catch (Throwable t) {
+			if (MainService.DEBUG) {
+				Log.w(TAG, t);
+			}
+		}
 	}
 }

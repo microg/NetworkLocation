@@ -22,6 +22,7 @@ import org.microg.networklocation.data.CellSpec;
 import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.data.LocationRetriever;
 import org.microg.networklocation.data.WifiSpec;
+import org.microg.networklocation.database.GeocodeDatabase;
 import org.microg.networklocation.database.LocationDatabase;
 import org.microg.networklocation.helper.Reflected;
 import org.microg.networklocation.platform.PlatformFactory;
@@ -118,6 +119,8 @@ public class MainService extends Service {
 		wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 		nlprovider = PlatformFactory.newNetworkLocationProvider();
 		geoprovider = PlatformFactory.newGeocodeProvider();
+		GeocodeDatabase geocodeDatabase = new GeocodeDatabase();
+		geoprovider.setGeocodeDatabase(geocodeDatabase);
 		WifiSpecRetriever wifiSpecRetriever = PlatformFactory.newWifiSpecRetriever(context);
 		CellSpecRetriever cellSpecRetriever = PlatformFactory.newCellSpecRetriever(context);
 		LocationDatabase locationDatabase = new LocationDatabase(context);

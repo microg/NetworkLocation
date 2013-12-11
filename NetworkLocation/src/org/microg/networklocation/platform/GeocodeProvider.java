@@ -18,16 +18,33 @@ class GeocodeProvider extends internal.com.android.location.provider.GeocodeProv
 	private List<GeocodeSource> sources;
 
 	@Override
+	public void setGeocodeDatabase(GeocodeDatabase geocodeDatabase) {
+		this.geocodeDatabase = geocodeDatabase;
+	}
+
+	@Override
 	public String onGetFromLocation(double latitude, double longitude, int maxResults, GeocoderParams params,
 									List<Address> addrs) {
-		List<Address> addresses = geocodeDatabase.get(latitude, longitude);
+		if (MainService.DEBUG) {
+			Log.d(TAG, "Reverse request: " + latitude + "/" + longitude);
+		}
+		List<Address> addresses = null;
+		if (geocodeDatabase != null) {
+			addresses = geocodeDatabase.get(latitude, longitude);
+		}
 		if ((addresses != null) && !addresses.isEmpty()) {
 			// database hit
+			if (MainService.DEBUG) {
+				Log.d(TAG, "Using database entry: " + addrs.get(0));
+			}
 			addrs.addAll(addresses);
 			return null;
 		}
 		for (GeocodeSource source : sources) {
 			if (source.isSourceAvailable()) {
+				if (MainService.DEBUG) {
+					Log.d(TAG, "Try reverse using: " + source.getName());
+				}
 				try {
 					addresses =
 							source.getFromLocation(latitude, longitude, params.getClientPackage(), params.getLocale());
@@ -54,6 +71,9 @@ class GeocodeProvider extends internal.com.android.location.provider.GeocodeProv
 	public String onGetFromLocationName(String locationName, double lowerLeftLatitude, double lowerLeftLongitude,
 										double upperRightLatitude, double upperRightLongitude, int maxResults,
 										GeocoderParams params, List<Address> addrs) {
+		if (MainService.DEBUG) {
+			Log.d(TAG, "Forward request: " + locationName);
+		}
 		List<Address> addresses = geocodeDatabase.get(locationName);
 		if ((addresses != null) && !addresses.isEmpty()) {
 			// database hit
