@@ -1,4 +1,4 @@
-package org.microg.networklocation.versioned;
+package org.microg.networklocation.platform;
 
 import android.annotation.TargetApi;
 import android.location.Criteria;
@@ -15,10 +15,10 @@ import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.helper.Reflected;
-import org.microg.networklocation.provider.NetworkLocationProviderBase;
 
 @TargetApi(17)
-public class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkLocationProviderBase {
+class NetworkLocationProviderV2 extends LocationProviderBase implements
+																	org.microg.networklocation.provider.NetworkLocationProvider {
 
 	private final static String IDENTIFIER = "network";
 	private static final String TAG = "NetworkLocationProviderV2";
@@ -38,7 +38,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 
 	@Override
 	public synchronized void disable() {
-		background.setLocationListener(null);
+		background.setLocationProvider(null);
 		background.disable();
 		enabledByService = false;
 	}
@@ -53,7 +53,7 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 	private void enableBackground() {
 		background.disable();
 		background = new NetworkLocationThread(background);
-		background.setLocationListener(this);
+		background.setLocationProvider(this);
 		background.start();
 	}
 
@@ -97,15 +97,6 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 			reportLocation(location);
 		}
 	}
-
-	@Override
-	public void onProviderDisabled(final String provider) {
-	}
-
-	@Override
-	public void onProviderEnabled(final String provider) {
-	}
-
 	@Override
 	public void onSetRequest(final ProviderRequestUnbundled requests, final WorkSource ws) {
 		long autoTime = Long.MAX_VALUE;
@@ -120,10 +111,6 @@ public class NetworkLocationProviderV2 extends LocationProviderBase implements N
 			autoTime = 5000;
 		}
 		background.setAuto(autoUpdate, autoTime);
-	}
-
-	@Override
-	public void onStatusChanged(final String provider, final int status, final Bundle extras) {
 	}
 
 	@Override

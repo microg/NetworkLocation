@@ -1,7 +1,8 @@
-package org.microg.networklocation.versioned;
+package org.microg.networklocation.platform;
 
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -11,9 +12,9 @@ import internal.com.android.location.provider.LocationProvider;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.LocationCalculator;
-import org.microg.networklocation.provider.NetworkLocationProviderBase;
 
-public class NetworkLocationProvider extends LocationProvider implements NetworkLocationProviderBase {
+class NetworkLocationProvider extends LocationProvider
+		implements org.microg.networklocation.provider.NetworkLocationProvider {
 
 	private static final String IDENTIFIER = "network";
 	private static final String TAG = "NetworkLocationProvider";
@@ -41,7 +42,7 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 
 	@Override
 	public synchronized void disable() {
-		background.setLocationListener(null);
+		background.setLocationProvider(null);
 		background.disable();
 		enabledByService = false;
 	}
@@ -56,7 +57,7 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 	private void enableBackground() {
 		background.disable();
 		background = new NetworkLocationThread(background);
-		background.setLocationListener(this);
+		background.setLocationProvider(this);
 		background.start();
 	}
 
@@ -151,14 +152,6 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 	}
 
 	@Override
-	public void onProviderDisabled(final String provider) {
-	}
-
-	@Override
-	public void onProviderEnabled(final String provider) {
-	}
-
-	@Override
 	public void onRemoveListener(final int uid, final WorkSource ws) {
 	}
 
@@ -186,10 +179,6 @@ public class NetworkLocationProvider extends LocationProvider implements Network
 	public void onSetMinTime(final long minTime, final WorkSource ws) {
 		autoTime = minTime;
 		background.setAuto(autoUpdate, autoTime);
-	}
-
-	@Override
-	public void onStatusChanged(final String provider, final int status, final Bundle extras) {
 	}
 
 	@Override

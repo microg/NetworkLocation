@@ -1,4 +1,4 @@
-package org.microg.networklocation.versioned;
+package org.microg.networklocation.platform;
 
 import android.content.Context;
 import android.os.Build;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CellSpecRetriever {
+class CellSpecRetriever implements org.microg.networklocation.retriever.CellSpecRetriever {
 	private static final String TAG = "CellSpecRetriever";
 	private TelephonyManager telephonyManager;
 

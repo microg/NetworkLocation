@@ -14,21 +14,23 @@ import android.provider.Settings;
 import android.util.Log;
 import org.microg.networklocation.backends.apple.AppleWifiLocationSource;
 import org.microg.networklocation.backends.file.NewFileCellLocationSource;
+import org.microg.networklocation.backends.file.OldFileCellLocationSource;
+import org.microg.networklocation.backends.mapquest.NominatimGeocodeSource;
 import org.microg.networklocation.backends.mozilla.IchnaeaCellLocationSource;
 import org.microg.networklocation.backends.opencellid.OpenCellIdLocationSource;
-import org.microg.networklocation.backends.mapquest.NominatimGeocodeSource;
-import org.microg.networklocation.data.*;
+import org.microg.networklocation.data.CellSpec;
+import org.microg.networklocation.data.LocationCalculator;
+import org.microg.networklocation.data.LocationRetriever;
+import org.microg.networklocation.data.WifiSpec;
 import org.microg.networklocation.database.LocationDatabase;
 import org.microg.networklocation.helper.Reflected;
+import org.microg.networklocation.platform.PlatformFactory;
 import org.microg.networklocation.provider.GeocodeProvider;
-import org.microg.networklocation.versioned.NetworkLocationProvider;
-import org.microg.networklocation.provider.NetworkLocationProviderBase;
-import org.microg.networklocation.versioned.NetworkLocationProviderV2;
-import org.microg.networklocation.backends.file.OldFileCellLocationSource;
+import org.microg.networklocation.provider.NetworkLocationProvider;
+import org.microg.networklocation.retriever.CellSpecRetriever;
+import org.microg.networklocation.retriever.WifiSpecRetriever;
 import org.microg.networklocation.source.GeocodeSource;
 import org.microg.networklocation.source.LocationSource;
-import org.microg.networklocation.versioned.CellSpecRetriever;
-import org.microg.networklocation.versioned.WifiSpecRetriever;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,15 +38,17 @@ import java.util.List;
 
 public class MainService extends Service {
 	public static final boolean DEBUG;
+
 	static {
 		DEBUG = Log.isLoggable("nlp", Log.DEBUG);
 	}
+
 	private static final String TAG = "NetworkLocationService";
 	private static Context context;
 	private LocationCalculator locationCalculator;
 	private LocationRetriever locationRetriever;
 	private GeocodeProvider geoprovider;
-	private NetworkLocationProviderBase nlprovider;
+	private NetworkLocationProvider nlprovider;
 	private WifiManager wifiManager;
 	private BroadcastReceiver airplaneModeReceiver = new BroadcastReceiver() {
 		@Override
@@ -112,18 +116,14 @@ public class MainService extends Service {
 			Log.d(TAG, "Creating Service");
 		}
 		wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-			nlprovider = new NetworkLocationProvider();
-		} else {
-			nlprovider = new NetworkLocationProviderV2();
-		}
-		geoprovider = new GeocodeProvider();
-		WifiSpecRetriever wifiSpecRetriever = new WifiSpecRetriever(context);
-		CellSpecRetriever cellSpecRetriever = new CellSpecRetriever(context);
+		nlprovider = PlatformFactory.newNetworkLocationProvider();
+		geoprovider = PlatformFactory.newGeocodeProvider();
+		WifiSpecRetriever wifiSpecRetriever = PlatformFactory.newWifiSpecRetriever(context);
+		CellSpecRetriever cellSpecRetriever = PlatformFactory.newCellSpecRetriever(context);
 		LocationDatabase locationDatabase = new LocationDatabase(context);
 		locationRetriever = new LocationRetriever(locationDatabase);
-		locationCalculator = new LocationCalculator(locationDatabase, locationRetriever, cellSpecRetriever,
-													wifiSpecRetriever);
+		locationCalculator =
+				new LocationCalculator(locationDatabase, locationRetriever, cellSpecRetriever, wifiSpecRetriever);
 		nlprovider.setCalculator(locationCalculator);
 
 		List<LocationSource<WifiSpec>> wifiSources = new ArrayList<LocationSource<WifiSpec>>();
@@ -131,8 +131,10 @@ public class MainService extends Service {
 		locationRetriever.setWifiLocationSources(wifiSources);
 
 		List<LocationSource<CellSpec>> cellSources = new ArrayList<LocationSource<CellSpec>>();
-		cellSources.add(new NewFileCellLocationSource(new File(Environment.getExternalStorageDirectory(), ".nogapps/lacells.db")));
-		cellSources.add(new OldFileCellLocationSource(new File(Environment.getExternalStorageDirectory(), ".nogapps/cells.db")));
+		cellSources.add(new NewFileCellLocationSource(
+				new File(Environment.getExternalStorageDirectory(), ".nogapps/lacells.db")));
+		cellSources.add(new OldFileCellLocationSource(
+				new File(Environment.getExternalStorageDirectory(), ".nogapps/cells.db")));
 		cellSources.add(new OpenCellIdLocationSource(context));
 		cellSources.add(new IchnaeaCellLocationSource(context));
 		locationRetriever.setCellLocationSources(cellSources);

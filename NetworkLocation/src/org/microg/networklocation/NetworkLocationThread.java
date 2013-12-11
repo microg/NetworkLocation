@@ -5,6 +5,7 @@ import android.location.LocationListener;
 import android.os.SystemClock;
 import android.util.Log;
 import org.microg.networklocation.data.LocationCalculator;
+import org.microg.networklocation.provider.NetworkLocationProvider;
 
 public class NetworkLocationThread extends Thread {
 
@@ -15,7 +16,7 @@ public class NetworkLocationThread extends Thread {
 	private boolean forceUpdate;
 	private boolean enabled;
 	private Location lastLocation;
-	private LocationListener locationListener;
+	private NetworkLocationProvider locationProvider;
 	private long lastTime;
 
 	public NetworkLocationThread() {
@@ -114,10 +115,10 @@ public class NetworkLocationThread extends Thread {
 					forceUpdate = false;
 				}
 				lastTime = SystemClock.elapsedRealtime();
-				if (locationListener != null) {
+				if (locationProvider != null) {
 					if (MainService.DEBUG)
 						Log.d(TAG, "Now requesting \\o/");
-					locationListener.onLocationChanged(calculator.getCurrentLocation());
+					locationProvider.onLocationChanged(calculator.getCurrentLocation());
 				}
 			} else {
 				if (MainService.DEBUG)
@@ -145,7 +146,7 @@ public class NetworkLocationThread extends Thread {
 		lastLocation = location;
 	}
 
-	public void setLocationListener(LocationListener locationListener) {
-		this.locationListener = locationListener;
+	public void setLocationProvider(NetworkLocationProvider locationProvider) {
+		this.locationProvider = locationProvider;
 	}
 }

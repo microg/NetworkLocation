@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.database.LocationDatabase;
-import org.microg.networklocation.versioned.CellSpecRetriever;
-import org.microg.networklocation.versioned.WifiSpecRetriever;
+import org.microg.networklocation.retriever.CellSpecRetriever;
+import org.microg.networklocation.retriever.WifiSpecRetriever;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package org.microg.networklocation.versioned;
+package org.microg.networklocation.platform;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
@@ -11,7 +11,7 @@ import org.microg.networklocation.data.WifiSpec;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class WifiSpecRetriever {
+class WifiSpecRetriever implements org.microg.networklocation.retriever.WifiSpecRetriever {
 	private static final String TAG = "WifiSpecRetriever";
 	private final WifiManager wifiManager;
 
