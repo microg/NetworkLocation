@@ -41,12 +41,13 @@ public class LocationDatabase {
 	}
 
 	private <T extends PropSpec> LocationSpec<T> get(final byte[] identBlob) {
-		Cursor cursor = openHelper.getReadableDatabase().queryWithFactory(new SQLiteDatabase.CursorFactory() {
+		final SQLiteDatabase db = openHelper.getReadableDatabase();
+		Cursor cursor = db.queryWithFactory(new SQLiteDatabase.CursorFactory() {
 			@Override
 			public Cursor newCursor(SQLiteDatabase database, SQLiteCursorDriver sqLiteCursorDriver, String s,
 									SQLiteQuery sqLiteQuery) {
 				sqLiteQuery.bindBlob(1, identBlob);
-				return new SQLiteCursor(sqLiteCursorDriver, s, sqLiteQuery);
+				return new SQLiteCursor(db, sqLiteCursorDriver, s, sqLiteQuery);
 			}
 		}, false, TABLE_LOCATION, DEFAULT_QUERY_SELECT, COL_IDENT + "=?", null, null, null, null, null);
 		if (cursor.isAfterLast()) {

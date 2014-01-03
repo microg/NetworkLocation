@@ -152,7 +152,7 @@ public class LocationRetriever {
 						break;
 					}
 				} catch (Throwable t) {
-					Log.d(TAG, locationSource + " caused problem!", t);
+					Log.d(TAG, locationSource.getName() + " caused problem!", t);
 				}
 			} else if (MainService.DEBUG) {
 				Log.d(TAG, locationSource.getName() + " is currently not available");

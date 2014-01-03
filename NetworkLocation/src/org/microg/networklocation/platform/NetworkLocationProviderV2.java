@@ -3,6 +3,7 @@ package org.microg.networklocation.platform;
 import android.annotation.TargetApi;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.WorkSource;
@@ -15,20 +16,22 @@ import org.microg.networklocation.MainService;
 import org.microg.networklocation.NetworkLocationThread;
 import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.helper.Reflected;
+import org.microg.networklocation.provider.NetworkLocationProvider;
 
 @TargetApi(17)
-class NetworkLocationProviderV2 extends LocationProviderBase implements
-																	org.microg.networklocation.provider.NetworkLocationProvider {
+class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkLocationProvider {
 
 	private final static String IDENTIFIER = "network";
 	private static final String TAG = "NetworkLocationProviderV2";
+	private static final int MIN_AUTO_TIME = 5000;
 	private NetworkLocationThread background = new NetworkLocationThread();
 	private boolean enabledByService = false;
 	private boolean enabledBySetting = false;
 
 	public NetworkLocationProviderV2() {
+		// Note: Also this is a coarse location provider we propagate it as fine, because Google does it the same way.
 		super(TAG, ProviderPropertiesUnbundled
-				.create(false, false, false, false, false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_COARSE));
+				.create(false, false, false, false, false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_FINE));
 	}
 
 	@Deprecated
@@ -59,7 +62,7 @@ class NetworkLocationProviderV2 extends LocationProviderBase implements
 
 	@Override
 	public boolean isActive() {
-		return background != null && background.isAlive() && background.isActive();
+		return (background != null) && background.isAlive() && background.isActive();
 	}
 
 	@Override
@@ -77,7 +80,7 @@ class NetworkLocationProviderV2 extends LocationProviderBase implements
 
 	@Override
 	public int onGetStatus(final Bundle arg0) {
-		return android.location.LocationProvider.AVAILABLE;
+		return LocationProvider.AVAILABLE;
 	}
 
 	@Override
@@ -97,6 +100,7 @@ class NetworkLocationProviderV2 extends LocationProviderBase implements
 			reportLocation(location);
 		}
 	}
+
 	@Override
 	public void onSetRequest(final ProviderRequestUnbundled requests, final WorkSource ws) {
 		long autoTime = Long.MAX_VALUE;
@@ -107,8 +111,8 @@ class NetworkLocationProviderV2 extends LocationProviderBase implements
 			}
 			autoUpdate = true;
 		}
-		if (autoTime < 5000) {
-			autoTime = 5000;
+		if (autoTime < MIN_AUTO_TIME) {
+			autoTime = MIN_AUTO_TIME;
 		}
 		background.setAuto(autoUpdate, autoTime);
 	}

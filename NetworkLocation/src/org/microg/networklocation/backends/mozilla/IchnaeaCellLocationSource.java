@@ -43,4 +43,9 @@ public class IchnaeaCellLocationSource extends OnlineDataSource implements Locat
 	public Collection<LocationSpec<CellSpec>> retrieveLocation(Collection<CellSpec> specs) {
 		return null; //TODO: Implement
 	}
+
+	@Override
+	public boolean isSourceAvailable() {
+		return false; // TODO: until stuff is done
+	}
 }
