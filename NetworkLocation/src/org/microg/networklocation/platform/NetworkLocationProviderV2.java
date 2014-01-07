@@ -29,9 +29,9 @@ class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkL
 	private boolean enabledBySetting = false;
 
 	public NetworkLocationProviderV2() {
-		// Note: Also this is a coarse location provider we propagate it as fine, because Google does it the same way.
+		// Note: Also this does not totally reflect how we work, we use the same Properties as Google's Provider for compatibility reasons
 		super(TAG, ProviderPropertiesUnbundled
-				.create(false, false, false, false, false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_FINE));
+				.create(true, false, true, false, false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_FINE));
 	}
 
 	@Deprecated
@@ -94,6 +94,7 @@ class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkL
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
 			Reflected.androidLocationLocationMakeComplete(location);
+			Reflected.androidLocationLocationSetExtraLocation(location, "noGPSLocation", new Location(location));
 			if (MainService.DEBUG) {
 				Log.d(TAG, "Reporting: " + location);
 			}

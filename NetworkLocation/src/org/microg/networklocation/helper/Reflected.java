@@ -5,7 +5,6 @@ import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 @SuppressWarnings("unchecked")
@@ -32,6 +31,16 @@ public final class Reflected {
 			makeComplete.invoke(location);
 		} catch (Exception e) {
 			Log.w("android.location.Location.makeComplete", e);
+		}
+	}
+
+	public static void androidLocationLocationSetExtraLocation(Location location, String key, Location value) {
+		try {
+			Class clazz = Class.forName("android.location.Location");
+			Method setExtraLocation = clazz.getDeclaredMethod("setExtraLocation", String.class, Location.class);
+			setExtraLocation.invoke(location, key, value);
+		} catch (Exception e) {
+			Log.w("android.location.Location.setExtraLocation", e);
 		}
 	}
 
