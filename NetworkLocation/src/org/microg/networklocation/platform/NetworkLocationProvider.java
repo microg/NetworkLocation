@@ -130,6 +130,7 @@ class NetworkLocationProvider extends LocationProvider
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
+			location.setTime(System.currentTimeMillis());
 			if (MainService.DEBUG) {
 				Log.d(TAG, "Reporting: " + location);
 			}
