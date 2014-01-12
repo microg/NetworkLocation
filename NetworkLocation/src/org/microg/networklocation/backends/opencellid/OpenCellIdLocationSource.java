@@ -30,6 +30,12 @@ public class OpenCellIdLocationSource extends OnlineDataSource implements Locati
 	}
 
 	@Override
+	public boolean isSourceAvailable() {
+		// FIXME: Temporary disabled until usage is cleared up
+		return false;
+	}
+
+	@Override
 	public String getCopyright() {
 		return COPYRIGHT;
 	}
