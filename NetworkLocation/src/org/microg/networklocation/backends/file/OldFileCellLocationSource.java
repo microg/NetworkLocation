@@ -2,6 +2,7 @@ package org.microg.networklocation.backends.file;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 import org.microg.networklocation.MainService;
 import org.microg.networklocation.data.CellSpec;
@@ -20,11 +21,7 @@ public class OldFileCellLocationSource implements LocationSource<CellSpec> {
 	private static final String COPYRIGHT = "© unknown\nLicense: unknown";
 	private static final String COL_LATITUDE = "lat";
 	private static final String COL_LONGITUDE = "lon";
-	private final File dbFile;
-
-	public OldFileCellLocationSource(final File dbFile) {
-		this.dbFile = dbFile;
-	}
+	private final File dbFile = new File(Environment.getExternalStorageDirectory(), ".nogapps/cells.db");
 
 	@Override
 	public String getCopyright() {

@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Environment;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
@@ -33,7 +32,6 @@ import org.microg.networklocation.retriever.WifiSpecRetriever;
 import org.microg.networklocation.source.GeocodeSource;
 import org.microg.networklocation.source.LocationSource;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,10 +132,8 @@ public class MainService extends Service {
 		locationRetriever.setWifiLocationSources(wifiSources);
 
 		List<LocationSource<CellSpec>> cellSources = new ArrayList<LocationSource<CellSpec>>();
-		cellSources.add(new NewFileCellLocationSource(
-				new File(Environment.getExternalStorageDirectory(), ".nogapps/lacells.db")));
-		cellSources.add(new OldFileCellLocationSource(
-				new File(Environment.getExternalStorageDirectory(), ".nogapps/cells.db")));
+		cellSources.add(new NewFileCellLocationSource());
+		cellSources.add(new OldFileCellLocationSource());
 		cellSources.add(new OpenCellIdLocationSource(context));
 		cellSources.add(new IchnaeaCellLocationSource(context));
 		locationRetriever.setCellLocationSources(cellSources);
