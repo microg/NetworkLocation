@@ -21,6 +21,18 @@ public class MacAddress {
 		return hex;
 	}
 
+	/**
+	 * Parses a string in a mac address object.
+	 * Supports the following formats:
+	 * <ul>
+	 * <li>Each byte as two hexadecimal chars, without divider, eg: 0123456789AB</li>
+	 * <li>Each byte as two hexadecimal chars, divider by any character, eg: 01*23*45*67*89*AB</li>
+	 * <li>Each byte in hexadecimal, divided by either ':' or '-', eg: 1:2B:4:5A:78:9C</li>
+	 * </ul>
+	 *
+	 * @param s A string containing a mac address, as described above
+	 * @return The parsed mac address
+	 */
 	public static MacAddress parse(String s) {
 		int[] bytes = new int[6];
 		if (s.length() == 12) {
