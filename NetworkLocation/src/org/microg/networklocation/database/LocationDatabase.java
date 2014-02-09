@@ -61,7 +61,7 @@ public class LocationDatabase {
 		double accuracy = cursor.getDouble(3);
 		int bools = cursor.getInt(4);
 		cursor.close();
-		return new LocationSpec<T>(latitude, longitude, altitude, accuracy, bools);
+		return new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
 	}
 
 	private <T extends PropSpec> void insert(byte[] identBlob, LocationSpec<T> locationSpec) {

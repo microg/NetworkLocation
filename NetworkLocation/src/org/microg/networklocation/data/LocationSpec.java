@@ -23,24 +23,13 @@ public class LocationSpec<T extends PropSpec> {
 	}
 
 	public LocationSpec(T source, double latitude, double longitude, double accuracy) {
+		this(latitude, longitude, accuracy);
 		this.source = source;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.accuracy = accuracy;
-		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
-			undefined = false;
-		}
 	}
 
 	public LocationSpec(T source, double latitude, double longitude, double accuracy, double altitude) {
-		this.source = source;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.accuracy = accuracy;
+		this(source, latitude, longitude, accuracy);
 		this.altitude = altitude;
-		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
-			undefined = false;
-		}
 		if (altitude != 0) {
 			hasAltitude = true;
 		}
@@ -50,38 +39,31 @@ public class LocationSpec<T extends PropSpec> {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.accuracy = accuracy;
-		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
+		if (((latitude != 0) || (longitude != 0)) && (accuracy != 0)) {
 			undefined = false;
 		}
 	}
 
-	public LocationSpec(double latitude, double longitude, double altitude, double accuracy, boolean remote,
-						boolean submitted) {
+	public LocationSpec(double latitude, double longitude, double accuracy, double altitude, boolean remote,
+	                    boolean submitted) {
+		this(latitude, longitude, accuracy, altitude);
 		this.remote = remote;
 		this.submitted = submitted;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.altitude = altitude;
-		this.accuracy = accuracy;
-		if ((latitude != 0) && (longitude != 0) && (accuracy != 0)) {
-			undefined = false;
-		}
-		if (altitude != 0) {
-			hasAltitude = true;
-		}
 	}
 
-	public LocationSpec(double latitude, double longitude, double altitude, double accuracy, int bools) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.altitude = altitude;
-		this.accuracy = accuracy;
+	public LocationSpec(double latitude, double longitude, double accuracy, double altitude, int bools) {
+		this(latitude, longitude, accuracy, altitude);
 		setBools(bools);
 	}
 
 	LocationSpec(T source) {
 		this.source = source;
 		undefined = true;
+	}
+
+	public LocationSpec(double latitude, double longitude, double accuracy, double altitude) {
+		this(latitude, longitude, accuracy);
+		this.altitude = altitude;
 	}
 
 	private static int boolToInt(boolean b, int s) {

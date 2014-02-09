@@ -37,7 +37,7 @@ class CellSpecRetriever implements org.microg.networklocation.retriever.CellSpec
 			int psc = gsmCellLocation.getPsc();
 			if (psc == -1) {
 				cellSpecs.add(new CellSpec(Radio.GSM, mcc, mnc, lac, cid));
-			} else {
+			} else if ((cid != -1) && (lac != -1)) {
 				CellSpec cellSpec = new CellSpec(Radio.UMTS, mcc, mnc, lac, cid);
 				cellSpec.setPsc(psc);
 				cellSpecs.add(cellSpec);
@@ -87,7 +87,7 @@ class CellSpecRetriever implements org.microg.networklocation.retriever.CellSpec
 		}
 		CellLocation.requestLocationUpdate();
 		String mncString = telephonyManager.getNetworkOperator();
-		if ((mncString == null) || (mncString.length() < 3))
+		if ((mncString == null) || (mncString.length() < 5) || (mncString.length() > 6))
 			return cellSpecs;
 		int mcc = Integer.parseInt(mncString.substring(0,3));
 		int mnc = Integer.parseInt(mncString.substring(3));
