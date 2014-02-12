@@ -17,6 +17,7 @@ import org.microg.networklocation.backends.file.OldFileCellLocationSource;
 import org.microg.networklocation.backends.mapquest.NominatimGeocodeSource;
 import org.microg.networklocation.backends.mozilla.IchnaeaCellLocationSource;
 import org.microg.networklocation.backends.opencellid.OpenCellIdLocationSource;
+import org.microg.networklocation.backends.cellapi.CellAPI;
 import org.microg.networklocation.data.CellSpec;
 import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.data.LocationRetriever;
@@ -135,6 +136,7 @@ public class MainService extends Service {
 		cellSources.add(new NewFileCellLocationSource());
 		cellSources.add(new OldFileCellLocationSource());
 		cellSources.add(new OpenCellIdLocationSource(context));
+		cellSources.add(new CellAPI(context));
 		cellSources.add(new IchnaeaCellLocationSource(context));
 		locationRetriever.setCellLocationSources(cellSources);
 
