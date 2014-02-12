@@ -61,7 +61,9 @@ public class LocationDatabase {
 		double accuracy = cursor.getDouble(3);
 		int bools = cursor.getInt(4);
 		cursor.close();
-		return new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
+		LocationSpec<T> locationSpec = new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
+		Log.d(TAG, "inserted locationSpec=" + locationSpec);
+		return locationSpec;
 	}
 
 	private <T extends PropSpec> void insert(byte[] identBlob, LocationSpec<T> locationSpec) {
@@ -74,6 +76,7 @@ public class LocationDatabase {
 		statement.bindLong(6, locationSpec.getBools());
 		try {
 			statement.executeInsert();
+			Log.d(TAG, "inserted locationSpec=" + locationSpec);
 		} catch (Exception e) {
 			Log.w(TAG, e);
 		}

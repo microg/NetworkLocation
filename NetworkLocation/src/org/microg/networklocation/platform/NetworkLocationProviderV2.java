@@ -90,14 +90,14 @@ class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkL
 
 	@Override
 	public void onLocationChanged(Location location) {
+		if (MainService.DEBUG) {
+			Log.d(TAG, "Reporting: " + location);
+		}
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
 			Reflected.androidLocationLocationMakeComplete(location);
 			Reflected.androidLocationLocationSetExtraLocation(location, "noGPSLocation", new Location(location));
-			if (MainService.DEBUG) {
-				Log.d(TAG, "Reporting: " + location);
-			}
 			reportLocation(location);
 		}
 	}

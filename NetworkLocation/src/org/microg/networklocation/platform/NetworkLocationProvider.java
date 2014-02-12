@@ -127,13 +127,13 @@ class NetworkLocationProvider extends LocationProvider
 
 	@Override
 	public void onLocationChanged(Location location) {
+		if (MainService.DEBUG) {
+			Log.d(TAG, "Reporting: " + location);
+		}
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
 			location.setTime(System.currentTimeMillis());
-			if (MainService.DEBUG) {
-				Log.d(TAG, "Reporting: " + location);
-			}
 			reportLocation(location);
 		}
 	}

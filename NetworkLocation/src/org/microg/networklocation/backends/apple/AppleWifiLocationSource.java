@@ -104,6 +104,9 @@ public class AppleWifiLocationSource extends OnlineDataSource implements Locatio
 				Log.w(TAG, e);
 			}
 		}
+		if (MainService.DEBUG) {
+			Log.d(TAG, "got locationSpecs=" + locationSpecs);
+		}
 		return locationSpecs;
 	}
 }
