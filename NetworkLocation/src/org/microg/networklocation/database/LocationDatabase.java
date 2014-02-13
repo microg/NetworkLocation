@@ -1,5 +1,6 @@
 package org.microg.networklocation.database;
 
+import java.util.Arrays;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.*;
@@ -42,6 +43,7 @@ public class LocationDatabase {
 
 	private <T extends PropSpec> LocationSpec<T> get(final byte[] identBlob) {
 		final SQLiteDatabase db = openHelper.getReadableDatabase();
+		LocationSpec<T> locationSpec = null;
 		Cursor cursor = db.queryWithFactory(new SQLiteDatabase.CursorFactory() {
 			@Override
 			public Cursor newCursor(SQLiteDatabase database, SQLiteCursorDriver sqLiteCursorDriver, String s,
@@ -50,19 +52,23 @@ public class LocationDatabase {
 				return new SQLiteCursor(db, sqLiteCursorDriver, s, sqLiteQuery);
 			}
 		}, false, TABLE_LOCATION, DEFAULT_QUERY_SELECT, COL_IDENT + "=?", null, null, null, null, null);
-		if (cursor.isAfterLast()) {
-			cursor.close();
-			return null;
+		try {
+			if (cursor.isAfterLast()) {
+				cursor.close();
+				return null;
+			}
+			cursor.moveToNext();
+			double latitude = cursor.getDouble(0);
+			double longitude = cursor.getDouble(1);
+			double altitude = cursor.getDouble(2);
+			double accuracy = cursor.getDouble(3);
+			int bools = cursor.getInt(4);
+			locationSpec = new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
 		}
-		cursor.moveToNext();
-		double latitude = cursor.getDouble(0);
-		double longitude = cursor.getDouble(1);
-		double altitude = cursor.getDouble(2);
-		double accuracy = cursor.getDouble(3);
-		int bools = cursor.getInt(4);
-		cursor.close();
-		LocationSpec<T> locationSpec = new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
-		Log.d(TAG, "inserted locationSpec=" + locationSpec);
+		finally {
+			cursor.close();
+		}
+		Log.d(TAG, "retrieved identBlob=" + Arrays.toString(identBlob) + ", locationSpec=" + locationSpec);
 		return locationSpec;
 	}
 
@@ -76,9 +82,12 @@ public class LocationDatabase {
 		statement.bindLong(6, locationSpec.getBools());
 		try {
 			statement.executeInsert();
-			Log.d(TAG, "inserted locationSpec=" + locationSpec);
+			Log.d(TAG, "inserted identBlob=" + Arrays.toString(identBlob) + ", locationSpec=" + locationSpec);
 		} catch (Exception e) {
 			Log.w(TAG, e);
+		}
+		finally {
+			statement.close();
 		}
 	}
 
