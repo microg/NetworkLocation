@@ -17,7 +17,7 @@ import java.util.Locale;
 public class AppleWifiLocationSource extends OnlineDataSource implements LocationSource<WifiSpec> {
 
 	public static final float LATLON_WIRE = 1E8F;
-	private static final String TAG = "AppleWifiLocationSource";
+	private static final String TAG = "nlp.AppleWifiLocationSource";
 	private static final String NAME = "Apple Location Service";
 	private static final String DESCRIPTION = "Retrieve Wifi locations from Apple";
 	private static final String COPYRIGHT = "© Apple\nLicense: proprietary or unknown";

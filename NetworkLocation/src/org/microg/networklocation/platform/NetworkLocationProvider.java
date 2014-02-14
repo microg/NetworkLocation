@@ -17,7 +17,7 @@ class NetworkLocationProvider extends LocationProvider
 		implements org.microg.networklocation.provider.NetworkLocationProvider {
 
 	private static final String IDENTIFIER = "network";
-	private static final String TAG = "NetworkLocationProvider";
+	private static final String TAG = "nlp.NetworkLocationProvider";
 	private NetworkLocationThread background;
 	private long autoTime;
 	private boolean autoUpdate;

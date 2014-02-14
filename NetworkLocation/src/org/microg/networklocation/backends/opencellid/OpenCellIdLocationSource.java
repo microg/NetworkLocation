@@ -16,7 +16,7 @@ import java.util.Collection;
 
 public class OpenCellIdLocationSource extends OnlineDataSource implements LocationSource<CellSpec> {
 
-	private static final String TAG = "OpenCellIdLocationSource";
+	private static final String TAG = "nlp.OpenCellIdLocationSource";
 	private static final String NAME = "opencellid.org";
 	private static final String DESCRIPTION = "Retrieve cell locations from opencellid.org when online";
 	private static final String COPYRIGHT = "© OpenCellID.org\nLicense: CC BY-SA 3.0";

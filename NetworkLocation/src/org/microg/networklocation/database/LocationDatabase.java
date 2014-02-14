@@ -10,7 +10,7 @@ import org.microg.networklocation.data.PropSpec;
 import org.microg.networklocation.MainService;
 
 public class LocationDatabase {
-	private static final String TAG = "LocationDatabase";
+	private static final String TAG = "nlp.LocationDatabase";
 	private static final String FILE_NAME = "v2loc.db";
 	private static final int DB_VERSION = 1;
 	private static final String COL_IDENT = "ident";

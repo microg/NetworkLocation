@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class NominatimGeocodeSource extends OnlineDataSource implements GeocodeSource {
-	private static final String TAG = "NominatimGeocodeSource";
+	private static final String TAG = "nlp.NominatimGeocodeSource";
 	private static final String NAME = "MapQuest Nominatim Service";
 	private static final String DESCRIPTION = "Reverse geocode using the online service by MapQuest.";
 	private static final String COPYRIGHT =

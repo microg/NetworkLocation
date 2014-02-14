@@ -43,7 +43,7 @@ public class MainService extends Service {
 		DEBUG = Log.isLoggable("nlp", Log.DEBUG);
 	}
 
-	private static final String TAG = "NetworkLocationService";
+	private static final String TAG = "nlp.NetworkLocationService";
 	private static Context context;
 	private LocationCalculator locationCalculator;
 	private LocationRetriever locationRetriever;

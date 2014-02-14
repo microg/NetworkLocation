@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class CellAPI extends OnlineDataSource implements LocationSource<CellSpec> {
-	private static final String TAG = "CellAPI";
+	private static final String TAG = "nlp.CellAPI";
 
 	private static final String NAME = "cell.vodafone.com";
 	private static final String DESCRIPTION = "Retrieve cell locations from vodafone.com when online";

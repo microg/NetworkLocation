@@ -22,7 +22,7 @@ import org.microg.networklocation.provider.NetworkLocationProvider;
 class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkLocationProvider {
 
 	private final static String IDENTIFIER = "network";
-	private static final String TAG = "NetworkLocationProviderV2";
+	private static final String TAG = "nlp.NetworkLocationProviderV2";
 	private static final int MIN_AUTO_TIME = 5000;
 	private NetworkLocationThread background = new NetworkLocationThread();
 	private boolean enabledByService = false;
