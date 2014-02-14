@@ -7,6 +7,7 @@ import android.database.sqlite.*;
 import android.util.Log;
 import org.microg.networklocation.data.LocationSpec;
 import org.microg.networklocation.data.PropSpec;
+import org.microg.networklocation.MainService;
 
 public class LocationDatabase {
 	private static final String TAG = "LocationDatabase";
@@ -53,22 +54,22 @@ public class LocationDatabase {
 			}
 		}, false, TABLE_LOCATION, DEFAULT_QUERY_SELECT, COL_IDENT + "=?", null, null, null, null, null);
 		try {
-			if (cursor.isAfterLast()) {
-				cursor.close();
-				return null;
+			if (cursor.moveToNext()) {
+				double latitude = cursor.getDouble(0);
+				double longitude = cursor.getDouble(1);
+				double altitude = cursor.getDouble(2);
+				double accuracy = cursor.getDouble(3);
+				int bools = cursor.getInt(4);
+				locationSpec = new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
 			}
-			cursor.moveToNext();
-			double latitude = cursor.getDouble(0);
-			double longitude = cursor.getDouble(1);
-			double altitude = cursor.getDouble(2);
-			double accuracy = cursor.getDouble(3);
-			int bools = cursor.getInt(4);
-			locationSpec = new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
+			if (cursor.moveToNext()) {
+				Log.e(TAG, "Result not unique");
+			}
 		}
 		finally {
 			cursor.close();
 		}
-		Log.d(TAG, "retrieved identBlob=" + Arrays.toString(identBlob) + ", locationSpec=" + locationSpec);
+		if (MainService.DEBUG) Log.d(TAG, "retrieved identBlob=" + Arrays.toString(identBlob) + ", locationSpec=" + locationSpec);
 		return locationSpec;
 	}
 
@@ -82,7 +83,7 @@ public class LocationDatabase {
 		statement.bindLong(6, locationSpec.getBools());
 		try {
 			statement.executeInsert();
-			Log.d(TAG, "inserted identBlob=" + Arrays.toString(identBlob) + ", locationSpec=" + locationSpec);
+			if (MainService.DEBUG) Log.d(TAG, "inserted identBlob=" + Arrays.toString(identBlob) + ", locationSpec=" + locationSpec);
 		} catch (Exception e) {
 			Log.w(TAG, e);
 		}
