@@ -29,6 +29,7 @@ public class LocationDatabase {
 	private static final String[] DEFAULT_QUERY_SELECT =
 			{COL_LATITUDE, COL_LONGITUDE, COL_ALTITUDE, COL_ACCURACY, COL_BOOLS};
 	private OpenHelper openHelper;
+	private boolean enabled = false;
 
 	public LocationDatabase(Context context) {
 		openHelper = new OpenHelper(context);
@@ -42,32 +43,38 @@ public class LocationDatabase {
 		return locationSpec;
 	}
 
+	public void enable() {
+		this.enabled = true;
+	}
+
 	private <T extends PropSpec> LocationSpec<T> get(final byte[] identBlob) {
-		final SQLiteDatabase db = openHelper.getReadableDatabase();
 		LocationSpec<T> locationSpec = null;
-		Cursor cursor = db.queryWithFactory(new SQLiteDatabase.CursorFactory() {
-			@Override
-			public Cursor newCursor(SQLiteDatabase database, SQLiteCursorDriver sqLiteCursorDriver, String s,
-									SQLiteQuery sqLiteQuery) {
-				sqLiteQuery.bindBlob(1, identBlob);
-				return new SQLiteCursor(db, sqLiteCursorDriver, s, sqLiteQuery);
+		if (enabled) {
+			final SQLiteDatabase db = openHelper.getReadableDatabase();
+			Cursor cursor = db.queryWithFactory(new SQLiteDatabase.CursorFactory() {
+				@Override
+				public Cursor newCursor(SQLiteDatabase database, SQLiteCursorDriver sqLiteCursorDriver, String s,
+										SQLiteQuery sqLiteQuery) {
+					sqLiteQuery.bindBlob(1, identBlob);
+					return new SQLiteCursor(db, sqLiteCursorDriver, s, sqLiteQuery);
+				}
+			}, false, TABLE_LOCATION, DEFAULT_QUERY_SELECT, COL_IDENT + "=?", null, null, null, null, null);
+			try {
+				if (cursor.moveToNext()) {
+					double latitude = cursor.getDouble(0);
+					double longitude = cursor.getDouble(1);
+					double altitude = cursor.getDouble(2);
+					double accuracy = cursor.getDouble(3);
+					int bools = cursor.getInt(4);
+					locationSpec = new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
+				}
+				if (cursor.moveToNext()) {
+					Log.e(TAG, "Result not unique");
+				}
 			}
-		}, false, TABLE_LOCATION, DEFAULT_QUERY_SELECT, COL_IDENT + "=?", null, null, null, null, null);
-		try {
-			if (cursor.moveToNext()) {
-				double latitude = cursor.getDouble(0);
-				double longitude = cursor.getDouble(1);
-				double altitude = cursor.getDouble(2);
-				double accuracy = cursor.getDouble(3);
-				int bools = cursor.getInt(4);
-				locationSpec = new LocationSpec<T>(latitude, longitude, accuracy, altitude, bools);
+			finally {
+				cursor.close();
 			}
-			if (cursor.moveToNext()) {
-				Log.e(TAG, "Result not unique");
-			}
-		}
-		finally {
-			cursor.close();
 		}
 		if (MainService.DEBUG) Log.d(TAG, "retrieved identBlob=" + Arrays.toString(identBlob) + ", locationSpec=" + locationSpec);
 		return locationSpec;
