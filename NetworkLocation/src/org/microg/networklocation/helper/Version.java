@@ -5,7 +5,7 @@ import android.os.Build;
 import android.util.Log;
 
 public class Version {
-	private static final String TAG = "VersionHelper";
+	private static final String TAG = "nlp.VersionHelper";
 
 	public static String getMyVersion(Context context) {
 		try {

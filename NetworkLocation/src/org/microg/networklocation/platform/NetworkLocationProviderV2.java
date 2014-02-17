@@ -22,7 +22,7 @@ import org.microg.networklocation.provider.NetworkLocationProvider;
 class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkLocationProvider {
 
 	private final static String IDENTIFIER = "network";
-	private static final String TAG = "NetworkLocationProviderV2";
+	private static final String TAG = "nlp.NetworkLocationProviderV2";
 	private static final int MIN_AUTO_TIME = 5000;
 	private NetworkLocationThread background = new NetworkLocationThread();
 	private boolean enabledByService = false;
@@ -90,14 +90,14 @@ class NetworkLocationProviderV2 extends LocationProviderBase implements NetworkL
 
 	@Override
 	public void onLocationChanged(Location location) {
+		if (MainService.DEBUG) {
+			Log.d(TAG, "Reporting: " + location);
+		}
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
 			Reflected.androidLocationLocationMakeComplete(location);
 			Reflected.androidLocationLocationSetExtraLocation(location, "noGPSLocation", new Location(location));
-			if (MainService.DEBUG) {
-				Log.d(TAG, "Reporting: " + location);
-			}
 			reportLocation(location);
 		}
 	}

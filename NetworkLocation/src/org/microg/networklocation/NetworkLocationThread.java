@@ -9,7 +9,7 @@ import org.microg.networklocation.provider.NetworkLocationProvider;
 
 public class NetworkLocationThread extends Thread {
 
-	private static final String TAG = "NetworkLocationThread";
+	private static final String TAG = "nlp.NetworkLocationThread";
 	private LocationCalculator calculator;
 	private long autoTime;
 	private boolean autoUpdate;

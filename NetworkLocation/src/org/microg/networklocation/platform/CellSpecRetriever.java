@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 class CellSpecRetriever implements org.microg.networklocation.retriever.CellSpecRetriever {
-	private static final String TAG = "CellSpecRetriever";
+	private static final String TAG = "nlp.CellSpecRetriever";
 	private TelephonyManager telephonyManager;
 
 	public CellSpecRetriever(TelephonyManager telephonyManager) {

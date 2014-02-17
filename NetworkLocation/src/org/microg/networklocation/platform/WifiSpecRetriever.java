@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 class WifiSpecRetriever implements org.microg.networklocation.retriever.WifiSpecRetriever {
-	private static final String TAG = "WifiSpecRetriever";
+	private static final String TAG = "nlp.WifiSpecRetriever";
 	private final WifiManager wifiManager;
 
 	public WifiSpecRetriever(WifiManager wifiManager) {

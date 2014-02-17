@@ -17,7 +17,7 @@ class NetworkLocationProvider extends LocationProvider
 		implements org.microg.networklocation.provider.NetworkLocationProvider {
 
 	private static final String IDENTIFIER = "network";
-	private static final String TAG = "NetworkLocationProvider";
+	private static final String TAG = "nlp.NetworkLocationProvider";
 	private NetworkLocationThread background;
 	private long autoTime;
 	private boolean autoUpdate;
@@ -127,13 +127,13 @@ class NetworkLocationProvider extends LocationProvider
 
 	@Override
 	public void onLocationChanged(Location location) {
+		if (MainService.DEBUG) {
+			Log.d(TAG, "Reporting: " + location);
+		}
 		if (location != null) {
 			background.setLastTime(SystemClock.elapsedRealtime());
 			background.setLastLocation(location);
 			location.setTime(System.currentTimeMillis());
-			if (MainService.DEBUG) {
-				Log.d(TAG, "Reporting: " + location);
-			}
 			reportLocation(location);
 		}
 	}
