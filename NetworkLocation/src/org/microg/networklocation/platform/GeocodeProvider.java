@@ -12,7 +12,7 @@ import java.util.List;
 
 class GeocodeProvider extends internal.com.android.location.provider.GeocodeProvider
 		implements org.microg.networklocation.provider.GeocodeProvider {
-	private static final String TAG = "LocationGeocodeProvider";
+	private static final String TAG = "nlp.LocationGeocodeProvider";
 	private static final String UNKNOWN_RESULT_ERROR = "unknown";
 	private GeocodeDatabase geocodeDatabase;
 	private List<GeocodeSource> sources;

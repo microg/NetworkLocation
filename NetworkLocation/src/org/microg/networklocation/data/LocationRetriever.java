@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class LocationRetriever {
-	private static final String TAG = "LocationRetriever";
+	private static final String TAG = "nlp.LocationRetriever";
 	private static final long WAIT_BETWEEN = 1000 * 10; //every 10 seconds
 	private final Thread loopThread = new Thread(new Runnable() {
 		@Override

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 
 public abstract class OnlineDataSource implements DataSource {
-	private static final String TAG = "OnlineDataSource";
+	private static final String TAG = "nlp.OnlineDataSource";
 	private final ConnectivityManager connectivityManager;
 
 	protected OnlineDataSource(Context context) {

@@ -17,6 +17,7 @@ import org.microg.networklocation.backends.file.OldFileCellLocationSource;
 import org.microg.networklocation.backends.mapquest.NominatimGeocodeSource;
 import org.microg.networklocation.backends.mozilla.IchnaeaCellLocationSource;
 import org.microg.networklocation.backends.opencellid.OpenCellIdLocationSource;
+import org.microg.networklocation.backends.cellapi.CellAPI;
 import org.microg.networklocation.data.CellSpec;
 import org.microg.networklocation.data.LocationCalculator;
 import org.microg.networklocation.data.LocationRetriever;
@@ -42,7 +43,7 @@ public class MainService extends Service {
 		DEBUG = Log.isLoggable("nlp", Log.DEBUG);
 	}
 
-	private static final String TAG = "NetworkLocationService";
+	private static final String TAG = "nlp.NetworkLocationService";
 	private static Context context;
 	private LocationCalculator locationCalculator;
 	private LocationRetriever locationRetriever;
@@ -128,14 +129,15 @@ public class MainService extends Service {
 		nlprovider.setCalculator(locationCalculator);
 
 		List<LocationSource<WifiSpec>> wifiSources = new ArrayList<LocationSource<WifiSpec>>();
-		wifiSources.add(new AppleWifiLocationSource(context));
+		//wifiSources.add(new AppleWifiLocationSource(context));
 		locationRetriever.setWifiLocationSources(wifiSources);
 
 		List<LocationSource<CellSpec>> cellSources = new ArrayList<LocationSource<CellSpec>>();
-		cellSources.add(new NewFileCellLocationSource());
-		cellSources.add(new OldFileCellLocationSource());
-		cellSources.add(new OpenCellIdLocationSource(context));
-		cellSources.add(new IchnaeaCellLocationSource(context));
+		cellSources.add(new CellAPI(context));
+		//cellSources.add(new NewFileCellLocationSource());
+		//cellSources.add(new OldFileCellLocationSource());
+		//cellSources.add(new OpenCellIdLocationSource(context));
+		//cellSources.add(new IchnaeaCellLocationSource(context));
 		locationRetriever.setCellLocationSources(cellSources);
 
 		locationRetriever.start();

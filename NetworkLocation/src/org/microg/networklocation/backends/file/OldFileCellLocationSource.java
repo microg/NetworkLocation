@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class OldFileCellLocationSource implements LocationSource<CellSpec> {
-	private static final String TAG = "OldFileCellLocationSource";
+	private static final String TAG = "nlp.OldFileCellLocationSource";
 	private static final String NAME = "Local File Database (cells.db)";
 	private static final String DESCRIPTION = "Read cell locations from a database located on the (virtual) sdcard";
 	private static final String COPYRIGHT = "© unknown\nLicense: unknown";

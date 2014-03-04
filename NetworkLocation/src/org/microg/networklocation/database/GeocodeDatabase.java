@@ -12,7 +12,7 @@ import java.util.Map;
  * This provides basic caching capabilities until the real database is ready.
  */
 public class GeocodeDatabase {
-	private static final String TAG = "GeocodeDatabase";
+	private static final String TAG = "nlp.GeocodeDatabase";
 	private Map<Long, List<Address>> intDb = new HashMap<Long, List<Address>>();
 	private Map<String, List<Address>> stringDb = new HashMap<String, List<Address>>();
 
