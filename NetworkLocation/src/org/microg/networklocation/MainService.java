@@ -129,15 +129,15 @@ public class MainService extends Service {
 		nlprovider.setCalculator(locationCalculator);
 
 		List<LocationSource<WifiSpec>> wifiSources = new ArrayList<LocationSource<WifiSpec>>();
-		//wifiSources.add(new AppleWifiLocationSource(context));
+		wifiSources.add(new AppleWifiLocationSource(context));
 		locationRetriever.setWifiLocationSources(wifiSources);
 
 		List<LocationSource<CellSpec>> cellSources = new ArrayList<LocationSource<CellSpec>>();
+		cellSources.add(new NewFileCellLocationSource());
+		cellSources.add(new OldFileCellLocationSource());
+		cellSources.add(new OpenCellIdLocationSource(context));
 		cellSources.add(new CellAPI(context));
-		//cellSources.add(new NewFileCellLocationSource());
-		//cellSources.add(new OldFileCellLocationSource());
-		//cellSources.add(new OpenCellIdLocationSource(context));
-		//cellSources.add(new IchnaeaCellLocationSource(context));
+		cellSources.add(new IchnaeaCellLocationSource(context));
 		locationRetriever.setCellLocationSources(cellSources);
 
 		locationRetriever.start();
