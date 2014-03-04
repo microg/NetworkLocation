@@ -35,7 +35,7 @@ public class LocationSpec<T extends PropSpec> {
 		}
 	}
 
-	public LocationSpec(double latitude, double longitude, double accuracy) {
+	private LocationSpec(double latitude, double longitude, double accuracy) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.accuracy = accuracy;
@@ -44,7 +44,7 @@ public class LocationSpec<T extends PropSpec> {
 		}
 	}
 
-	public LocationSpec(double latitude, double longitude, double accuracy, double altitude, boolean remote,
+	private LocationSpec(double latitude, double longitude, double accuracy, double altitude, boolean remote,
 	                    boolean submitted) {
 		this(latitude, longitude, accuracy, altitude);
 		this.remote = remote;
@@ -61,7 +61,7 @@ public class LocationSpec<T extends PropSpec> {
 		undefined = true;
 	}
 
-	public LocationSpec(double latitude, double longitude, double accuracy, double altitude) {
+	private LocationSpec(double latitude, double longitude, double accuracy, double altitude) {
 		this(latitude, longitude, accuracy);
 		this.altitude = altitude;
 	}
